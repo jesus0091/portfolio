@@ -142,16 +142,13 @@ const PROJECTS: Project[] = [
   },
 ];
 
-/* =========================
-   Componente
-   ========================= */
 export default function LatestProjects() {
   return (
-    <section id="projects" className="pt-50 scrollbar-hide">
+    <section id="projects" className="py-50 scrollbar-hide">
       <div className="mx-auto max-w-6xl">
         <header className="projects-header mb-6 flex items-end justify-between">
           <div className="projects-header-pin flex items-center gap-2">
-            <h2 className="text-6xl text-white font-black tracking-tight">
+            <h2 className="text-6xl text-black font-black tracking-tight">
               Latest Projects
             </h2>
           </div>
@@ -167,10 +164,3 @@ export default function LatestProjects() {
     </section>
   );
 }
-
-/* =========================
-   Nota:
-   — Cuando quieras reintroducir animaciones,
-     podemos agregar GSAP/ScrollTrigger dentro de
-     un useLayoutEffect y con gsap.context(root).
-   ========================= */
