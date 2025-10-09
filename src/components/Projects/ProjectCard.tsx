@@ -1,5 +1,7 @@
 "use client";
 
+import { IconUser, IconUsers } from "@tabler/icons-react";
+
 import Image from "next/image";
 import Link from "next/link";
 import { LinkOut } from "./LatestsProjects";
@@ -46,12 +48,13 @@ export default function ProjectCard({ project }: { project: Project }) {
           priority={p.id === "mtc-fe" || p.id === "mtc-ux"}
         />
         <span
-          className={`absolute left-6 top-4 px-2.5 py-1 text-base font-medium rounded-md ${
+          className={`absolute flex flex-row gap-1 items-center left-6 top-4 px-2.5 py-1.5 text-base font-medium ${
             p.mode === "solo"
               ? "bg-orange-100 text-orange-700"
               : "bg-rose-100 text-rose-700"
           }`}
         >
+          {p.mode === "solo" ? <IconUser /> : <IconUsers />}
           {p.mode === "solo" ? "Solo Project" : "Collaborative"}
         </span>
       </div>
