@@ -144,7 +144,28 @@ const PROJECTS: Project[] = [
 
 export default function LatestProjects() {
   return (
-    <section id="projects" className="py-50 scrollbar-hide">
+    <section id="projects" className="relative py-50 scrollbar-hide">
+      <div className=" light-top-sentinel h-10 w-full absolute top-0" />
+      <div
+        className="absolute inset-0 -z-10"
+        style={{
+          backgroundImage: `
+        linear-gradient(to right, rgba(65, 34, 0, 0.09) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(65, 34, 0, 0.09) 1px, transparent 1px)
+      `,
+          backgroundSize: "100px 100px",
+          backgroundPosition: "center",
+          WebkitMaskImage:
+            "linear-gradient(to bottom, transparent 0%, black 30%, black 100%)",
+          WebkitMaskRepeat: "no-repeat",
+          WebkitMaskSize: "100% 100%",
+          maskImage:
+            "linear-gradient(to bottom, transparent 0%, black 30%, black 100%)",
+          maskRepeat: "no-repeat",
+          maskSize: "100% 100%",
+        }}
+      />
+
       <div className="mx-auto max-w-6xl">
         <header className="projects-header mb-6 flex items-end justify-between">
           <div className="projects-header-pin flex items-center gap-2">
@@ -154,13 +175,13 @@ export default function LatestProjects() {
           </div>
         </header>
 
-        {/* Grid de proyectos */}
         <div className="projects-grid grid gap-6 lg:grid-cols-2">
           {PROJECTS.map((p) => (
             <ProjectCard key={p.id} project={p} />
           ))}
         </div>
       </div>
+      <div className="light-bottom-sentinel h-10 w-full absolute bottom-0" />
     </section>
   );
 }

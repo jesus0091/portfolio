@@ -41,12 +41,13 @@ const CarouselWrapper = styled.div`
 
 const CarouselTrack = styled.ul`
   display: flex;
-  gap: 24px;
+  gap: 36px;
   width: max-content;
   list-style: none;
   padding: 0;
   margin: 0;
   animation: ${scroll} 60s linear infinite;
+  filter: grayscale(100%) opacity(0.4);
 
   &:hover {
     animation-play-state: paused;
@@ -56,6 +57,8 @@ const CarouselTrack = styled.ul`
 const SkillChip = styled.li`
   display: flex;
   align-items: center;
+  font-size: 24px;
+  font-weight: 600;
   justify-content: center;
 `;
 
@@ -95,7 +98,9 @@ export default function SkillsCarousel() {
     <CarouselWrapper>
       <CarouselTrack>
         {loop.map((skill, i) => (
-          <SkillChip key={`${skill.label}-${i}`}>{skill.icon}</SkillChip>
+          <SkillChip key={`${skill.label}-${i}`}>
+            {skill.icon} {skill.label}
+          </SkillChip>
         ))}
       </CarouselTrack>
     </CarouselWrapper>

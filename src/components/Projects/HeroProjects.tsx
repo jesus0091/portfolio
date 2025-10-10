@@ -57,17 +57,18 @@ export default function HeroProject() {
       ref={rootRef}
       className="hero h-[100dvh] flex justify-center items-center relative"
     >
+      <div className="light-top-sentinel h-10 absolute top-0 w-full" />
       <div className="hero-orbit absolute will-change-transform">
         <OrbitFusion />
       </div>
 
-      <div className="flex flex-col gap-6 items-center justify-center h-full">
+      <div className="flex flex-col gap-6 items-center justify-center h-full z-10">
         <div className="flex flex-col items-center gap-2">
-          <p className="hero-eyebrow text-2xl text-orange-500">
+          <p className="hero-eyebrow text-xl tracking-wide uppercase text-orange-600">
             From Concept to Code
           </p>
-          <p className="hero-title text-[80px] font-black leading-none max-w-4xl text-black text-center">
-            Building Digital Products & Experience
+          <p className="hero-title text-[90px] tracking-tight font-black leading-none text-black text-center">
+            Building Digital <br /> Products & Experience
           </p>
         </div>
 
@@ -75,6 +76,7 @@ export default function HeroProject() {
           <ButtonOutlined>Lets start a project together</ButtonOutlined>
         </div>
       </div>
+      <div className="light-bottom-sentinel h-10 absolute bottom-0 w-full" />
     </section>
   );
 }

@@ -1,10 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { IconMail, IconMailAi } from "@tabler/icons-react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+
+type Boundary = { y: number; dark: boolean };
 
 const links = [
   { href: "/about", label: "About Me" },
@@ -13,36 +16,115 @@ const links = [
 
 export default function Navbar() {
   const pathname = usePathname();
+
+  const headerRef = useRef<HTMLElement | null>(null);
+  const navHRef = useRef(80);
+  const rafRef = useRef<number | null>(null);
+  const boundariesRef = useRef<Boundary[]>([]);
+
   const [open, setOpen] = useState(false);
   const [elevated, setElevated] = useState(false);
+  const [onDark, setOnDark] = useState(false);
+
+  const measureNav = () => {
+    const h = headerRef.current?.getBoundingClientRect().height ?? 80;
+    navHRef.current = Math.max(1, Math.round(h));
+  };
+
+  const absTop = (el: Element) =>
+    (el as HTMLElement).getBoundingClientRect().top + window.scrollY;
+
+  const buildBoundaries = () => {
+    const lightTop = Array.from(
+      document.querySelectorAll(".light-top-sentinel")
+    );
+    const darkTop = Array.from(document.querySelectorAll(".dark-top-sentinel"));
+
+    const b: Boundary[] = [];
+    lightTop.forEach((el) => b.push({ y: absTop(el), dark: false }));
+    darkTop.forEach((el) => b.push({ y: absTop(el), dark: true }));
+    b.sort((a, z) => a.y - z.y);
+
+    boundariesRef.current = b;
+  };
+
+  const decideTheme = () => {
+    const refLine = window.scrollY + navHRef.current;
+    const b = boundariesRef.current;
+
+    let dark = false; // default light
+
+    for (let i = 0; i < b.length; i++) {
+      if (b[i].y <= refLine) dark = b[i].dark;
+      else break;
+    }
+    setOnDark(dark);
+  };
+
+  const onScroll = () => {
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    rafRef.current = requestAnimationFrame(() => {
+      setElevated(window.scrollY > 8);
+      decideTheme();
+    });
+  };
+
+  useLayoutEffect(() => {
+    measureNav();
+    buildBoundaries();
+    decideTheme();
+  }, []);
 
   useEffect(() => {
-    const onScroll = () => setElevated(window.scrollY > 8);
-    onScroll();
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
+    const handleResize = () => {
+      measureNav();
+      buildBoundaries();
+      decideTheme();
+    };
+
+    const id = setTimeout(handleResize, 0);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", handleResize);
+
+    const mo = new MutationObserver(() => {
+      buildBoundaries();
+      decideTheme();
+    });
+    mo.observe(document.body, { childList: true, subtree: true });
+
+    return () => {
+      clearTimeout(id);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", handleResize);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      mo.disconnect();
+    };
   }, []);
 
   useEffect(() => setOpen(false), [pathname]);
 
   return (
     <header
+      ref={headerRef}
       className={[
-        "fixed w-full top-0 z-50",
-        elevated
-          ? "shadow-sm backdrop-blur supports-[backdrop-filter]:bg-white/60"
+        "fixed top-0 z-50 w-full transition-colors duration-300",
+        elevated && !onDark
+          ? "supports-[backdrop-filter]:backdrop-blur-md"
           : "",
+        onDark ? "bg-black text-white" : "bg-transparent text-black",
       ].join(" ")}
     >
-      <nav className="px-10 flex items-center justify-between h-[80px]">
+      <nav className="px-10 flex h-[80px] items-center justify-between">
         <Link href="/" className="text-base font-bold tracking-tight">
           <Image
             src="/images/branding.png"
             alt="Logo"
             width={108}
             height={54}
-          />
+            priority
+          />{" "}
         </Link>
+
         <div className="flex items-baseline gap-6 font-medium">
           <ul className="hidden items-center gap-6 md:flex">
             {links.map(({ href, label }) => {
@@ -51,7 +133,11 @@ export default function Navbar() {
                 <li key={href}>
                   <Link
                     href={href}
-                    className="text-lg px-2 text-zinc-600 font-medium transition-colors hover:text-zinc-900 cursor-pointer"
+                    className={`px-2 text-lg font-medium transition-colors ${
+                      onDark
+                        ? "text-white/90 hover:text-white"
+                        : "text-zinc-600 hover:text-zinc-900"
+                    }`}
                     style={{ textDecoration: selected ? "underline" : "none" }}
                   >
                     {label}
@@ -60,20 +146,29 @@ export default function Navbar() {
               );
             })}
           </ul>
-          <ul className="hidden px-2 list-none gap-3 text-lg md:flex">
-            <li>EN</li>
-            <li>ES</li>
-          </ul>
+
+          {/* <ul className="hidden list-none gap-3 px-2 text-lg md:flex">
+            <li className={onDark ? "text-white/90" : "text-zinc-600"}>EN</li>
+            <li className={onDark ? "text-white/90" : "text-zinc-600"}>ES</li>
+          </ul> */}
+
           <Link
             href="/#contact"
-            className="bg-black px-4 py-2 text-lg text-white transition"
+            className={`px-4 py-2 text-lg transition flex gap-2 items-center ${
+              onDark ? "bg-white text-black" : "bg-black text-white"
+            }`}
           >
-            hello Jesus
+            <IconMail />
+            hello @jesus
           </Link>
         </div>
 
         <button
-          className="rounded p-2 text-zinc-700 hover:bg-zinc-100 md:hidden"
+          className={`rounded p-2 md:hidden transition ${
+            onDark
+              ? "text-white hover:bg-white/10"
+              : "text-zinc-700 hover:bg-zinc-100"
+          }`}
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-label="Toggle menu"
@@ -101,7 +196,9 @@ export default function Navbar() {
             <li key={href}>
               <Link
                 href={href}
-                className="block rounded px-2 py-2 text-sm hover:bg-zinc-100"
+                className={`block rounded px-2 py-2 text-sm transition ${
+                  onDark ? "text-white hover:bg-white/10" : "hover:bg-zinc-100"
+                }`}
               >
                 {label}
               </Link>
@@ -110,7 +207,9 @@ export default function Navbar() {
           <li>
             <Link
               href="/#contact"
-              className="block bg-black px-2 py-2 text-center text-base text-white"
+              className={`block px-2 py-2 text-center text-base transition ${
+                onDark ? "bg-white text-black" : "bg-black text-white"
+              }`}
             >
               Work Together
             </Link>

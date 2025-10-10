@@ -36,10 +36,10 @@ export default function ProjectCard({ project }: { project: Project }) {
 
   return (
     <article
-      className="p-card will-change-transform flex flex-col overflow-hidden h-[520px] bg-white transition"
+      className="p-card will-change-transform flex flex-col overflow-hidden h-[540px] bg-white transition shadow-[0px_0px_50px_rgba(0,0,0,0.1)] hover:shadow-[0px_10px_50px_rgba(0,0,0,0.2)] hover:-translate-y-1 cursor-pointer"
       data-id={p.id}
     >
-      <div className="relative h-[250px] w-full bg-zinc-100 overflow-hidden">
+      <div className="relative min-h-[250px] max-h-[250px] w-full bg-zinc-100 overflow-hidden">
         <Image
           src={p.cover}
           alt={`${p.title} cover`}

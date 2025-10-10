@@ -13,9 +13,9 @@
   :root {
     --background: linear-gradient(
       to bottom,
-      #e3e3e3 0%,
-      #dadce0 40%,
-      #e1dad3 100%
+      #f0efe7 0%,
+      #eaecef 40%,
+      #e1deda 100%
     );
     --foreground: #3d3d3d;
     --muted: #111214;
