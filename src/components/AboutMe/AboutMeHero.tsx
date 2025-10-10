@@ -9,47 +9,46 @@ import gsap from "gsap";
 
 const AboutMeHero = () => {
   const rootRef = useRef<HTMLDivElement>(null);
+  const nameRef = useRef<HTMLParagraphElement>(null);
+  const titleRef = useRef<HTMLParagraphElement>(null);
+  const ctaRef = useRef<HTMLDivElement>(null);
+  const skillsRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
     const root = rootRef.current;
     if (!root) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const prefersReduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
     const ctx = gsap.context(() => {
-      const name = root.querySelector(".hero-name") as HTMLElement;
-      const title = root.querySelector(".hero-title") as HTMLElement;
-      const cta = root.querySelector(".hero-cta") as HTMLElement;
-      const skills = root.querySelector(".hero-skills") as HTMLElement;
+      const items = [nameRef.current, titleRef.current, ctaRef.current].filter(
+        Boolean
+      ) as Element[];
 
-      // estado inicial
-      gsap.set(name, { opacity: 0, y: 100, scale: 4, color: "black" });
-      gsap.set(title, { opacity: 0, y: 200 });
-      gsap.set(cta, { opacity: 0, y: 50, scale: 0.8 });
-      gsap.set(skills, { opacity: 0, y: 40 }); // skills oculto
+      if (prefersReduced) {
+        gsap.set([...items, skillsRef.current!], { clearProps: "all" });
+        return;
+      }
 
-      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+      const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
 
-      // 1) animación del nombre
-      tl.to(name, { opacity: 1, y: 0, duration: 0.3 })
-        .to(name, { scale: 1, duration: 0.3, ease: "power2.inOut" }, "-=0.4")
-        .to(
-          name,
-          { color: "oklch(70.5% 0.213 47.604)", duration: 0.3 },
-          "-=0.3"
-        )
+      tl.from(items, {
+        y: 24,
+        autoAlpha: 0,
+        duration: 0.6,
+        stagger: 0.12,
+      }).from(
+        skillsRef.current!,
+        { y: 40, autoAlpha: 0, duration: 0.5 },
+        "+=0.2"
+      );
 
-        // 2) aparece el título
-        .to(title, { opacity: 1, y: 0, duration: 0.3 }, "+=0.3")
-
-        // 3) aparece el CTA
-        .to(cta, { opacity: 1, y: 0, scale: 1, duration: 0.3 }, "+=0.3")
-
-        // 4) aparece SkillsCarousel al final
-        .to(skills, { opacity: 1, y: 0, duration: 0.5 }, "+=0.5");
+      return () => tl.kill();
     }, root);
 
-    return () => {
-      ctx.revert();
-    };
+    return () => ctx.revert();
   }, []);
 
   return (
@@ -61,20 +60,28 @@ const AboutMeHero = () => {
 
         <div
           ref={rootRef}
-          className="flex flex-col items-center justify-center gap-6"
+          className="flex flex-col items-center justify-center gap-6 w-full"
         >
-          <div className="flex flex-col items-center justify-center gap-2">
-            <p className="hero-name select-none text-[24px] leading-none block text-center">
-              Jesús Hernández
+          <div className="flex flex-col items-center justify-center gap-2 w-full">
+            <p
+              ref={nameRef}
+              className="select-none text-[24px] tracking-wide leading-none font-normal block uppercase text-center text-orange-600"
+            >
+              Jesus Hernandez
             </p>
-            <p className="hero-title text-[80px] font-black leading-none text-center text-black max-w-4xl">
+            <p
+              ref={titleRef}
+              className="text-[90px] font-black tracking-tight leading-none text-center text-black max-w-4xl"
+            >
               The Creative Mind Behind the Code
             </p>
           </div>
-          <div className="hero-cta">
+
+          <div ref={ctaRef}>
             <ButtonOutlined>Lets start a project together</ButtonOutlined>
           </div>
-          <div className="hero-skills absolute bottom-0 w-full">
+
+          <div ref={skillsRef} className="absolute bottom-0 w-full">
             <SkillsCarousel />
           </div>
         </div>

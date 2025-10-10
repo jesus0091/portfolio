@@ -1,5 +1,7 @@
 "use client";
 
+import Contact from "../Contact";
+import Footer from "../Footer";
 import { Fragment } from "react";
 import GalleryProjects from "./GalleryProjects";
 import HeroProjects from "./HeroProjects";
@@ -11,6 +13,7 @@ export default function Projects() {
       <HeroProjects />
       <GalleryProjects />
       <LatestsProjects />
+      <Footer />
     </Fragment>
   );
 }
