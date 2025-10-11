@@ -157,7 +157,7 @@ export default function Footer({
               opacity: 0.25,
               clipPath: "inset(0% 0% 0% 0% round 12px)",
               background:
-                "radial-gradient(120% 120% at 50% 50%, rgba(255,255,255,0.18), rgba(255,255,255,0) 55%)",
+                "radial-gradient(120% 120% at 50% 50%, rgba(232, 232, 232, 0.18), rgba(255,255,255,0) 55%)",
               duration: 0.6,
               ease: "power2.out",
               delay: 0.15 + i * 0.05,
@@ -207,10 +207,10 @@ export default function Footer({
 
       {/* CTA */}
       <div className="mx-auto max-w-6xl px-4 sm:px-6 flex flex-col justify-center flex-1 z-10">
-        <div className="py-14 flex flex-col items-center gap-4 text-center">
+        <div className="py-20 flex flex-col items-center gap-4 text-center">
           <p
             data-cta-label
-            className="text-sm tracking-wide uppercase text-orange-500"
+            className="text-xl tracking-wide uppercase text-orange-500"
           >
             From Concept to Code
           </p>

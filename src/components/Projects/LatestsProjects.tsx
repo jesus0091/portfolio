@@ -1,13 +1,16 @@
 "use client";
 
-import { IconBrandBehance, IconBrandGithub } from "@tabler/icons-react";
+import {
+  IconBrandBehance,
+  IconBrandGithub,
+  IconFilter,
+  IconSearch,
+  IconX,
+} from "@tabler/icons-react";
+import React, { useMemo, useState } from "react";
 
 import ProjectCard from "./ProjectCard";
-import React from "react";
 
-/* =========================
-   Tipos
-   ========================= */
 type Mode = "solo" | "collab";
 type Category = "frontend" | "design";
 
@@ -30,9 +33,6 @@ export type Project = {
   links?: LinkOut[];
 };
 
-/* =========================
-   Data
-   ========================= */
 const PROJECTS: Project[] = [
   {
     id: "mtc-fe",
@@ -79,7 +79,7 @@ const PROJECTS: Project[] = [
     productName: "IACON",
     role: "UX/UI Designer",
     summary:
-      "Redesign of IACON’s corporate landing page in Figma, along with new visual assets and branding elements to strengthen the company’s digital identity.",
+      "Redesign of IACON's corporate landing page in Figma, along with new visual assets and branding elements to strengthen the company’s digital identity.",
     stack: ["Figma", "Figma Design", "FigJam", "Design System", "Branding"],
     cover: "/images/iacon.png",
     category: "design",
@@ -142,7 +142,88 @@ const PROJECTS: Project[] = [
   },
 ];
 
+/* --------------------------- UI primitives --------------------------- */
+
+type ChipProps<T extends string> = {
+  value: T | "all";
+  current: T | "all";
+  onChange: (v: T | "all") => void;
+  label: string;
+  payload: T | "all";
+  count?: number;
+};
+function FilterChip<T extends string>({
+  value,
+  current,
+  onChange,
+  label,
+  payload,
+  count,
+}: ChipProps<T>) {
+  const active = current === payload;
+  return (
+    <button
+      type="button"
+      aria-pressed={active}
+      onClick={() => onChange(payload)}
+      className={[
+        "inline-flex cursor-pointer items-center gap-2 px-4 py-2 text-base font-medium transition",
+        active
+          ? "border-black bg-black text-white"
+          : "border-neutral-300 bg-white text-neutral-800 hover:border-neutral-800",
+      ].join(" ")}
+    >
+      <span>{label}</span>
+    </button>
+  );
+}
+
+/* --------------------------- Page --------------------------- */
+
 export default function LatestProjects() {
+  // Filters
+  const [category, setCategory] = useState<Category | "all">("all");
+  const [mode, setMode] = useState<Mode | "all">("all");
+  const [query, setQuery] = useState("");
+
+  const hasActiveFilters =
+    category !== "all" || mode !== "all" || query.trim() !== "";
+
+  // Precompute counts to mostrar en chips
+  const counts = useMemo(() => {
+    const byCategory = PROJECTS.reduce(
+      (acc, p) => {
+        acc[p.category]++; // 'frontend' | 'design'
+        return acc;
+      },
+      { frontend: 0, design: 0 } as Record<Category, number>
+    );
+    const byMode = PROJECTS.reduce(
+      (acc, p) => {
+        acc[p.mode]++; // 'solo' | 'collab'
+        return acc;
+      },
+      { solo: 0, collab: 0 } as Record<Mode, number>
+    );
+    return { byCategory, byMode, total: PROJECTS.length };
+  }, []);
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return PROJECTS.filter((p) => {
+      const passCategory = category === "all" ? true : p.category === category;
+      const passMode = mode === "all" ? true : p.mode === mode;
+      const passQuery =
+        q === ""
+          ? true
+          : [p.title, p.productName, p.role, p.summary, ...p.stack]
+              .join(" ")
+              .toLowerCase()
+              .includes(q);
+      return passCategory && passMode && passQuery;
+    });
+  }, [category, mode, query]);
+
   return (
     <section id="projects" className="relative py-50 scrollbar-hide">
       <div className=" light-top-sentinel h-10 w-full absolute top-0" />
@@ -150,9 +231,9 @@ export default function LatestProjects() {
         className="absolute inset-0 -z-10"
         style={{
           backgroundImage: `
-        linear-gradient(to right, rgba(65, 34, 0, 0.09) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(65, 34, 0, 0.09) 1px, transparent 1px)
-      `,
+            linear-gradient(to right, rgba(65, 34, 0, 0.09) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(65, 34, 0, 0.09) 1px, transparent 1px)
+          `,
           backgroundSize: "100px 100px",
           backgroundPosition: "center",
           WebkitMaskImage:
@@ -166,21 +247,89 @@ export default function LatestProjects() {
         }}
       />
 
-      <div className="mx-auto max-w-6xl">
-        <header className="projects-header mb-6 flex items-end justify-between">
+      <div className="mx-auto max-w-6xl flex flex-col gap-6">
+        {/* Header */}
+        <header className="projects-header mb-6 flex flex-col gap-2">
           <div className="projects-header-pin flex items-center gap-2">
-            <h2 className="text-6xl text-black font-black tracking-tight">
+            <h2 className="text-7xl text-black font-black tracking-tight">
               Latest Projects
             </h2>
           </div>
+          <p className="text-2xl max-w-lg text-gray-700">
+            Highlights of collaborative and solo projects that shaped my
+            expertise.
+          </p>
         </header>
 
+        <div className="flex justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex flex-wrap gap-2">
+              <FilterChip<Category>
+                value={category}
+                current={category}
+                onChange={setCategory}
+                label={`All (${counts.total})`}
+                payload="all"
+              />
+              <FilterChip<Category>
+                value={category}
+                current={category}
+                onChange={setCategory}
+                label={`Frontend`}
+                payload="frontend"
+                count={counts.byCategory.frontend}
+              />
+              <FilterChip<Category>
+                value={category}
+                current={category}
+                onChange={setCategory}
+                label={`Design`}
+                payload="design"
+                count={counts.byCategory.design}
+              />
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="text-base font-medium text-neutral-500">Mode</span>
+            <div className="flex flex-wrap gap-2">
+              <FilterChip<Mode>
+                value={mode}
+                current={mode}
+                onChange={setMode}
+                label="All"
+                payload="all"
+              />
+              <FilterChip<Mode>
+                value={mode}
+                current={mode}
+                onChange={setMode}
+                label={`Collaborative`}
+                payload="collab"
+                count={counts.byMode.collab}
+              />
+              <FilterChip<Mode>
+                value={mode}
+                current={mode}
+                onChange={setMode}
+                label={`Solo `}
+                payload="solo"
+                count={counts.byMode.solo}
+              />
+            </div>
+          </div>
+        </div>
+
         <div className="projects-grid grid gap-6 lg:grid-cols-2">
-          {PROJECTS.map((p) => (
-            <ProjectCard key={p.id} project={p} />
-          ))}
+          {filtered.length > 0 ? (
+            filtered.map((p) => <ProjectCard key={p.id} project={p} />)
+          ) : (
+            <div className="col-span-full rounded-2xl border border-dashed p-10 text-center text-neutral-600">
+              No projects match your filters. Try adjusting the search or chips.
+            </div>
+          )}
         </div>
       </div>
+
       <div className="light-bottom-sentinel h-10 w-full absolute bottom-0" />
     </section>
   );

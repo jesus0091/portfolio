@@ -1,7 +1,13 @@
 "use client";
 
+import {
+  IconBrandBehance,
+  IconBrandGithub,
+  IconBrandLinkedin,
+} from "@tabler/icons-react";
 import React, { useLayoutEffect, useRef } from "react";
 
+import Link from "next/link";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import gsap from "gsap";
 
@@ -183,7 +189,32 @@ const AboutText: React.FC<AboutTextProps> = ({
           </p>
         </div>
         <div className="col-span-12 md:col-span-6 flex h-full w-full items-center justify-center">
-          <div className="bg-white w-full min-h-[260px] md:min-h-[500px]" />
+          <div className="bg-white flex flex-col w-full min-h-[260px] md:min-h-[500px]">
+            <div className="flex-1"></div>
+            <div className="flex flex-row gap-1 p-4 justify-end">
+              <Link
+                href="https://www.linkedin.com/in/jesushernandez91/"
+                target="_blank"
+                className="flex w-12 h-12 items-center justify-center"
+              >
+                <IconBrandLinkedin />
+              </Link>
+              <Link
+                href="https://github.com/jesus0091"
+                target="_blank"
+                className="flex w-12 h-12 items-center justify-center"
+              >
+                <IconBrandGithub />
+              </Link>
+              <Link
+                href="https://www.behance.net/devjesushernandez"
+                target="_blank"
+                className="flex w-12 h-12 items-center justify-center"
+              >
+                <IconBrandBehance />
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
     </section>
