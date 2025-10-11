@@ -125,6 +125,13 @@ const AboutText: React.FC<AboutTextProps> = ({
       tl.to(overlay, { opacity: 0, duration: fadeDur }, fadeStart);
 
       const wordsStart = introGap + moveDur + wordsGap;
+      const wordsTween = tl.to(
+        wordSpans,
+        reduce
+          ? { opacity: 1, y: 0, duration: 0.001 }
+          : { opacity: 1, y: 0, duration: 0.35, stagger: wordStagger },
+        wordsStart
+      );
 
       tl.to(
         bg,
@@ -143,14 +150,14 @@ const AboutText: React.FC<AboutTextProps> = ({
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-[100vh] flex flex-col items-center justify-center"
+      className="relative min-h-[100dvh] flex flex-col items-center justify-center"
     >
       <div
         ref={bgRef}
-        className="pointer-events-none absolute inset-0 -z-10 bg-center bg-no-repeat"
+        className="pointer-events-none absolute inset-0 h-[100dvh] w-full -z-10 bg-center bg-no-repeat"
         style={{
           backgroundImage: `url(${bgSrc})`,
-          backgroundSize: "contain",
+          backgroundSize: "cover",
         }}
         aria-hidden
       />

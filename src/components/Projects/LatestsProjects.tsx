@@ -135,22 +135,17 @@ const PROJECTS: Project[] = [
     links: [{ type: "behance", href: "#", icon: <IconBrandBehance /> }],
   },
 ];
-
-/* --------------------------- UI primitives --------------------------- */
-
 type ChipProps<T extends string> = {
   current: T | "all";
   onChange: (v: T | "all") => void;
   label: string;
   payload: T | "all";
-  count?: number;
 };
 function FilterChip<T extends string>({
   current,
   onChange,
   label,
   payload,
-  count,
 }: ChipProps<T>) {
   const active = current === payload;
   return (
@@ -159,33 +154,18 @@ function FilterChip<T extends string>({
       aria-pressed={active}
       onClick={() => onChange(payload)}
       className={[
-        "inline-flex cursor-pointer items-center gap-2 px-4 py-2 text-base font-medium transition rounded-full border",
+        "inline-flex cursor-pointer items-center gap-2 px-4 py-2 text-base font-medium transition",
         active
           ? "border-black bg-black text-white"
           : "border-neutral-300 bg-white text-neutral-800 hover:border-neutral-800",
       ].join(" ")}
     >
       <span>{label}</span>
-      {typeof count === "number" && (
-        <span
-          className={[
-            "inline-flex h-6 min-w-6 items-center justify-center rounded-full px-2 text-sm",
-            active
-              ? "bg-white/15 text-white"
-              : "bg-neutral-100 text-neutral-700",
-          ].join(" ")}
-        >
-          {count}
-        </span>
-      )}
     </button>
   );
 }
 
-/* --------------------------- Page --------------------------- */
-
 export default function LatestProjects() {
-  // Filters
   const [category, setCategory] = useState<Category | "all">("all");
   const [mode, setMode] = useState<Mode | "all">("all");
   const [query, setQuery] = useState("");
@@ -228,14 +208,8 @@ export default function LatestProjects() {
     });
   }, [category, mode, query]);
 
-  const clearAll = () => {
-    setCategory("all");
-    setMode("all");
-    setQuery("");
-  };
-
   return (
-    <section id="projects" className="relative py-50 scrollbar-hide">
+    <section id="projects" className="relative py-50 scrollbar-hide px-4">
       <div className="light-top-sentinel h-10 w-full absolute top-0" />
       <div
         className="absolute inset-0 -z-10"
@@ -258,22 +232,18 @@ export default function LatestProjects() {
       />
 
       <div className="mx-auto max-w-6xl flex flex-col gap-6">
-        {/* Header */}
         <header className="projects-header mb-6 flex flex-col gap-2">
           <div className="projects-header-pin flex items-center gap-2">
-            <h2 className="text-7xl text-black font-black tracking-tight">
+            <h2 className="text-4xl md:text-7xl text-black font-black tracking-tight">
               Latest Projects
             </h2>
           </div>
-          <p className="text-2xl max-w-lg text-gray-700">
+          <p className="text-lg leading md:text-2xl max-w-lg text-gray-700">
             Highlights of collaborative and solo projects that shaped my
             expertise.
           </p>
         </header>
-
-        {/* Controls */}
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          {/* Chips left */}
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:gap-6">
             <div className="flex flex-wrap gap-2">
               <FilterChip<Category>
@@ -281,21 +251,18 @@ export default function LatestProjects() {
                 onChange={setCategory}
                 label={`All`}
                 payload="all"
-                count={counts.total}
               />
               <FilterChip<Category>
                 current={category}
                 onChange={setCategory}
                 label={`Frontend`}
                 payload="frontend"
-                count={counts.byCategory.frontend}
               />
               <FilterChip<Category>
                 current={category}
                 onChange={setCategory}
                 label={`Design`}
                 payload="design"
-                count={counts.byCategory.design}
               />
             </div>
 
@@ -311,50 +278,21 @@ export default function LatestProjects() {
                 onChange={setMode}
                 label={`Collaborative`}
                 payload="collab"
-                count={counts.byMode.collab}
               />
               <FilterChip<Mode>
                 current={mode}
                 onChange={setMode}
                 label={`Solo`}
                 payload="solo"
-                count={counts.byMode.solo}
               />
             </div>
           </div>
-
-          {/* Search + clear */}
-          <div className="flex items-center gap-2">
-            <input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search by title, stack, summary…"
-              className="w-64 rounded-full border border-neutral-300 bg-white px-4 py-2 text-base outline-none transition placeholder:text-neutral-400 focus:border-black"
-            />
-            {hasActiveFilters && (
-              <button
-                type="button"
-                onClick={clearAll}
-                className="rounded-full border border-neutral-300 px-3 py-2 text-sm text-neutral-700 hover:border-black transition"
-                aria-label="Clear filters"
-              >
-                Clear
-              </button>
-            )}
-          </div>
         </div>
-
-        {/* Result count */}
-        <div className="text-sm text-neutral-500">
-          {filtered.length} project(s) found
-        </div>
-
-        {/* Grid */}
         <div className="projects-grid grid gap-6 lg:grid-cols-2">
           {filtered.length > 0 ? (
             filtered.map((p) => <ProjectCard key={p.id} project={p} />)
           ) : (
-            <div className="col-span-full rounded-2xl border border-dashed p-10 text-center text-neutral-600">
+            <div className="col-span-full h-[50vh] flex items-center justify-center text-xl border border-dashed p-10 text-center text-neutral-600">
               No projects match your filters. Try adjusting the search or chips.
             </div>
           )}

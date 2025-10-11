@@ -55,7 +55,6 @@ const Quote: React.FC = () => {
       });
       gsap.set(cleanPanelRef.current, { xPercent: -110 });
 
-      // ⬇️ SIN 'any'
       if (greatRef.current) {
         greatRef.current.style.color = "#000000";
       }
@@ -138,13 +137,13 @@ const Quote: React.FC = () => {
         <div className="relative">
           <p
             ref={p1Ref}
-            className="text-5xl md:text-7xl font-medium tracking-tight"
+            className="text-3xl md:text-7xl font-medium tracking-tight"
           >
             You need a website.
           </p>
           <div
             ref={strikeRef}
-            className="absolute left-1/2 top-[60%] h-[10px] w-[110%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-orange-500"
+            className="absolute left-1/2 top-[60%] h-[3px] md:h-[10px] w-[110%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-orange-500"
           />
         </div>
       </div>
@@ -154,7 +153,7 @@ const Quote: React.FC = () => {
         ref={o2Ref}
         className="absolute inset-0 flex items-center justify-center px-4 text-center"
       >
-        <p ref={p2Ref} className="text-5xl md:text-7xl">
+        <p ref={p2Ref} className="text-3xl md:text-7xl">
           You need a{" "}
           <span ref={greatRef} className="font-black text-black">
             great
@@ -175,7 +174,7 @@ const Quote: React.FC = () => {
         />
         <p
           ref={p3Ref}
-          className="relative z-50 text-5xl md:text-7xl font-black tracking-tight text-orange-600 leading-none"
+          className="relative z-50 text-3xl md:text-7xl font-black tracking-tight text-orange-600 leading-none"
         >
           Great products happen <br /> when design meets code.
         </p>

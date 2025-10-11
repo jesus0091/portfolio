@@ -293,7 +293,7 @@ export default function Footer({
                       target="_blank"
                       rel="noreferrer"
                       aria-label={s.label}
-                      className="inline-flex items-center gap-2 rounded-lg border border-white/15 px-3 py-2 text-sm text-gray-200 hover:bg-white/10 transition"
+                      className="inline-flex items-center gap-2 border border-white/15 px-3 py-2 text-sm text-gray-200 hover:bg-white/10 transition"
                     >
                       <span className="[&>svg]:h-5 [&>svg]:w-5">{s.icon}</span>
                       <span>{s.label}</span>
@@ -309,10 +309,10 @@ export default function Footer({
           data-footer-col
           className="flex flex-col max-w-6xl mx-auto sm:flex-row items-center justify-between gap-3 border-t border-white/10 pt-4"
         >
-          <p className="text-base text-gray-400">
+          <p className="text-base text-gray-500">
             © {year} Jesús Hernández. All rights reserved.
           </p>
-          <p className="text-base text-gray-300">
+          <p className="text-base text-gray-500">
             Built with: ReactJS · Next.JS · TypeScript · TailwindCSS
           </p>
         </div>
