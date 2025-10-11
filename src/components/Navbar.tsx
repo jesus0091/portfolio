@@ -110,7 +110,6 @@ export default function Navbar() {
     };
   }, [onScroll, measureNav, buildBoundaries, decideTheme]);
 
-  // Cerrar menú mobile al cambiar de ruta
   useEffect(() => setOpen(false), [pathname]);
 
   return (
@@ -124,7 +123,7 @@ export default function Navbar() {
         onDark ? "bg-black text-white" : "bg-transparent text-black",
       ].join(" ")}
     >
-      <nav className="grid grid-cols-3 h-[80px] max-w-6xl px-6 mx-auto">
+      <nav className="grid grid-cols-2 md:grid-cols-3 h-[80px] px-6 mx-auto">
         <div className="flex items-center justify-start">
           <Link href="/" className="text-base font-bold tracking-tight">
             <Image
@@ -165,7 +164,7 @@ export default function Navbar() {
           })}
         </ul>
 
-        <div className="flex justify-end items-center gap-6 font-medium">
+        <div className="hidden md:flex justify-end items-center gap-6 font-medium">
           <Link
             href="/#contact"
             className={`px-4 py-2 text-lg transition flex gap-2 items-center ${
@@ -175,7 +174,8 @@ export default function Navbar() {
             <IconMail />
             hello @jesus
           </Link>
-
+        </div>
+        <div className="flex md:hidden justify-end items-center">
           <button
             className={`rounded p-2 md:hidden transition ${
               onDark
@@ -204,13 +204,13 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {open && (
-        <ul className="container grid gap-2 border-t py-3 md:hidden">
+      {open ? (
+        <ul className="container px-6 items-center text-xl gap-3 flex flex-col justify-center py-3 md:hidden h-[calc(100vh-80px)] bg-[#ffffff20] backdrop-blur-lg">
           {links.map(({ href, label }) => (
             <li key={href}>
               <Link
                 href={href}
-                className={`block rounded px-2 py-2 text-sm transition ${
+                className={`block rounded px-6 py-4 transition ${
                   onDark ? "text-white hover:bg-white/10" : "hover:bg-zinc-100"
                 }`}
               >
@@ -221,15 +221,15 @@ export default function Navbar() {
           <li>
             <Link
               href="/#contact"
-              className={`block px-2 py-2 text-center text-base transition ${
+              className={`block px-6 py-4 text-center transition ${
                 onDark ? "bg-white text-black" : "bg-black text-white"
               }`}
             >
-              Work Together
+              hello @jesus
             </Link>
           </li>
         </ul>
-      )}
+      ): null}
     </header>
   );
 }
