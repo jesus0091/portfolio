@@ -29,7 +29,9 @@ export default function HomePage() {
       <Cursor active={cursorActive} />
       <section className="text-black pt-[20vh] pb-10 px-10 h-[100dvh] w-full flex flex-col justify-between items-center">
         <div className="flex flex-col items-center text-center w-full gap-2">
-          <p className="text-2xl font-medium">👋, My name is Jesús Hernández</p>
+          <p className="text-2xl tracking-wide uppercase text-orange-600">
+            👋, My name is Jesús Hernández
+          </p>
 
           <StyledTitle
             onMouseEnter={() => setCursorActive(true)}
