@@ -12,17 +12,6 @@ const orbit = keyframes`
   100% { transform: rotate(1080deg) scale(0); opacity: 0; }
 `;
 
-const shrinkFade = keyframes`
-  0% { transform: scale(1); opacity: 1; }
-  100% { transform: scale(0.3); opacity: 0; }
-`;
-
-const fusion = keyframes`
-  0% { transform: scale(0); opacity: 0; }
-  30% { transform: scale(1); opacity: 1; }
-  100% { transform: scale(1.33); opacity: 0; }
-`;
-
 const fadeIn = keyframes`
   0% { opacity: 0; transform: scale(0.98); }
   100% { opacity: 1; transform: scale(1); }
@@ -62,18 +51,6 @@ const Circle = styled.div<{ $color: string; $position: "left" | "right" }>`
   transform: translateY(-50%);
   filter: blur(100px);
   will-change: transform, filter;
-  /* animation: ${shrinkFade} ${orbitDuration}ms ease-in forwards; */
-`;
-
-const FusionCircle = styled.div`
-  position: absolute;
-  width: 300px;
-  height: 300px;
-  background-color: yellow;
-  border-radius: 50%;
-  filter: blur(60px);
-  animation: ${fusion} 2500ms ease-in-out forwards;
-  animation-delay: ${orbitDuration - 2000}ms; /* aparece al final */
 `;
 
 const GlowStage = styled.div`

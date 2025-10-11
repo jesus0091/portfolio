@@ -25,13 +25,16 @@ const Quote: React.FC = () => {
   useLayoutEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
+
+    // Reduced motion
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       gsap.set([o1Ref.current, o2Ref.current], { opacity: 0 });
       gsap.set(o3Ref.current, { opacity: 1 });
       gsap.set([p3Ref.current], { opacity: 1 });
       gsap.set([strikeRef.current, cleanPanelRef.current], { opacity: 0 });
       if (greatRef.current) {
-        gsap.set(greatRef.current, { color: "#fd6a00" } as any);
+        // ⬇️ SIN 'any'
+        greatRef.current.style.color = "#fd6a00";
       }
       return;
     }
@@ -40,16 +43,23 @@ const Quote: React.FC = () => {
       gsap.set(o1Ref.current, { opacity: 1, zIndex: 10 });
       gsap.set(o2Ref.current, { opacity: 0, zIndex: 20 });
       gsap.set(o3Ref.current, { opacity: 0, zIndex: 30 });
+
       gsap.set(p1Ref.current, { opacity: 0, y: 30 });
       gsap.set(p2Ref.current, { opacity: 0, y: 100 });
       gsap.set(p3Ref.current, { opacity: 0, y: 30, scale: 0.98 });
+
       gsap.set(strikeRef.current, {
         scaleX: 0,
         autoAlpha: 0,
         transformOrigin: "left center",
       });
       gsap.set(cleanPanelRef.current, { xPercent: -110 });
-      gsap.set(greatRef.current, { color: "#000000" } as any);
+
+      // ⬇️ SIN 'any'
+      if (greatRef.current) {
+        greatRef.current.style.color = "#000000";
+      }
+
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
@@ -61,6 +71,7 @@ const Quote: React.FC = () => {
         },
         defaults: { ease: "power2.out" },
       });
+
       tl.addLabel("o1Enter")
         .to(p1Ref.current, { opacity: 1, y: 0, duration: 0.4 }, "o1Enter")
         .addLabel("strikeStart", `o1Enter+=${STRIKE_DELAY}`)
@@ -70,6 +81,7 @@ const Quote: React.FC = () => {
           { scaleX: 1, duration: STRIKE_DRAW_DURATION },
           "strikeStart"
         );
+
       tl.addLabel("o2Enter")
         .to(o1Ref.current, { opacity: 0, duration: 0.4 }, "o2Enter")
         .to(o2Ref.current, { opacity: 1, duration: 0.45 }, "<+0.05")
@@ -79,11 +91,13 @@ const Quote: React.FC = () => {
           "<"
         )
         .set(strikeRef.current, { autoAlpha: 0 });
+
       tl.addLabel("greatStart", ">+0.1").to(
         greatRef.current,
         { color: "#ff6a00", duration: 0.8, ease: "power2.inOut" },
         "greatStart"
       );
+
       tl.addLabel("wipe", "greatStart+=1.7")
         .to(o3Ref.current, { opacity: 1, duration: 0.25 }, "wipe")
         .to(
@@ -110,11 +124,13 @@ const Quote: React.FC = () => {
           "wipe+=0.25"
         );
     }, section);
+
     return () => ctx.revert();
   }, []);
 
   return (
     <section ref={sectionRef} className="relative h-[100vh] overflow-hidden">
+      {/* Overlay 1 */}
       <div
         ref={o1Ref}
         className="absolute inset-0 flex items-center justify-center px-4 text-center"
@@ -132,6 +148,8 @@ const Quote: React.FC = () => {
           />
         </div>
       </div>
+
+      {/* Overlay 2 */}
       <div
         ref={o2Ref}
         className="absolute inset-0 flex items-center justify-center px-4 text-center"
@@ -144,6 +162,8 @@ const Quote: React.FC = () => {
           website.
         </p>
       </div>
+
+      {/* Overlay 3 */}
       <div
         ref={o3Ref}
         className="absolute inset-0 flex items-center justify-center px-4 text-center"
