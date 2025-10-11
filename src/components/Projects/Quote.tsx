@@ -128,8 +128,10 @@ const Quote: React.FC = () => {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative h-[100vh] overflow-hidden">
-      {/* Overlay 1 */}
+    <section
+      ref={sectionRef}
+      className="relative h-[100dvh] overflow-hidden w-full"
+    >
       <div
         ref={o1Ref}
         className="absolute inset-0 flex items-center justify-center px-4 text-center"
