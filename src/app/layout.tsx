@@ -22,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} font-sans scrollbar-hide`}>
-      <body className="min-h-dvh antialiased bg-background text-foreground scrollbar-hide w-full">
+      <body className="antialiased bg-background text-foreground w-full">
         <Navbar />
         {children}
       </body>
