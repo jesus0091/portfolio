@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  IconBrandBehance,
-  IconBrandGithub,
-  IconFilter,
-  IconSearch,
-  IconX,
-} from "@tabler/icons-react";
+import { IconBrandBehance, IconBrandGithub } from "@tabler/icons-react";
 import React, { useMemo, useState } from "react";
 
 import ProjectCard from "./ProjectCard";
@@ -145,7 +139,6 @@ const PROJECTS: Project[] = [
 /* --------------------------- UI primitives --------------------------- */
 
 type ChipProps<T extends string> = {
-  value: T | "all";
   current: T | "all";
   onChange: (v: T | "all") => void;
   label: string;
@@ -153,7 +146,6 @@ type ChipProps<T extends string> = {
   count?: number;
 };
 function FilterChip<T extends string>({
-  value,
   current,
   onChange,
   label,
@@ -167,13 +159,25 @@ function FilterChip<T extends string>({
       aria-pressed={active}
       onClick={() => onChange(payload)}
       className={[
-        "inline-flex cursor-pointer items-center gap-2 px-4 py-2 text-base font-medium transition",
+        "inline-flex cursor-pointer items-center gap-2 px-4 py-2 text-base font-medium transition rounded-full border",
         active
           ? "border-black bg-black text-white"
           : "border-neutral-300 bg-white text-neutral-800 hover:border-neutral-800",
       ].join(" ")}
     >
       <span>{label}</span>
+      {typeof count === "number" && (
+        <span
+          className={[
+            "inline-flex h-6 min-w-6 items-center justify-center rounded-full px-2 text-sm",
+            active
+              ? "bg-white/15 text-white"
+              : "bg-neutral-100 text-neutral-700",
+          ].join(" ")}
+        >
+          {count}
+        </span>
+      )}
     </button>
   );
 }
@@ -189,18 +193,18 @@ export default function LatestProjects() {
   const hasActiveFilters =
     category !== "all" || mode !== "all" || query.trim() !== "";
 
-  // Precompute counts to mostrar en chips
+  // Precompute counts
   const counts = useMemo(() => {
     const byCategory = PROJECTS.reduce(
       (acc, p) => {
-        acc[p.category]++; // 'frontend' | 'design'
+        acc[p.category]++;
         return acc;
       },
       { frontend: 0, design: 0 } as Record<Category, number>
     );
     const byMode = PROJECTS.reduce(
       (acc, p) => {
-        acc[p.mode]++; // 'solo' | 'collab'
+        acc[p.mode]++;
         return acc;
       },
       { solo: 0, collab: 0 } as Record<Mode, number>
@@ -224,9 +228,15 @@ export default function LatestProjects() {
     });
   }, [category, mode, query]);
 
+  const clearAll = () => {
+    setCategory("all");
+    setMode("all");
+    setQuery("");
+  };
+
   return (
     <section id="projects" className="relative py-50 scrollbar-hide">
-      <div className=" light-top-sentinel h-10 w-full absolute top-0" />
+      <div className="light-top-sentinel h-10 w-full absolute top-0" />
       <div
         className="absolute inset-0 -z-10"
         style={{
@@ -261,18 +271,19 @@ export default function LatestProjects() {
           </p>
         </header>
 
-        <div className="flex justify-between">
-          <div className="flex items-center gap-3">
+        {/* Controls */}
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          {/* Chips left */}
+          <div className="flex flex-col gap-3 md:flex-row md:items-center md:gap-6">
             <div className="flex flex-wrap gap-2">
               <FilterChip<Category>
-                value={category}
                 current={category}
                 onChange={setCategory}
-                label={`All (${counts.total})`}
+                label={`All`}
                 payload="all"
+                count={counts.total}
               />
               <FilterChip<Category>
-                value={category}
                 current={category}
                 onChange={setCategory}
                 label={`Frontend`}
@@ -280,7 +291,6 @@ export default function LatestProjects() {
                 count={counts.byCategory.frontend}
               />
               <FilterChip<Category>
-                value={category}
                 current={category}
                 onChange={setCategory}
                 label={`Design`}
@@ -288,19 +298,15 @@ export default function LatestProjects() {
                 count={counts.byCategory.design}
               />
             </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="text-base font-medium text-neutral-500">Mode</span>
+
             <div className="flex flex-wrap gap-2">
               <FilterChip<Mode>
-                value={mode}
                 current={mode}
                 onChange={setMode}
-                label="All"
+                label="All modes"
                 payload="all"
               />
               <FilterChip<Mode>
-                value={mode}
                 current={mode}
                 onChange={setMode}
                 label={`Collaborative`}
@@ -308,17 +314,42 @@ export default function LatestProjects() {
                 count={counts.byMode.collab}
               />
               <FilterChip<Mode>
-                value={mode}
                 current={mode}
                 onChange={setMode}
-                label={`Solo `}
+                label={`Solo`}
                 payload="solo"
                 count={counts.byMode.solo}
               />
             </div>
           </div>
+
+          {/* Search + clear */}
+          <div className="flex items-center gap-2">
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search by title, stack, summary…"
+              className="w-64 rounded-full border border-neutral-300 bg-white px-4 py-2 text-base outline-none transition placeholder:text-neutral-400 focus:border-black"
+            />
+            {hasActiveFilters && (
+              <button
+                type="button"
+                onClick={clearAll}
+                className="rounded-full border border-neutral-300 px-3 py-2 text-sm text-neutral-700 hover:border-black transition"
+                aria-label="Clear filters"
+              >
+                Clear
+              </button>
+            )}
+          </div>
         </div>
 
+        {/* Result count */}
+        <div className="text-sm text-neutral-500">
+          {filtered.length} project(s) found
+        </div>
+
+        {/* Grid */}
         <div className="projects-grid grid gap-6 lg:grid-cols-2">
           {filtered.length > 0 ? (
             filtered.map((p) => <ProjectCard key={p.id} project={p} />)

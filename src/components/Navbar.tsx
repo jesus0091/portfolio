@@ -1,8 +1,14 @@
 "use client";
 
-import { IconMail, IconMailAi } from "@tabler/icons-react";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 
+import { IconMail } from "@tabler/icons-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -13,6 +19,10 @@ const links = [
   { href: "/about", label: "ABOUT ME" },
   { href: "/projects", label: "PROJECTS" },
 ];
+
+// Util: posición absoluta superior del elemento en el documento
+const absTop = (el: Element) =>
+  (el as HTMLElement).getBoundingClientRect().top + window.scrollY;
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -26,15 +36,12 @@ export default function Navbar() {
   const [elevated, setElevated] = useState(false);
   const [onDark, setOnDark] = useState(false);
 
-  const measureNav = () => {
+  const measureNav = useCallback(() => {
     const h = headerRef.current?.getBoundingClientRect().height ?? 80;
     navHRef.current = Math.max(1, Math.round(h));
-  };
+  }, []);
 
-  const absTop = (el: Element) =>
-    (el as HTMLElement).getBoundingClientRect().top + window.scrollY;
-
-  const buildBoundaries = () => {
+  const buildBoundaries = useCallback(() => {
     const lightTop = Array.from(
       document.querySelectorAll(".light-top-sentinel")
     );
@@ -46,35 +53,36 @@ export default function Navbar() {
     b.sort((a, z) => a.y - z.y);
 
     boundariesRef.current = b;
-  };
+  }, []);
 
-  const decideTheme = () => {
+  const decideTheme = useCallback(() => {
     const refLine = window.scrollY + navHRef.current;
     const b = boundariesRef.current;
 
     let dark = false; // default light
-
     for (let i = 0; i < b.length; i++) {
       if (b[i].y <= refLine) dark = b[i].dark;
       else break;
     }
     setOnDark(dark);
-  };
+  }, []);
 
-  const onScroll = () => {
+  const onScroll = useCallback(() => {
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
     rafRef.current = requestAnimationFrame(() => {
       setElevated(window.scrollY > 8);
       decideTheme();
     });
-  };
+  }, [decideTheme]);
 
+  // Medición y límites iniciales
   useLayoutEffect(() => {
     measureNav();
     buildBoundaries();
     decideTheme();
-  }, []);
+  }, [measureNav, buildBoundaries, decideTheme]);
 
+  // Listeners + observer
   useEffect(() => {
     const handleResize = () => {
       measureNav();
@@ -82,7 +90,9 @@ export default function Navbar() {
       decideTheme();
     };
 
-    const id = setTimeout(handleResize, 0);
+    // Inicial
+    handleResize();
+
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", handleResize);
 
@@ -93,14 +103,14 @@ export default function Navbar() {
     mo.observe(document.body, { childList: true, subtree: true });
 
     return () => {
-      clearTimeout(id);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", handleResize);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       mo.disconnect();
     };
-  }, []);
+  }, [onScroll, measureNav, buildBoundaries, decideTheme]);
 
+  // Cerrar menú mobile al cambiar de ruta
   useEffect(() => setOpen(false), [pathname]);
 
   return (
@@ -114,7 +124,7 @@ export default function Navbar() {
         onDark ? "bg-black text-white" : "bg-transparent text-black",
       ].join(" ")}
     >
-      <nav className="grid grid-cols-3 h-[80px] max-w-6x px-6 mx-auto">
+      <nav className="grid grid-cols-3 h-[80px] max-w-6xl px-6 mx-auto">
         <div className="flex items-center justify-start">
           <Link href="/" className="text-base font-bold tracking-tight">
             <Image
@@ -123,9 +133,10 @@ export default function Navbar() {
               width={108}
               height={54}
               priority
-            />{" "}
+            />
           </Link>
         </div>
+
         <ul className="hidden items-center gap-6 md:flex justify-center">
           {links.map(({ href, label }) => {
             const selected = pathname === href;
@@ -133,8 +144,8 @@ export default function Navbar() {
               <li key={href}>
                 <Link
                   href={href}
-                  className={`px-2 text-lg flex flex-row gap-2 items-center transition-all relative
-                  } ${
+                  aria-current={selected ? "page" : undefined}
+                  className={`px-2 text-lg flex flex-row gap-2 items-center transition-all relative ${
                     selected
                       ? onDark
                         ? "text-orange-500 hover:text-orange-300 font-semibold"
@@ -145,7 +156,7 @@ export default function Navbar() {
                   }`}
                 >
                   {selected ? (
-                    <div className="h-4 w-4 bg-current rounded-4xl" />
+                    <div className="h-4 w-4 bg-current rounded-full" />
                   ) : null}
                   {label}
                 </Link>
@@ -153,6 +164,7 @@ export default function Navbar() {
             );
           })}
         </ul>
+
         <div className="flex justify-end items-center gap-6 font-medium">
           <Link
             href="/#contact"
@@ -163,33 +175,33 @@ export default function Navbar() {
             <IconMail />
             hello @jesus
           </Link>
-        </div>
 
-        <button
-          className={`rounded p-2 md:hidden transition ${
-            onDark
-              ? "text-white hover:bg-white/10"
-              : "text-zinc-700 hover:bg-zinc-100"
-          }`}
-          onClick={() => setOpen((v) => !v)}
-          aria-expanded={open}
-          aria-label="Toggle menu"
-        >
-          <svg
-            width="22"
-            height="22"
-            viewBox="0 0 24 24"
-            fill="none"
-            aria-hidden="true"
+          <button
+            className={`rounded p-2 md:hidden transition ${
+              onDark
+                ? "text-white hover:bg-white/10"
+                : "text-zinc-700 hover:bg-zinc-100"
+            }`}
+            onClick={() => setOpen((v) => !v)}
+            aria-expanded={open}
+            aria-label="Toggle menu"
           >
-            <path
-              d="M4 6h16M4 12h16M4 18h16"
-              stroke="currentColor"
-              strokeWidth="1.8"
-              strokeLinecap="round"
-            />
-          </svg>
-        </button>
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M4 6h16M4 12h16M4 18h16"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+              />
+            </svg>
+          </button>
+        </div>
       </nav>
 
       {open && (
