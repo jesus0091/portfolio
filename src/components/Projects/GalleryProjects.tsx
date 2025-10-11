@@ -7,7 +7,7 @@ import gsap from "gsap";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const AMPLITUDE = 100;
+const AMPLITUDE = 140;
 export default function GalleryProjects() {
   const rootRef = useRef<HTMLDivElement>(null);
 
@@ -29,7 +29,7 @@ export default function GalleryProjects() {
       cards.forEach((el, i) => {
         gsap.set(el, {
           opacity: 0,
-          y: -curveY(i, AMPLITUDE) + 60,
+          y: -curveY(i, AMPLITUDE) + 100,
         });
       });
       gsap.to(cards, {
@@ -74,7 +74,7 @@ export default function GalleryProjects() {
         {gallery.map((item) => (
           <div
             key={item.id}
-            className="g-item w-[15vw] min-w-[260px] aspect-[9/11] bg-gray-500 mb-4 rounded"
+            className="g-item w-[15vw] min-w-[260px] aspect-[9/11] bg-gray-500 mb-4"
           />
         ))}
       </div>
