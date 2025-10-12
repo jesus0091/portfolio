@@ -11,6 +11,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 
 import AuroraGlow from "./AuroraGlow";
+import Image from "next/image";
 import Link from "next/link";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import gsap from "gsap";
@@ -137,10 +138,8 @@ export default function Footer({
         tl.to(cols, { opacity: 1, y: 0, duration: 0.6, stagger: 0.08 }, 0.55);
       }
 
-      // 💥 Halo burst en CTA en cada entrada (arriba→abajo y abajo→arriba)
       const burst = () => {
         ctas.forEach((btn, i) => {
-          // Reusar un halo por botón (no acumula nodos)
           let halo = btn.querySelector<HTMLElement>("span[data-halo]");
           if (!halo) {
             halo = document.createElement("span");
@@ -193,20 +192,17 @@ export default function Footer({
     >
       <div className="dark-top-sentinel h-10 w-full absolute top-0" />
 
-      {/* Aurora */}
-      <div
-        className="absolute inset-0 flex items-center justify-center"
-        data-aurora
-      >
-        <AuroraGlow
-          blobSize={600}
-          speed={4}
-          colors={["#1722c52c", "#aa1f1f2f", "#9f87102b"]}
-        />
-      </div>
-
-      {/* CTA */}
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 flex flex-col justify-center flex-1 z-10">
+      <div className="relative min-h-[100dvh] md:min-h-nones flex flex-col justify-center flex-1 z-10">
+        <div
+          className="absolute inset-0 flex items-center justify-center"
+          data-aurora
+        >
+          <AuroraGlow
+            blobSize={600}
+            speed={4}
+            colors={["#1722c52c", "#aa1f1f2f", "#9f87102b"]}
+          />
+        </div>
         <div className="py-20 flex flex-col items-center gap-4 text-center">
           <p
             data-cta-label
@@ -247,32 +243,45 @@ export default function Footer({
 
       {/* Cuerpo */}
       <div className="px-4 sm:px-6 pb-10 border-t border-white/10 z-10">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 py-8 max-w-6xl mx-auto">
-          <div data-footer-col className="space-y-3 col-span-5">
+        <div className="flex flex-col md:grid md:grid-cols-12 gap-8 py-8 max-w-6xl mx-auto">
+          <div
+            data-footer-col
+            className="w-full md:col-span-5 flex flex-col items-center md:items-start"
+          >
             <Link
               href="/"
-              className="inline-flex items-center gap-2 font-bold text-xl text-white"
+              className="flex flex-col items-center w-full md:items-start gap-2 font-bold text-xl text-white"
               aria-label="Go to home"
             >
+              <Image
+                src={"/images/facebrand.png"}
+                className="border border-white/20 rounded-lg bg-white/10 object-contain"
+                width={50}
+                height={50}
+                alt="Logo"
+              />
               <span>Jesús Hernández</span>
             </Link>
-            <p className="text-base text-gray-300 leading-relaxed max-w-xs">
+            <p className="text-sm md:text-base text-gray-400 leading-relaxed max-w-xs text-center md:text-left">
               Frontend Developer & UX/UI Designer. <br />I build cohesive,
               scalable and delightful digital products.
             </p>
           </div>
-
-          <div data-footer-col className="flex flex-row gap-8 col-span-7">
-            <nav className="space-y-3 flex-1">
-              <h4 className="text-base font-semibold tracking-wide text-gray-400">
+          <div className="md:hidden block w-full border-t border-white/10 md:col-span-1 mx-auto" />
+          <div
+            data-footer-col
+            className="flex flex-col md:flex-row gap-8 col-span-7"
+          >
+            <nav className="space-y-3 flex-1 flex flex-col items-center md:items-start">
+              <h4 className="text-base font-semibold tracking-wide text-gray-500">
                 Quick Links
               </h4>
-              <ul className="space-y-2">
+              <ul className="space-y-2 flex flex-col items-center md:items-start">
                 {quickLinks.map((l) => (
                   <li key={l.href}>
                     <Link
                       href={l.href}
-                      className="text-base text-white transition"
+                      className="text-base text-center text-white/70 hover:text-white transition"
                     >
                       {l.label}
                     </Link>
@@ -280,9 +289,11 @@ export default function Footer({
                 ))}
               </ul>
             </nav>
-
-            <div data-footer-col className="space-y-3 flex-1">
-              <h4 className="text-base font-semibold tracking-wide text-gray-400">
+            <div
+              data-footer-col
+              className="space-y-3 flex-1 flex flex-col items-center md:items-start"
+            >
+              <h4 className="text-base font-semibold tracking-wide text-gray-500">
                 Connect
               </h4>
               <ul className="flex flex-wrap gap-3">
@@ -293,7 +304,7 @@ export default function Footer({
                       target="_blank"
                       rel="noreferrer"
                       aria-label={s.label}
-                      className="inline-flex items-center gap-2 border border-white/15 px-3 py-2 text-sm text-gray-200 hover:bg-white/10 transition"
+                      className="inline-flex items-center gap-2  border border-white/15 px-3 py-2 text-sm text-gray-200 hover:bg-white/10 transition"
                     >
                       <span className="[&>svg]:h-5 [&>svg]:w-5">{s.icon}</span>
                       <span>{s.label}</span>
@@ -309,10 +320,10 @@ export default function Footer({
           data-footer-col
           className="flex flex-col max-w-6xl mx-auto sm:flex-row items-center justify-between gap-3 border-t border-white/10 pt-4"
         >
-          <p className="text-base text-gray-500">
+          <p className="text-sm md:text-base text-center text-gray-500">
             © {year} Jesús Hernández. All rights reserved.
           </p>
-          <p className="text-base text-gray-500">
+          <p className="text-sm md:text-base text-center text-gray-500">
             Built with: ReactJS · Next.JS · TypeScript · TailwindCSS
           </p>
         </div>

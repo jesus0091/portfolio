@@ -1,5 +1,6 @@
 "use client";
 
+import { IconArrowUpRight, IconMail } from "@tabler/icons-react";
 import {
   useCallback,
   useEffect,
@@ -8,7 +9,6 @@ import {
   useState,
 } from "react";
 
-import { IconMail } from "@tabler/icons-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -124,11 +124,14 @@ export default function Navbar() {
       ].join(" ")}
     >
       <nav className="grid grid-cols-2 md:grid-cols-3 h-[80px] px-6 mx-auto">
-        <div className="flex items-center justify-start">
+        <div className="flex items-center justify-start ">
           <Link href="/" className="text-base font-bold tracking-tight">
             <Image
-              src="/images/branding.png"
+              src={
+                onDark ? "/images/brand-dark.png" : "/images/brand-light.png"
+              }
               alt="Logo"
+              className="h-[54px] max-w-max md:h-auto object-contain"
               width={108}
               height={54}
               priority
@@ -205,23 +208,23 @@ export default function Navbar() {
       </nav>
 
       {open ? (
-        <ul className="container px-6 items-center text-xl gap-3 flex flex-col justify-center py-3 md:hidden h-[calc(100vh-80px)] bg-[#ffffff20] backdrop-blur-lg">
+        <ul className="text-xl flex flex-col md:hidden h-[calc(100vh-80px)] bg-[#ffffff20] backdrop-blur-lg">
           {links.map(({ href, label }) => (
             <li key={href}>
               <Link
                 href={href}
-                className={`block rounded px-6 py-4 transition ${
+                className={`flex justify-between rounded px-6 py-4 transition border-t border-black/10 w-full ${
                   onDark ? "text-white hover:bg-white/10" : "hover:bg-zinc-100"
                 }`}
               >
-                {label}
+                {label} <IconArrowUpRight />
               </Link>
             </li>
           ))}
-          <li>
+          <li className="border-t border-black/10 px-6 py-4 flex-1 flex items-end">
             <Link
               href="/#contact"
-              className={`block px-6 py-4 text-center transition ${
+              className={`block px-6 py-4 text-center w-full transition ${
                 onDark ? "bg-white text-black" : "bg-black text-white"
               }`}
             >
@@ -229,7 +232,7 @@ export default function Navbar() {
             </Link>
           </li>
         </ul>
-      ): null}
+      ) : null}
     </header>
   );
 }

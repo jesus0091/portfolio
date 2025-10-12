@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   IconBrandBehance,
   IconBrandGithub,
@@ -9,13 +9,14 @@ import {
 
 import Cursor from "./Cursor";
 import Link from "next/link";
+import gsap from "gsap";
 import styled from "styled-components";
 
 export default function HomePage() {
   const [hovered, setHovered] = useState<"frontend" | "designer">("frontend");
   const [cursorActive, setCursorActive] = useState(false);
-
   const [ready, setReady] = useState(false);
+
   useEffect(() => {
     const id = requestAnimationFrame(() => setReady(true));
     return () => cancelAnimationFrame(id);
@@ -24,16 +25,114 @@ export default function HomePage() {
   const isFrontendFilled = hovered !== "designer";
   const isDesignerFilled = hovered === "designer";
 
+  // Refs para animación
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const greetRef = useRef<HTMLParagraphElement | null>(null);
+  const titleRef = useRef<HTMLDivElement | null>(null);
+  const frontendRowRef = useRef<HTMLDivElement | null>(null);
+  const designerRowRef = useRef<HTMLDivElement | null>(null);
+  const subtitleRef = useRef<HTMLParagraphElement | null>(null);
+  const footerCityRef = useRef<HTMLParagraphElement | null>(null);
+  const footerSocialRef = useRef<HTMLDivElement | null>(null);
+
+  // Helper segura (nunca undefined)
+  const qsa = <T extends Element>(root: Element | null, sel: string): T[] =>
+    root ? Array.from(root.querySelectorAll<T>(sel)) : [];
+
+  useLayoutEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    if (
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      return;
+    }
+
+    const ctx = gsap.context(() => {
+      // Targets seguros
+      const frontendBits = qsa<Element>(
+        frontendRowRef.current,
+        ".angle, .word"
+      );
+      const designerBits = qsa<Element>(designerRowRef.current, ".amp, .word");
+      const socialLinks = qsa<Element>(footerSocialRef.current, "a");
+
+      // Estados base
+      gsap.set(greetRef.current, { autoAlpha: 0, y: 16 });
+      gsap.set(titleRef.current, { autoAlpha: 1 });
+      gsap.set(frontendBits, { autoAlpha: 0, y: 28 });
+      gsap.set(designerBits, { autoAlpha: 0, y: 28 });
+      // ❗ No tocamos .rectangle: aparece solo en hover via CSS
+      gsap.set(subtitleRef.current, { autoAlpha: 0, y: 14 });
+      gsap.set(footerCityRef.current, { autoAlpha: 0, y: 10 });
+      gsap.set(socialLinks, { autoAlpha: 0, y: 10, scale: 0.96 });
+
+      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+
+      // 1) Saludo
+      tl.to(greetRef.current, { autoAlpha: 1, y: 0, duration: 0.6 });
+
+      // 2) Frontend row
+      if (frontendBits.length) {
+        tl.to(
+          frontendBits,
+          { autoAlpha: 1, y: 0, duration: 0.6, stagger: 0.06 },
+          "-=0.1"
+        );
+      }
+
+      // 3) Designer row (sin rectángulo)
+      if (designerBits.length) {
+        tl.to(
+          designerBits,
+          { autoAlpha: 1, y: 0, duration: 0.6, stagger: 0.06 },
+          "-=0.2"
+        );
+      }
+
+      // 4) Subtítulo
+      tl.to(
+        subtitleRef.current,
+        { autoAlpha: 1, y: 0, duration: 0.5 },
+        "-=0.05"
+      );
+
+      // 5) Footer
+      tl.to(
+        footerCityRef.current,
+        { autoAlpha: 1, y: 0, duration: 0.45 },
+        "-=0.1"
+      );
+      if (socialLinks.length) {
+        tl.to(
+          socialLinks,
+          { autoAlpha: 1, y: 0, scale: 1, duration: 0.45, stagger: 0.05 },
+          "-=0.2"
+        );
+      }
+    }, section);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
     <Fragment>
       <Cursor active={cursorActive} />
-      <section className="text-black pt-[20vh] pb-10 px-10 h-[100dvh] w-full flex flex-col justify-between items-center">
-        <div className="flex flex-col items-center text-center w-full gap-2">
-          <p className="text-2xl tracking-wide uppercase text-orange-600">
+      <section
+        ref={sectionRef}
+        className="text-black pt-[20vh] pb-10 px-10 h-[100dvh] w-full flex flex-col justify-between items-center"
+      >
+        <div className="flex flex-col items-center py-[10vh] md:py-0 text-center w-full gap-2">
+          <p
+            ref={greetRef}
+            className="text-base leading-snug md:text-2xl tracking-wide uppercase text-orange-600"
+          >
             👋, My name is Jesús Hernández
           </p>
 
           <StyledTitle
+            ref={titleRef}
             onMouseEnter={() => setCursorActive(true)}
             onMouseLeave={() => {
               setCursorActive(false);
@@ -41,6 +140,7 @@ export default function HomePage() {
             }}
           >
             <FrontendRow
+              ref={frontendRowRef}
               $filled={isFrontendFilled}
               $ready={ready}
               onMouseEnter={() => setHovered("frontend")}
@@ -51,7 +151,9 @@ export default function HomePage() {
               <span className="word light">Developer</span>
               <span className="angle right">/&gt;</span>
             </FrontendRow>
+
             <DesignerRow
+              ref={designerRowRef}
               $filled={isDesignerFilled}
               $ready={ready}
               onMouseEnter={() => setHovered("designer")}
@@ -68,16 +170,19 @@ export default function HomePage() {
             </DesignerRow>
           </StyledTitle>
 
-          <p className="text-2xl font-medium leading-0 mt-8">
+          <p
+            ref={subtitleRef}
+            className="text-base md:text-2xl font-medium mt-3 md:mt-8"
+          >
             Building digital products and experience
           </p>
         </div>
 
-        <div className="flex flex-col w-full justify-between items-center text-center gap-3">
-          <p className="text-2xl font-medium">
+        <div className="flex flex-col-reverse md:flex-col w-full justify-between items-center text-center gap-2 md:gap-3">
+          <p ref={footerCityRef} className="text-sm md:text-2xl font-medium">
             Based in Buenos Aires, Argentina.
           </p>
-          <div className="flex flex-row gap-1">
+          <div ref={footerSocialRef} className="flex flex-row gap-1">
             <Link
               href="https://www.linkedin.com/in/jesushernandez91/"
               target="_blank"
@@ -105,6 +210,8 @@ export default function HomePage() {
     </Fragment>
   );
 }
+
+/* ---------------- Styled ---------------- */
 
 const EASE_SOFT = "cubic-bezier(0.22, 1, 0.36, 1)";
 const EASE_SPRING = "cubic-bezier(0.16, 1, 0.3, 1)";
@@ -187,7 +294,6 @@ const DesignerRow = styled(Row)`
     justify-content: center;
     pointer-events: none;
   }
-
   .rectangle {
     position: absolute;
     width: 104%;
@@ -210,7 +316,6 @@ const DesignerRow = styled(Row)`
       pointer-events: none;
       opacity: var(--rect-o);
       transition: opacity 320ms ${EASE_SOFT};
-
       background: linear-gradient(#f55a3d, #f55a3d) top left,
         linear-gradient(#f55a3d, #f55a3d) top right,
         linear-gradient(#f55a3d, #f55a3d) bottom left,
