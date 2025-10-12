@@ -25,7 +25,7 @@ export type Project = {
 
 function Chip({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-flex items-center bg-gray-100 px-2.5 py-0.5 text-base font-medium text-zinc-700">
+    <span className="inline-flex items-center bg-gray-100 px-2.5 py-0.5 text-sm md:text-base font-medium text-zinc-700">
       {children}
     </span>
   );
@@ -36,10 +36,10 @@ export default function ProjectCard({ project }: { project: Project }) {
 
   return (
     <article
-      className="p-card will-change-transform flex flex-col overflow-hidden h-[540px] bg-white transition shadow-[0px_0px_50px_rgba(0,0,0,0.1)] hover:shadow-[0px_10px_50px_rgba(0,0,0,0.2)] hover:-translate-y-1 cursor-pointer"
+      className="p-card will-change-transform flex flex-col overflow-hidden md:h-[550px] bg-white transition shadow-[0px_0px_50px_rgba(0,0,0,0.1)] hover:shadow-[0px_10px_50px_rgba(0,0,0,0.2)] hover:-translate-y-1 cursor-pointer"
       data-id={p.id}
     >
-      <div className="relative min-h-[250px] max-h-[250px] w-full bg-zinc-100 overflow-hidden">
+      <div className="relative aspect-[16/9] max-h-[250px] min-w-full w-full bg-zinc-100 overflow-hidden">
         <Image
           src={p.cover}
           alt={`${p.title} cover`}
@@ -59,15 +59,24 @@ export default function ProjectCard({ project }: { project: Project }) {
         </span>
       </div>
       <div className="px-6 py-4 flex-1 flex flex-col">
-        <h3 className="text-xl font-bold leading-tight">{p.title}</h3>
-        <div className="mt-1 text-base font-semibold text-orange-600">
-          {p.role}
+        <div>
+          <h3 className="text-base md:text-xl font-bold leading-tight">
+            {p.title}
+          </h3>
+          <div className="text-sm md:text-base font-semibold text-orange-600">
+            {p.role}
+          </div>
         </div>
-        <p className="mt-2 line-clamp-2 text-base text-zinc-700">{p.summary}</p>
-        <div className="mt-3 flex flex-wrap gap-2">
-          {p.stack.map((s) => (
-            <Chip key={s}>{s}</Chip>
-          ))}
+        <p className="mt-2 line-clamp-2 text-sm md:text-base leading text-zinc-700">
+          {p.summary}
+        </p>
+        <div className="flex flex-col gap-1 mt-1 md:mt-2">
+          <p className="text-sm text-gray-500">Tools:</p>
+          <div className="flex flex-wrap gap-2">
+            {p.stack.map((s) => (
+              <Chip key={s}>{s}</Chip>
+            ))}
+          </div>
         </div>
       </div>
       <div className="flex items-center justify-between border-t px-6 py-4 text-sm text-zinc-600">

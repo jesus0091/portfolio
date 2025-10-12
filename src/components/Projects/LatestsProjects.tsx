@@ -288,7 +288,7 @@ export default function LatestProjects() {
             </div>
           </div>
         </div>
-        <div className="projects-grid grid gap-6 lg:grid-cols-2">
+        <div className="projects-grid grid gap-6 grid-cols-[repeat(auto-fit,minmax(240px,1fr))] md:grid-cols-[repeat(auto-fit,minmax(380px,1fr))]">
           {filtered.length > 0 ? (
             filtered.map((p) => <ProjectCard key={p.id} project={p} />)
           ) : (
