@@ -192,7 +192,7 @@ export default function Footer({
     >
       <div className="dark-top-sentinel h-10 w-full absolute top-0" />
 
-      <div className="relative min-h-[100dvh] md:min-h-nones flex flex-col justify-center flex-1 z-10">
+      <div className="relative min-h-[100dvh] md:min-h-0 flex flex-col justify-center flex-1 z-10">
         <div
           className="absolute inset-0 flex items-center justify-center"
           data-aurora
@@ -324,11 +324,10 @@ export default function Footer({
             © {year} Jesús Hernández. All rights reserved.
           </p>
           <p className="text-sm md:text-base text-center text-gray-500">
-            Built with: ReactJS · Next.JS · TypeScript · TailwindCSS
+            Built with: <br /> ReactJS · Next.JS · TypeScript · TailwindCSS
           </p>
         </div>
       </div>
-
       <div className="dark-bottom-sentinel h-10 w-full absolute bottom-0" />
     </footer>
   );

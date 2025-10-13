@@ -24,13 +24,11 @@ import styled, { keyframes } from "styled-components";
 
 import React from "react";
 
-/* ---------------- Animación de scroll ---------------- */
 const scroll = keyframes`
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 `;
 
-/* ---------------- Estilos ---------------- */
 const CarouselWrapper = styled.div`
   position: relative;
   width: 100%;
@@ -60,38 +58,69 @@ const SkillChip = styled.li`
   font-size: 24px;
   font-weight: 600;
   justify-content: center;
+
+  @media (max-width: 768px) {
+    font-size: 18px;
+  }
 `;
 
-/* ---------------- Data ---------------- */
 export type Skill = {
   label: string;
   icon: React.ReactElement;
 };
 
 export const skills: Skill[] = [
-  { label: "React", icon: <ReactIcon className="w-20 h-20" /> },
-  { label: "Next.js", icon: <NextIcon className="w-20 h-20" /> },
-  { label: "TypeScript", icon: <TypeScriptIcon className="w-20 h-20" /> },
-  { label: "JavaScript", icon: <JavaScriptIcon className="w-20 h-20" /> },
-  { label: "HTML", icon: <HTMLIcon className="w-20 h-20" /> },
-  { label: "CSS", icon: <CSSIcon className="w-20 h-20" /> },
-  { label: "Sass", icon: <SassIcon className="w-20 h-20" /> },
-  { label: "TailwindCSS", icon: <TailwindIcon className="w-20 h-20" /> },
-  { label: "Material UI", icon: <MaterialUIIcon className="w-20 h-20" /> },
-  { label: "Bootstrap", icon: <BootstrapIcon className="w-20 h-20" /> },
-  { label: "Figma", icon: <FigmaIcon className="w-20 h-20" /> },
-  { label: "Illustrator", icon: <IllustratorIcon className="w-20 h-20" /> },
-  { label: "Prettier", icon: <PrettierIcon className="w-20 h-20" /> },
-  { label: "Webpack", icon: <WebPackIcon className="w-20 h-20" /> },
-  { label: "NPM", icon: <NPMIcon className="w-20 h-20" /> },
-  { label: "JSON", icon: <JSONIcon className="w-20 h-20" /> },
-  { label: "Git", icon: <GitIcon className="w-20 h-20" /> },
-  { label: "GitHub", icon: <GitHubIcon className="w-20 h-20" /> },
+  { label: "React", icon: <ReactIcon className="h-15 w-15 md:h-20 md:w-20" /> },
+  {
+    label: "Next.js",
+    icon: <NextIcon className="h-15 w-15 md:h-20 md:w-20" />,
+  },
+  {
+    label: "TypeScript",
+    icon: <TypeScriptIcon className="h-15 w-15 md:h-20 md:w-20" />,
+  },
+  {
+    label: "JavaScript",
+    icon: <JavaScriptIcon className="h-15 w-15 md:h-20 md:w-20" />,
+  },
+  { label: "HTML", icon: <HTMLIcon className="h-15 w-15 md:h-20 md:w-20" /> },
+  { label: "CSS", icon: <CSSIcon className="h-15 w-15 md:h-20 md:w-20" /> },
+  { label: "Sass", icon: <SassIcon className="h-15 w-15 md:h-20 md:w-20" /> },
+  {
+    label: "TailwindCSS",
+    icon: <TailwindIcon className="h-15 w-15 md:h-20 md:w-20" />,
+  },
+  {
+    label: "Material UI",
+    icon: <MaterialUIIcon className="h-15 w-15 md:h-20 md:w-20" />,
+  },
+  {
+    label: "Bootstrap",
+    icon: <BootstrapIcon className="h-15 w-15 md:h-20 md:w-20" />,
+  },
+  { label: "Figma", icon: <FigmaIcon className="h-15 w-15 md:h-20 md:w-20" /> },
+  {
+    label: "Illustrator",
+    icon: <IllustratorIcon className="h-15 w-15 md:h-20 md:w-20" />,
+  },
+  {
+    label: "Prettier",
+    icon: <PrettierIcon className="h-15 w-15 md:h-20 md:w-20" />,
+  },
+  {
+    label: "Webpack",
+    icon: <WebPackIcon className="h-15 w-15 md:h-20 md:w-20" />,
+  },
+  { label: "NPM", icon: <NPMIcon className="h-15 w-15 md:h-20 md:w-20" /> },
+  { label: "JSON", icon: <JSONIcon className="h-15 w-15 md:h-20 md:w-20" /> },
+  { label: "Git", icon: <GitIcon className="h-15 w-15 md:h-20 md:w-20" /> },
+  {
+    label: "GitHub",
+    icon: <GitHubIcon className="h-15 w-15 md:h-20 md:w-20" />,
+  },
 ];
 
-/* ---------------- Componente ---------------- */
 export default function SkillsCarousel() {
-  // duplicamos varias veces para que la animación se vea infinita
   const loop = [...skills, ...skills, ...skills, ...skills];
 
   return (

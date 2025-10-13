@@ -65,7 +65,7 @@ const AboutMeHero = () => {
           <div className="flex flex-col items-center justify-center gap-2 w-full">
             <p
               ref={nameRef}
-              className="select-none text-lg md:text-xl tracking-wide leading-none font-normal block uppercase text-center text-orange-600"
+              className="select-none text-lg md:text-xl tracking-wide leading-none font-normal block text-center text-orange-600"
             >
               Jesus Hernandez
             </p>

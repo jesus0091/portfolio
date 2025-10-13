@@ -74,7 +74,7 @@ export default function GalleryProjects() {
         {gallery.map((item) => (
           <div
             key={item.id}
-            className="g-item w-[15vw] min-w-[120px] md:min-w-[260px] aspect-[9/11] bg-gray-500 mb-4"
+            className="g-item w-[15vw] min-w-[110px] md:min-w-[260px] aspect-[9/11] bg-gray-500 mb-4"
           />
         ))}
       </div>
