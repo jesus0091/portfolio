@@ -11,8 +11,11 @@ import Cursor from "./Cursor";
 import Link from "next/link";
 import gsap from "gsap";
 import styled from "styled-components";
+import { useRouter } from "next/navigation";
 
 export default function HomePage() {
+  const router = useRouter();
+
   const [hovered, setHovered] = useState<"frontend" | "designer">("frontend");
   const [cursorActive, setCursorActive] = useState(false);
   const [ready, setReady] = useState(false);
@@ -39,6 +42,7 @@ export default function HomePage() {
   const qsa = <T extends Element>(root: Element | null, sel: string): T[] =>
     root ? Array.from(root.querySelectorAll<T>(sel)) : [];
 
+  // Animación de entrada
   useLayoutEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
@@ -50,7 +54,6 @@ export default function HomePage() {
     }
 
     const ctx = gsap.context(() => {
-      // Targets seguros
       const frontendBits = qsa<Element>(
         frontendRowRef.current,
         ".angle, .word"
@@ -58,7 +61,6 @@ export default function HomePage() {
       const designerBits = qsa<Element>(designerRowRef.current, ".amp, .word");
       const socialLinks = qsa<Element>(footerSocialRef.current, "a");
 
-      // Estados base
       gsap.set(greetRef.current, { autoAlpha: 0, y: 16 });
       gsap.set(titleRef.current, { autoAlpha: 1 });
       gsap.set(frontendBits, { autoAlpha: 0, y: 28 });
@@ -69,11 +71,7 @@ export default function HomePage() {
       gsap.set(socialLinks, { autoAlpha: 0, y: 10, scale: 0.96 });
 
       const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-
-      // 1) Saludo
       tl.to(greetRef.current, { autoAlpha: 1, y: 0, duration: 0.6 });
-
-      // 2) Frontend row
       if (frontendBits.length) {
         tl.to(
           frontendBits,
@@ -81,8 +79,6 @@ export default function HomePage() {
           "-=0.1"
         );
       }
-
-      // 3) Designer row (sin rectángulo)
       if (designerBits.length) {
         tl.to(
           designerBits,
@@ -90,15 +86,11 @@ export default function HomePage() {
           "-=0.2"
         );
       }
-
-      // 4) Subtítulo
       tl.to(
         subtitleRef.current,
         { autoAlpha: 1, y: 0, duration: 0.5 },
         "-=0.05"
       );
-
-      // 5) Footer
       tl.to(
         footerCityRef.current,
         { autoAlpha: 1, y: 0, duration: 0.45 },
@@ -116,12 +108,86 @@ export default function HomePage() {
     return () => ctx.revert();
   }, []);
 
+  // Swipe horizontal SOLO en mobile
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+
+    if (typeof window === "undefined") return;
+
+    const isCoarse = window.matchMedia("(pointer: coarse)").matches;
+    const isNarrow = window.innerWidth < 768;
+    if (!(isCoarse && isNarrow)) return; // solo mobile/táctil
+
+    let startX = 0;
+    let startY = 0;
+    let tracking = false;
+    let fired = false;
+
+    const MIN_DISTANCE = 64; // px mínimos de desplazamiento horizontal
+    const MAX_VERTICAL_DELTA = 48; // tolerancia vertical
+
+    const onTouchStart = (e: TouchEvent) => {
+      if (e.touches.length !== 1) return; // ignorar multi-touch
+      const t = e.touches[0];
+      startX = t.clientX;
+      startY = t.clientY;
+      tracking = true;
+      fired = false;
+    };
+
+    const onTouchMove = (e: TouchEvent) => {
+      if (!tracking || fired) return;
+      const t = e.touches[0];
+      const dx = t.clientX - startX;
+      const dy = t.clientY - startY;
+
+      // si se movió mucho en vertical, priorizamos scroll vertical y cancelamos swipe
+      if (Math.abs(dy) > MAX_VERTICAL_DELTA) {
+        tracking = false;
+        return;
+      }
+
+      if (Math.abs(dx) >= MIN_DISTANCE) {
+        fired = true;
+        tracking = false;
+        if (dx > 0) {
+          router.push("/about");
+        } else {
+          router.push("/projects");
+        }
+      }
+    };
+
+    const onTouchEnd = () => {
+      tracking = false;
+    };
+
+    // listeners con passive para no bloquear scroll
+    el.addEventListener("touchstart", onTouchStart, { passive: true });
+    el.addEventListener("touchmove", onTouchMove, { passive: true });
+    el.addEventListener("touchend", onTouchEnd, { passive: true });
+    el.addEventListener("touchcancel", onTouchEnd, { passive: true });
+
+    return () => {
+      el.removeEventListener("touchstart", onTouchStart);
+      el.removeEventListener("touchmove", onTouchMove);
+      el.removeEventListener("touchend", onTouchEnd);
+      el.removeEventListener("touchcancel", onTouchEnd);
+    };
+  }, [router]);
+
   return (
     <Fragment>
       <Cursor active={cursorActive} />
       <section
         ref={sectionRef}
-        className="text-black pt-[20vh] pb-10 px-4 h-[100dvh] w-full flex flex-col justify-between items-center"
+        className="
+          text-black pt-[20vh] pb-10 px-4 h-[100dvh] w-full
+          flex flex-col justify-between items-center
+          touch-pan-y select-none
+          overflow-x-clip
+        "
       >
         <div className="flex flex-col items-center py-[10vh] md:py-0 text-center w-full gap-2">
           <p ref={greetRef} className="text-lg md:text-2xl font-medium">
@@ -148,6 +214,7 @@ export default function HomePage() {
               <span className="word light">Developer</span>
               <span className="angle right">/&gt;</span>
             </FrontendRow>
+
             <DesignerRow
               ref={designerRowRef}
               $filled={isDesignerFilled}
@@ -165,11 +232,12 @@ export default function HomePage() {
               </span>
             </DesignerRow>
           </StyledTitle>
+
           <div
             ref={footerCityRef}
             className="text-lg flex flex-row w-full justify-between px-10 max-w-xl lg:max-w-3xl mx-auto md:text-2xl font-medium mt-3 md:mt-4"
           >
-            <p> Based in Argentina</p>
+            <p>Based in Argentina</p>
             <p>Freelance</p>
           </div>
         </div>
@@ -206,6 +274,8 @@ export default function HomePage() {
     </Fragment>
   );
 }
+
+/* ---------------- styles ---------------- */
 
 const EASE_SOFT = "cubic-bezier(0.22, 1, 0.36, 1)";
 const EASE_SPRING = "cubic-bezier(0.16, 1, 0.3, 1)";
