@@ -150,7 +150,7 @@ const AboutText: React.FC<AboutTextProps> = ({
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-[100dvh] flex flex-col items-center justify-center"
+      className="relative min-h-[100dvh] flex px-4 flex-col items-center justify-center"
     >
       <div
         ref={bgRef}
@@ -163,23 +163,22 @@ const AboutText: React.FC<AboutTextProps> = ({
       />
 
       <section className="relative grid max-w-6xl grid-cols-12 gap-6 mx-auto">
-        <h2
-          ref={titleOverlayRef}
-          className="pointer-events-none inline w-fit max-w-max select-none text-7xl leading-none font-black text-orange-600"
-        >
-          .about-me
-        </h2>
-        <div className="col-span-12 md:col-span-6 flex flex-col gap-6">
+        <div className="relative col-span-12 md:col-span-6 flex flex-col gap-6 min-h-[100vh] justify-center md:min-h-auto">
           <h2
-            ref={titleStaticRef}
-            className="inline w-fit max-w-max select-none text-7xl leading-none font-black text-orange-600"
+            ref={titleOverlayRef}
+            className="pointer-events-none inline w-fit max-w-max select-none text-2xl md:text-7xl leading-none font-black text-orange-600"
           >
             .about-me
           </h2>
-
+          <h2
+            ref={titleStaticRef}
+            className="inline w-fit max-w-max select-none text-2xl md:text-7xl leading-none font-black text-orange-600"
+          >
+            .about-me
+          </h2>
           <p
             ref={paraRef}
-            className="flex flex-wrap gap-2 text-2xl font-semibold tracking-tight text-gray-700"
+            className="flex flex-wrap gap-2 text-xl md:text-2xl font-semibold tracking-tight text-gray-700"
           >
             {words.map((w, i) => (
               <span key={i} data-word>
