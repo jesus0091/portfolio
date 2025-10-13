@@ -125,13 +125,6 @@ const AboutText: React.FC<AboutTextProps> = ({
       tl.to(overlay, { opacity: 0, duration: fadeDur }, fadeStart);
 
       const wordsStart = introGap + moveDur + wordsGap;
-      const wordsTween = tl.to(
-        wordSpans,
-        reduce
-          ? { opacity: 1, y: 0, duration: 0.001 }
-          : { opacity: 1, y: 0, duration: 0.35, stagger: wordStagger },
-        wordsStart
-      );
 
       tl.to(
         bg,

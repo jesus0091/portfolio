@@ -2,7 +2,6 @@
 "use client";
 
 import {
-  IconArrowUpRight,
   IconBrandBehance,
   IconBrandGithub,
   IconBrandLinkedin,
@@ -51,14 +50,6 @@ export default function Footer({
 }: FooterProps) {
   const [year, setYear] = useState<number>(new Date().getFullYear());
   const footerRef = useRef<HTMLElement | null>(null);
-
-  const scrollTop = () => {
-    if (typeof window === "undefined") return;
-    const reduce = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-    window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
-  };
 
   useEffect(() => setYear(new Date().getFullYear()), []);
 

@@ -1,13 +1,9 @@
 "use client";
 
-import {
-  IconImageInPicture,
-  IconPhoto,
-  IconPictureInPicture,
-} from "@tabler/icons-react";
 import React, { useLayoutEffect, useRef } from "react";
 
 import AuroraGlowYellow from "../AuroraGlowYellow";
+import { IconPhoto } from "@tabler/icons-react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import gsap from "gsap";
 
@@ -364,7 +360,6 @@ const Quote: React.FC = () => {
         </p>
 
         <div className="flex flex-col w-full items-center relative px-8 py-15 md:py-15 md:px-15">
-          {/* AURORA (solo escena 2, detrás del layout) */}
           <div
             ref={o2AuroraRef}
             className="absolute -z-10 inset-0 overflow-visible flex flex-col items-center justify-end"
@@ -378,7 +373,6 @@ const Quote: React.FC = () => {
             />
           </div>
 
-          {/* LAYOUT website */}
           <div
             ref={o2LayoutRef}
             className="
@@ -430,7 +424,6 @@ const Quote: React.FC = () => {
             </div>
           </div>
 
-          {/* overlays existentes */}
           <div
             aria-hidden
             className="pointer-events-none absolute left-0 right-0 h-[70%] bottom-0 rounded-2xl"
@@ -450,7 +443,6 @@ const Quote: React.FC = () => {
         </div>
       </div>
 
-      {/* ========== ESCENA 3 ========== */}
       <div
         ref={o3Ref}
         className="absolute inset-0 flex items-center justify-center px-4 text-center"

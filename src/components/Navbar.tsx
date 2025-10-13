@@ -89,8 +89,14 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    open ? lockScroll() : unlockScroll();
-    return () => unlockScroll();
+    if (open) {
+      lockScroll();
+    } else {
+      unlockScroll();
+    }
+    return () => {
+      unlockScroll();
+    };
   }, [open, lockScroll, unlockScroll]);
 
   const measureNav = useCallback(() => {

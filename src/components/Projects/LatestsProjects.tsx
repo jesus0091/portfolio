@@ -11,7 +11,7 @@ type Category = "frontend" | "design";
 export type LinkOut = {
   type: "behance" | "github" | "website";
   href: string;
-  icon?: React.ReactNode;
+  icon?: React.ReactElement; // <--- mejor ReactElement en vez de ReactNode
 };
 
 export type Project = {
@@ -135,12 +135,14 @@ const PROJECTS: Project[] = [
     links: [{ type: "behance", href: "#", icon: <IconBrandBehance /> }],
   },
 ];
+
 type ChipProps<T extends string> = {
   current: T | "all";
   onChange: (v: T | "all") => void;
   label: string;
   payload: T | "all";
 };
+
 function FilterChip<T extends string>({
   current,
   onChange,
@@ -153,12 +155,11 @@ function FilterChip<T extends string>({
       type="button"
       aria-pressed={active}
       onClick={() => onChange(payload)}
-      className={[
-        "inline-flex cursor-pointer rounded-full items-center gap-2 px-4 py-1 md:py-2 text-sm md:text-base font-medium transition",
+      className={`inline-flex cursor-pointer rounded-full items-center gap-2 px-4 py-1 md:py-2 text-sm md:text-base font-medium transition ${
         active
           ? "border-black bg-black text-white"
-          : "border-neutral-300 bg-white text-neutral-800 hover:border-neutral-800",
-      ].join(" ")}
+          : "border-neutral-300 bg-white text-neutral-800 hover:border-neutral-800"
+      }`}
     >
       <span>{label}</span>
     </button>
@@ -170,33 +171,11 @@ export default function LatestProjects() {
   const [mode, setMode] = useState<Mode | "all">("all");
   const [query, setQuery] = useState("");
 
-  const hasActiveFilters =
-    category !== "all" || mode !== "all" || query.trim() !== "";
-
-  // Precompute counts
-  const counts = useMemo(() => {
-    const byCategory = PROJECTS.reduce(
-      (acc, p) => {
-        acc[p.category]++;
-        return acc;
-      },
-      { frontend: 0, design: 0 } as Record<Category, number>
-    );
-    const byMode = PROJECTS.reduce(
-      (acc, p) => {
-        acc[p.mode]++;
-        return acc;
-      },
-      { solo: 0, collab: 0 } as Record<Mode, number>
-    );
-    return { byCategory, byMode, total: PROJECTS.length };
-  }, []);
-
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return PROJECTS.filter((p) => {
-      const passCategory = category === "all" ? true : p.category === category;
-      const passMode = mode === "all" ? true : p.mode === mode;
+      const passCategory = category === "all" || p.category === category;
+      const passMode = mode === "all" || p.mode === mode;
       const passQuery =
         q === ""
           ? true
@@ -213,62 +192,40 @@ export default function LatestProjects() {
       id="projects"
       className="relative w-full overflow-clip py-50 scrollbar-hide px-4"
     >
-      <div className="light-top-sentinel h-10 w-full absolute top-0" />
-      <div
-        className="absolute inset-0 -z-10"
-        style={{
-          backgroundImage: `
-            linear-gradient(to right, rgba(65, 34, 0, 0.09) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(65, 34, 0, 0.09) 1px, transparent 1px)
-          `,
-          backgroundSize: "100px 100px",
-          backgroundPosition: "center",
-          WebkitMaskImage:
-            "linear-gradient(to bottom, transparent 0%, black 30%, black 100%)",
-          WebkitMaskRepeat: "no-repeat",
-          WebkitMaskSize: "100% 100%",
-          maskImage:
-            "linear-gradient(to bottom, transparent 0%, black 30%, black 100%)",
-          maskRepeat: "no-repeat",
-          maskSize: "100% 100%",
-        }}
-      />
-
       <div className="mx-auto max-w-6xl flex flex-col gap-6">
-        <header className="projects-header mb-6 flex flex-col gap-2">
-          <div className="projects-header-pin flex items-center gap-2">
-            <h2 className="text-4xl md:text-7xl text-black font-black tracking-tight">
-              Latest Projects
-            </h2>
-          </div>
-          <p className="text-lg leading md:text-2xl max-w-lg text-gray-700">
+        <header className="mb-6 flex flex-col gap-2">
+          <h2 className="text-4xl md:text-7xl text-black font-black tracking-tight">
+            Latest Projects
+          </h2>
+          <p className="text-lg md:text-2xl max-w-lg text-gray-700">
             Highlights of collaborative and solo projects that shaped my
             expertise.
           </p>
         </header>
+
+        {/* Chips */}
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="flex flex-col gap-2 md:flex-row md:items-center md:gap-6">
             <div className="flex flex-wrap gap-1 md:gap-2">
               <FilterChip<Category>
                 current={category}
                 onChange={setCategory}
-                label={`All`}
+                label="All"
                 payload="all"
               />
               <FilterChip<Category>
                 current={category}
                 onChange={setCategory}
-                label={`Frontend`}
+                label="Frontend"
                 payload="frontend"
               />
               <FilterChip<Category>
                 current={category}
                 onChange={setCategory}
-                label={`Design`}
+                label="Design"
                 payload="design"
               />
             </div>
-
             <div className="flex flex-wrap gap-1 md:gap-2">
               <FilterChip<Mode>
                 current={mode}
@@ -279,19 +236,21 @@ export default function LatestProjects() {
               <FilterChip<Mode>
                 current={mode}
                 onChange={setMode}
-                label={`Collaborative`}
+                label="Collaborative"
                 payload="collab"
               />
               <FilterChip<Mode>
                 current={mode}
                 onChange={setMode}
-                label={`Solo`}
+                label="Solo"
                 payload="solo"
               />
             </div>
           </div>
         </div>
-        <div className="projects-grid grid gap-6 grid-cols-[repeat(auto-fit,minmax(240px,1fr))] md:grid-cols-[repeat(auto-fit,minmax(380px,1fr))]">
+
+        {/* Grid */}
+        <div className="grid gap-6 grid-cols-[repeat(auto-fit,minmax(240px,1fr))] md:grid-cols-[repeat(auto-fit,minmax(380px,1fr))]">
           {filtered.length > 0 ? (
             filtered.map((p) => <ProjectCard key={p.id} project={p} />)
           ) : (
@@ -301,8 +260,6 @@ export default function LatestProjects() {
           )}
         </div>
       </div>
-
-      <div className="light-bottom-sentinel h-10 w-full absolute bottom-0" />
     </section>
   );
 }

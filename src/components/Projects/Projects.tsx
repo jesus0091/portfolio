@@ -1,7 +1,6 @@
 "use client";
 
 import Footer from "../Footer";
-import { Fragment } from "react";
 import GalleryProjects from "./GalleryProjects";
 import HeroProjects from "./HeroProjects";
 import LatestsProjects from "./LatestsProjects";
