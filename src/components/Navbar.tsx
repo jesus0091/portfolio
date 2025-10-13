@@ -36,7 +36,10 @@ export default function Navbar() {
   const [onDark, setOnDark] = useState(false);
   const [navH, setNavH] = useState(80);
 
-  /* -------- Scroll lock con compensación de scrollbar -------- */
+  const [compact, setCompact] = useState(false);
+  const lastScrollYRef = useRef(0);
+  const COMPACT_DELTA = 5; // umbral anti-ruido
+
   const scrollYRef = useRef(0);
   const prevBodyPaddingRightRef = useRef<string>("");
   const prevHeaderPaddingRightRef = useRef<string>("");
@@ -129,8 +132,23 @@ export default function Navbar() {
   const onScroll = useCallback(() => {
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
     rafRef.current = requestAnimationFrame(() => {
-      setElevated(window.scrollY > 8);
+      const y = window.scrollY;
+      setElevated(y > 8);
       decideTheme();
+
+      // --- Dirección de scroll para compactar/expandir
+      const last = lastScrollYRef.current;
+      if (y > last + COMPACT_DELTA) {
+        // Scrollea hacia abajo → compacta
+        setCompact(true);
+      } else if (y < last - COMPACT_DELTA) {
+        // Scrollea hacia arriba → vuelve a tamaño original
+        setCompact(false);
+      }
+      // Cerca del top, siempre full
+      if (y < 4) setCompact(false);
+
+      lastScrollYRef.current = y;
     });
   }, [decideTheme]);
 
@@ -177,10 +195,15 @@ export default function Navbar() {
         ref={headerRef}
         className={[
           "fixed top-0 z-50 w-full transition-colors duration-300",
-          onDark ? "bg-black text-white" : "bg-transparent text-black",
+          onDark ? " text-white" : "bg-transparent text-black",
         ].join(" ")}
       >
-        <nav className="grid grid-cols-2 md:grid-cols-3 h-[80px] px-2 md:px-6 mx-auto">
+        <nav
+          className={[
+            "grid grid-cols-2 md:grid-cols-3 transition-all px-2 md:px-6 mx-auto",
+            elevated ? "h-[60px]" : "h-[80px]",
+          ].join(" ")}
+        >
           <div className="flex items-center justify-start">
             <Link href="/" className="text-base font-bold tracking-tight">
               <Image
@@ -236,7 +259,7 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* --- BOTÓN MOBILE CON LIQUID GLASS CUANDO elevated === true --- */}
+          {/* --- BOTÓN MOBILE: liquid glass + tamaño dinámico por dirección de scroll --- */}
           <div className="flex md:hidden justify-end items-center">
             <button
               onClick={() => setOpen((v) => !v)}
@@ -244,48 +267,25 @@ export default function Navbar() {
               aria-label="Toggle menu"
               aria-controls="mobile-menu"
               className={[
-                "relative flex md:hidden items-center gap-1 pl-2 pr-4 rounded-full border max-w-max h-auto cursor-pointer transition-all",
-                "active:scale-[0.98]",
+                "relative flex md:hidden items-center h-auto border-[0.5px] rounded-full max-w-max cursor-pointer",
+                "transition-all duration-200 ease-out active:scale-[0.98]",
+                // padding varía según compact
+                compact ? "pl-1.5 pr-3" : "pl-2 pr-4",
+                // liquid glass solo en elevated
                 elevated
                   ? [
-                      "supports-[backdrop-filter]:backdrop-blur-md",
-                      "bg-white/20",
-                      onDark ? "border-white/20" : "border-black/10",
-                      "shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),0_4px_20px_rgba(0,0,0,0.10)]",
-                      onDark ? "ring-1 ring-white/10" : "ring-1 ring-black/5",
-                      "overflow-hidden",
+                      "bg-white/20 supports-[backdrop-filter]:backdrop-blur-md",
+                      "shadow-[0_4px_16px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.18),inset_0_-6px_20px_rgba(0,0,0,0.10)]",
+                      onDark ? "border-white/5" : "border-black/5",
                     ].join(" ")
                   : "border-transparent",
               ].join(" ")}
             >
-              {elevated && (
-                <span
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 rounded-full"
-                  style={{
-                    background:
-                      "linear-gradient(180deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.15) 40%, rgba(255,255,255,0) 100%)",
-                    mixBlendMode: "screen",
-                    opacity: 0.7,
-                  }}
-                />
-              )}
-              {elevated && (
-                <span
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-[1px] rounded-full"
-                  style={{
-                    boxShadow:
-                      "inset 0 0 0 1px rgba(255,255,255,0.15), inset 0 8px 20px rgba(255,255,255,0.08)",
-                  }}
-                />
-              )}
-
+              {/* Icono hamburguesa con tamaño dinámico */}
               <div
                 className={[
-                  "relative",
-                  "h-10 w-10 grid place-items-center rounded outline-none",
-                  "transition-colors duration-200",
+                  "relative rounded outline-none grid place-items-center transition-all duration-200",
+                  compact ? "h-8 w-8" : "h-10 w-10",
                   open && onDark
                     ? "text-white hover:bg-white/10"
                     : onDark
@@ -295,10 +295,14 @@ export default function Navbar() {
               >
                 <span
                   className={[
-                    "pointer-events-none absolute right-2 block h-[2.5px] w-6 rounded-full bg-current",
+                    "pointer-events-none absolute right-2 block h-[2.5px] rounded-full bg-current",
                     "origin-center transform-gpu will-change-transform",
                     "transition-[transform,width,background-color,top] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
-                    open ? "top-1/2 rotate-45" : "top-[calc(50%-5px)] rotate-0",
+                    open
+                      ? "top-1/2 w-6 rotate-45"
+                      : compact
+                      ? "top-[calc(50%-4px)] w-5 rotate-0"
+                      : "top-[calc(50%-5px)] w-6 rotate-0",
                   ].join(" ")}
                 />
                 <span
@@ -308,11 +312,22 @@ export default function Navbar() {
                     "transition-[transform,width,background-color,top] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
                     open
                       ? "top-1/2 w-6 -rotate-45"
+                      : compact
+                      ? "top-[calc(50%+4px)] w-4 rotate-0"
                       : "top-[calc(50%+5px)] w-4 rotate-0",
                   ].join(" ")}
                 />
               </div>
-              <p className="relative text-lg font-medium">Menu</p>
+
+              {/* Texto con tamaño dinámico y ocultamiento progresivo si compact */}
+              <p
+                className={[
+                  "relative font-medium transition-all duration-200",
+                  compact ? "text-sm" : "text-lg",
+                ].join(" ")}
+              >
+                Menu
+              </p>
             </button>
           </div>
         </nav>
