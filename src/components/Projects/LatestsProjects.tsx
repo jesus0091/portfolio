@@ -209,7 +209,10 @@ export default function LatestProjects() {
   }, [category, mode, query]);
 
   return (
-    <section id="projects" className="relative py-50 scrollbar-hide px-4">
+    <section
+      id="projects"
+      className="relative w-full overflow-clip py-50 scrollbar-hide px-4"
+    >
       <div className="light-top-sentinel h-10 w-full absolute top-0" />
       <div
         className="absolute inset-0 -z-10"
