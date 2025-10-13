@@ -62,12 +62,12 @@ export default function HeroProject() {
         <OrbitFusion />
       </div>
 
-      <div className="flex flex-col gap-6 items-center justify-center h-full z-10">
+      <div className="flex flex-col gap-6 px-4 items-center justify-center h-full z-10">
         <div className="flex flex-col items-center gap-2">
           <p className="hero-eyebrow text-lg md:text-xl tracking-wide text-orange-600">
             From Concept to Code
           </p>
-          <p className="hero-title text-4xl md:text-[90px] tracking-tight font-black leading-none text-black text-center">
+          <p className="hero-title text-3xl md:text-[90px] tracking-tight font-black leading-none text-black text-center">
             Building Digital <br /> Products & Experience
           </p>
         </div>

@@ -154,7 +154,7 @@ function FilterChip<T extends string>({
       aria-pressed={active}
       onClick={() => onChange(payload)}
       className={[
-        "inline-flex cursor-pointer items-center gap-2 px-4 py-2 text-base font-medium transition",
+        "inline-flex cursor-pointer rounded-full items-center gap-2 px-4 py-1 md:py-2 text-sm md:text-base font-medium transition",
         active
           ? "border-black bg-black text-white"
           : "border-neutral-300 bg-white text-neutral-800 hover:border-neutral-800",
@@ -247,8 +247,8 @@ export default function LatestProjects() {
           </p>
         </header>
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div className="flex flex-col gap-3 md:flex-row md:items-center md:gap-6">
-            <div className="flex flex-wrap gap-2">
+          <div className="flex flex-col gap-2 md:flex-row md:items-center md:gap-6">
+            <div className="flex flex-wrap gap-1 md:gap-2">
               <FilterChip<Category>
                 current={category}
                 onChange={setCategory}
@@ -269,7 +269,7 @@ export default function LatestProjects() {
               />
             </div>
 
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1 md:gap-2">
               <FilterChip<Mode>
                 current={mode}
                 onChange={setMode}

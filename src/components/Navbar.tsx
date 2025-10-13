@@ -279,10 +279,10 @@ export default function Navbar() {
                   "relative rounded outline-none grid place-items-center transition-all duration-200",
                   compact ? "h-8 w-8" : "h-10 w-10",
                   open && onDark
-                    ? "text-white hover:bg-white/10"
+                    ? "text-white"
                     : onDark
-                    ? "text-white hover:bg-white/10"
-                    : "text-zinc-700 hover:bg-zinc-100",
+                    ? "text-white"
+                    : "text-zinc-700",
                 ].join(" ")}
               >
                 <span

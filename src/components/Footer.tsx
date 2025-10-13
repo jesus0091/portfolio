@@ -15,6 +15,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import gsap from "gsap";
+import { useIsMobile } from "@/app/utils/useIsMobile";
 
 type FooterLink = { label: string; href: string };
 type SocialLink = { label: string; href: string; icon: React.ReactNode };
@@ -184,6 +185,7 @@ export default function Footer({
 
     return () => ctx.revert();
   }, []);
+  const isMobile = useIsMobile(768);
 
   return (
     <footer
@@ -198,9 +200,9 @@ export default function Footer({
           data-aurora
         >
           <AuroraGlow
-            blobSize={600}
+            blobSize={isMobile ? 300 : 600}
             speed={4}
-            colors={["#1722c52c", "#aa1f1f2f", "#9f87102b"]}
+            colors={["#1723c537", "#aa1f1f2f", "#9f871039"]}
           />
         </div>
         <div className="py-20 flex flex-col items-center gap-4 text-center">
@@ -221,22 +223,12 @@ export default function Footer({
             <Link
               href={`mailto:${email}`}
               data-cta
-              className="relative inline-flex items-center gap-2 border border-white/20 px-6 py-3 text-base cursor-pointer font-medium text-white/95 hover:bg-white/10 transition"
+              className="relative inline-flex items-center rounded-full gap-2 border border-white/20 px-6 py-3 text-base cursor-pointer font-medium text-white/95 hover:bg-white/10 transition"
               aria-label="Send me an email"
             >
               <IconMail size={18} />
               {email}
             </Link>
-
-            <button
-              data-cta
-              onClick={scrollTop}
-              className="relative inline-flex items-center gap-2 border border-white/20 px-6 py-3 text-base cursor-pointer font-medium text-white/95 hover:bg-white/10 transition"
-              aria-label="Back to top"
-            >
-              Back to top
-              <IconArrowUpRight size={18} />
-            </button>
           </div>
         </div>
       </div>

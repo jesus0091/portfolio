@@ -25,7 +25,7 @@ export type Project = {
 
 function Chip({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-flex items-center bg-gray-100 px-2.5 py-0.5 text-sm md:text-base font-medium text-zinc-700">
+    <span className="inline-flex rounded-full items-center bg-gray-100 px-2.5 py-0.5 text-sm md:text-base font-medium text-zinc-700">
       {children}
     </span>
   );
@@ -36,7 +36,7 @@ export default function ProjectCard({ project }: { project: Project }) {
 
   return (
     <article
-      className="p-card will-change-transform flex flex-col overflow-hidden md:h-[550px] bg-white transition shadow-[0px_0px_50px_rgba(0,0,0,0.1)] hover:shadow-[0px_10px_50px_rgba(0,0,0,0.2)] hover:-translate-y-1 cursor-pointer"
+      className="p-card will-change-transform rounded-2xl flex flex-col overflow-hidden md:h-[550px] bg-white transition shadow-[0px_0px_50px_rgba(0,0,0,0.1)] hover:shadow-[0px_10px_50px_rgba(0,0,0,0.2)] hover:-translate-y-1 cursor-pointer"
       data-id={p.id}
     >
       <div className="relative aspect-[16/9] max-h-[250px] min-w-full w-full bg-zinc-100 overflow-hidden">
@@ -48,13 +48,17 @@ export default function ProjectCard({ project }: { project: Project }) {
           priority={p.id === "mtc-fe" || p.id === "mtc-ux"}
         />
         <span
-          className={`absolute flex flex-row gap-1 items-center left-6 top-4 px-2.5 py-1.5 text-base font-medium ${
+          className={`absolute rounded-full supports-[backdrop-filter]:backdrop-blur-md flex flex-row gap-1 items-center left-6 top-4 px-2.5 py-1.5 text-sm md:text-base font-medium ${
             p.mode === "solo"
-              ? "bg-orange-100 text-orange-700"
-              : "bg-rose-100 text-rose-700"
+              ? "bg-orange-100/60 text-orange-600"
+              : "bg-rose-100/60 text-rose-600"
           }`}
         >
-          {p.mode === "solo" ? <IconUser /> : <IconUsers />}
+          {p.mode === "solo" ? (
+            <IconUser className="h-4 w-4" />
+          ) : (
+            <IconUsers className="h-4 w-4" />
+          )}
           {p.mode === "solo" ? "Solo Project" : "Collaborative"}
         </span>
       </div>

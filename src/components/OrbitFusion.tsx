@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import styled, { keyframes } from "styled-components";
 
 import AuroraGlowYellow from "./AuroraGlowYellow";
+import { useIsMobile } from "@/app/utils/useIsMobile";
 
 const orbitDuration = 2000;
 
@@ -51,6 +52,11 @@ const Circle = styled.div<{ $color: string; $position: "left" | "right" }>`
   transform: translateY(-50%);
   filter: blur(100px);
   will-change: transform, filter;
+
+  @media (max-width: 600px) {
+    width: 30vh;
+    height: 30vh;
+  }
 `;
 
 const GlowStage = styled.div`
@@ -62,6 +68,7 @@ const GlowStage = styled.div`
 
 export const OrbitFusion: React.FC = () => {
   const [showGlow, setShowGlow] = useState(false);
+  const isMobile = useIsMobile(768);
   return (
     <Wrapper>
       <OrbitStage onAnimationEnd={() => setShowGlow(true)}>
@@ -72,7 +79,7 @@ export const OrbitFusion: React.FC = () => {
         <GlowStage aria-hidden="true">
           <AuroraGlowYellow
             opacity={0.9}
-            blobSize={560}
+            blobSize={isMobile ? 250 : 560}
             speed={1}
             extraBlur={false}
           />

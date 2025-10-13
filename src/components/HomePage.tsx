@@ -28,7 +28,6 @@ export default function HomePage() {
   const isFrontendFilled = hovered !== "designer";
   const isDesignerFilled = hovered === "designer";
 
-  // Refs para animación
   const sectionRef = useRef<HTMLElement | null>(null);
   const greetRef = useRef<HTMLParagraphElement | null>(null);
   const titleRef = useRef<HTMLDivElement | null>(null);
@@ -38,18 +37,31 @@ export default function HomePage() {
   const footerCityRef = useRef<HTMLParagraphElement | null>(null);
   const footerSocialRef = useRef<HTMLDivElement | null>(null);
 
-  // Helper segura (nunca undefined)
   const qsa = <T extends Element>(root: Element | null, sel: string): T[] =>
     root ? Array.from(root.querySelectorAll<T>(sel)) : [];
 
-  // Animación de entrada
   useLayoutEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
-    if (
+
+    const reduce =
       typeof window !== "undefined" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    ) {
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (reduce) {
+      [greetRef, titleRef, subtitleRef, footerCityRef, footerSocialRef].forEach(
+        (r) =>
+          r?.current &&
+          gsap.set(r.current, { autoAlpha: 1, y: 0, clearProps: "all" })
+      );
+      // Elementos de filas
+      const frontendBits = qsa<Element>(
+        frontendRowRef.current,
+        ".angle, .word"
+      );
+      const designerBits = qsa<Element>(designerRowRef.current, ".amp, .word");
+      gsap.set(frontendBits, { autoAlpha: 1, y: 0, clearProps: "all" });
+      gsap.set(designerBits, { autoAlpha: 1, y: 0, clearProps: "all" });
       return;
     }
 
@@ -65,70 +77,85 @@ export default function HomePage() {
       gsap.set(titleRef.current, { autoAlpha: 1 });
       gsap.set(frontendBits, { autoAlpha: 0, y: 28 });
       gsap.set(designerBits, { autoAlpha: 0, y: 28 });
-      // ❗ No tocamos .rectangle: aparece solo en hover via CSS
       gsap.set(subtitleRef.current, { autoAlpha: 0, y: 14 });
       gsap.set(footerCityRef.current, { autoAlpha: 0, y: 10 });
       gsap.set(socialLinks, { autoAlpha: 0, y: 10, scale: 0.96 });
 
+      const DUR = {
+        greet: 0.25,
+        rows: 0.25,
+        sub: 0.25,
+        foot: 0.25,
+        soc: 0.25,
+      };
+
       const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-      tl.to(greetRef.current, { autoAlpha: 1, y: 0, duration: 0.6 });
-      if (frontendBits.length) {
-        tl.to(
+
+      tl.add("intro")
+        .to(
+          greetRef.current,
+          { autoAlpha: 1, y: 0, duration: DUR.greet },
+          "intro"
+        )
+
+        .add("rows", ">0.10")
+        .to(
           frontendBits,
-          { autoAlpha: 1, y: 0, duration: 0.6, stagger: 0.06 },
-          "-=0.1"
-        );
-      }
-      if (designerBits.length) {
-        tl.to(
+          { autoAlpha: 1, y: 0, duration: DUR.rows, stagger: 0.03 },
+          "rows"
+        )
+        .to(
           designerBits,
-          { autoAlpha: 1, y: 0, duration: 0.6, stagger: 0.06 },
-          "-=0.2"
-        );
-      }
-      tl.to(
-        subtitleRef.current,
-        { autoAlpha: 1, y: 0, duration: 0.5 },
-        "-=0.05"
-      );
-      tl.to(
-        footerCityRef.current,
-        { autoAlpha: 1, y: 0, duration: 0.45 },
-        "-=0.1"
-      );
-      if (socialLinks.length) {
-        tl.to(
+          { autoAlpha: 1, y: 0, duration: DUR.rows, stagger: 0.03 },
+          "rows+=0.20"
+        )
+
+        .add("subtitle", ">0.05")
+        .to(
+          subtitleRef.current,
+          { autoAlpha: 1, y: 0, duration: DUR.sub },
+          "subtitle"
+        )
+
+        .add("footer", ">0.10")
+        .to(
+          footerCityRef.current,
+          { autoAlpha: 1, y: 0, duration: DUR.foot },
+          "footer"
+        )
+
+        .add("socials", ">0.10")
+        .to(
           socialLinks,
-          { autoAlpha: 1, y: 0, scale: 1, duration: 0.45, stagger: 0.05 },
-          "-=0.2"
+          { autoAlpha: 1, y: 0, scale: 1, duration: DUR.soc, stagger: 0.02 },
+          "socials"
         );
-      }
     }, section);
 
     return () => ctx.revert();
   }, []);
 
-  // Swipe horizontal SOLO en mobile
+  /* ==============================
+     Swipe horizontal SOLO mobile
+  ============================== */
   useEffect(() => {
     const el = sectionRef.current;
-    if (!el) return;
-
-    if (typeof window === "undefined") return;
+    if (!el || typeof window === "undefined") return;
 
     const isCoarse = window.matchMedia("(pointer: coarse)").matches;
     const isNarrow = window.innerWidth < 768;
-    if (!(isCoarse && isNarrow)) return; // solo mobile/táctil
+    if (!(isCoarse && isNarrow)) return;
 
     let startX = 0;
     let startY = 0;
     let tracking = false;
     let fired = false;
 
-    const MIN_DISTANCE = 64; // px mínimos de desplazamiento horizontal
-    const MAX_VERTICAL_DELTA = 48; // tolerancia vertical
+    const MIN_DISTANCE = 64;
+    const MAX_VERTICAL_DELTA = 48;
 
     const onTouchStart = (e: TouchEvent) => {
-      if (e.touches.length !== 1) return; // ignorar multi-touch
+      if (e.touches.length !== 1) return;
       const t = e.touches[0];
       startX = t.clientX;
       startY = t.clientY;
@@ -142,7 +169,6 @@ export default function HomePage() {
       const dx = t.clientX - startX;
       const dy = t.clientY - startY;
 
-      // si se movió mucho en vertical, priorizamos scroll vertical y cancelamos swipe
       if (Math.abs(dy) > MAX_VERTICAL_DELTA) {
         tracking = false;
         return;
@@ -152,8 +178,10 @@ export default function HomePage() {
         fired = true;
         tracking = false;
         if (dx > 0) {
+          // → swipe derecha
           router.push("/about");
         } else {
+          // ← swipe izquierda
           router.push("/projects");
         }
       }
@@ -163,7 +191,6 @@ export default function HomePage() {
       tracking = false;
     };
 
-    // listeners con passive para no bloquear scroll
     el.addEventListener("touchstart", onTouchStart, { passive: true });
     el.addEventListener("touchmove", onTouchMove, { passive: true });
     el.addEventListener("touchend", onTouchEnd, { passive: true });
@@ -234,7 +261,7 @@ export default function HomePage() {
           </StyledTitle>
 
           <div
-            ref={footerCityRef}
+            ref={subtitleRef}
             className="text-lg flex flex-row w-full justify-between px-10 max-w-xl lg:max-w-3xl mx-auto md:text-2xl font-medium mt-3 md:mt-4"
           >
             <p>Based in Argentina</p>
@@ -243,7 +270,7 @@ export default function HomePage() {
         </div>
 
         <div className="flex flex-col-reverse md:flex-col w-full justify-between items-center text-center gap-2 md:gap-3">
-          <p ref={subtitleRef} className="text-lg md:text-2xl font-medium ">
+          <p ref={footerCityRef} className="text-lg md:text-2xl font-medium ">
             Building digital products and experience
           </p>
           <div ref={footerSocialRef} className="flex flex-row gap-1">

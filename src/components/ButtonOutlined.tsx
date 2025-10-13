@@ -53,6 +53,7 @@ const StyledButton = styled.button`
   overflow: clip; /* o hidden */
   padding: 16px 24px;
   font-weight: 600;
+  border-radius: 100px;
 
   /* Accesible (mínimo táctil) */
   min-width: 44px;
