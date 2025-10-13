@@ -124,10 +124,7 @@ export default function HomePage() {
         className="text-black pt-[20vh] pb-10 px-10 h-[100dvh] w-full flex flex-col justify-between items-center"
       >
         <div className="flex flex-col items-center py-[10vh] md:py-0 text-center w-full gap-2">
-          <p
-            ref={greetRef}
-            className="text-base leading-snug md:text-2xl tracking-wide uppercase text-orange-600"
-          >
+          <p ref={greetRef} className="text-base md:text-2xl font-medium">
             👋, My name is Jesús Hernández
           </p>
 
@@ -151,7 +148,6 @@ export default function HomePage() {
               <span className="word light">Developer</span>
               <span className="angle right">/&gt;</span>
             </FrontendRow>
-
             <DesignerRow
               ref={designerRowRef}
               $filled={isDesignerFilled}
@@ -169,18 +165,18 @@ export default function HomePage() {
               </span>
             </DesignerRow>
           </StyledTitle>
-
-          <p
-            ref={subtitleRef}
-            className="text-base md:text-2xl font-medium mt-3 md:mt-8"
+          <div
+            ref={footerCityRef}
+            className="text-base flex flex-row w-full justify-between max-w-3xl mx-auto md:text-2xl font-medium mt-3 md:mt-4"
           >
-            Building digital products and experience
-          </p>
+            <p> Based in Argentina</p>
+            <p>Freelance</p>
+          </div>
         </div>
 
         <div className="flex flex-col-reverse md:flex-col w-full justify-between items-center text-center gap-2 md:gap-3">
-          <p ref={footerCityRef} className="text-sm md:text-2xl font-medium">
-            Based in Buenos Aires, Argentina.
+          <p ref={subtitleRef} className="text-base md:text-2xl font-medium ">
+            Building digital products and experience
           </p>
           <div ref={footerSocialRef} className="flex flex-row gap-1">
             <Link
@@ -210,8 +206,6 @@ export default function HomePage() {
     </Fragment>
   );
 }
-
-/* ---------------- Styled ---------------- */
 
 const EASE_SOFT = "cubic-bezier(0.22, 1, 0.36, 1)";
 const EASE_SPRING = "cubic-bezier(0.16, 1, 0.3, 1)";
@@ -255,13 +249,14 @@ const FrontendRow = styled(Row)`
   padding: 0 0.35em;
 
   .angle {
+    font-weight: 300;
     will-change: color, -webkit-text-stroke-width, transform;
     transition: ${({ $ready }) =>
       $ready
         ? `color .4s ${EASE_SOFT}, -webkit-text-stroke-width .4s ${EASE_SOFT}, transform .45s ${EASE_SPRING}`
         : "none"};
     color: ${({ $filled }) => ($filled ? "#3B82F6" : "transparent")};
-    -webkit-text-stroke: ${({ $filled }) => ($filled ? "0px" : "2px")} #3b82f6;
+    -webkit-text-stroke: ${({ $filled }) => ($filled ? "0px" : "1.2px")} #3b82f6;
   }
   &:hover .left {
     transform: translateX(-8px) rotate(-1deg);
@@ -282,8 +277,8 @@ const DesignerRow = styled(Row)`
         ? `color .4s ${EASE_SOFT}, -webkit-text-stroke-width .4s ${EASE_SOFT}`
         : "none"};
     color: ${({ $filled }) => ($filled ? "#F55A3D" : "transparent")};
-    -webkit-text-stroke: ${({ $filled }) => ($filled ? "0px" : "2px")} #f55a3d;
-    font-weight: 600;
+    -webkit-text-stroke: ${({ $filled }) => ($filled ? "0px" : "1.2px")} #f55a3d;
+    font-weight: 300;
   }
 
   .rectangle-base {

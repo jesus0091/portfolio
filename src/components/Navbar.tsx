@@ -17,15 +17,15 @@ import { usePathname } from "next/navigation";
 type Boundary = { y: number; dark: boolean };
 
 const links = [
-  { href: "/about", label: "ABOUT ME" },
-  { href: "/projects", label: "PROJECTS" },
+  { href: "/about", label: "About Me" },
+  { href: "/projects", label: "Projects" },
 ];
 
 const absTop = (el: Element) =>
   (el as HTMLElement).getBoundingClientRect().top + window.scrollY;
 
 export default function Navbar() {
-  const pathname = usePathname(); // <-- SOLO ESTA
+  const pathname = usePathname();
 
   const headerRef = useRef<HTMLElement | null>(null);
   const rafRef = useRef<number | null>(null);
@@ -177,14 +177,10 @@ export default function Navbar() {
         ref={headerRef}
         className={[
           "fixed top-0 z-50 w-full transition-colors duration-300",
-          elevated && !onDark
-            ? "supports-[backdrop-filter]:backdrop-blur-md"
-            : "",
           onDark ? "bg-black text-white" : "bg-transparent text-black",
         ].join(" ")}
       >
         <nav className="grid grid-cols-2 md:grid-cols-3 h-[80px] px-2 md:px-6 mx-auto">
-          {/* Brand */}
           <div className="flex items-center justify-start">
             <Link href="/" className="text-base font-bold tracking-tight">
               <Image
@@ -192,7 +188,7 @@ export default function Navbar() {
                   onDark ? "/images/brand-dark.png" : "/images/brand-light.png"
                 }
                 alt="Logo"
-                className="h-[54px] max-w-max md:h-auto object-contain"
+                className="h-[60px] max-w-max md:h-auto object-contain"
                 width={108}
                 height={54}
                 priority
@@ -200,7 +196,6 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Links desktop */}
           <ul className="hidden items-center gap-6 md:flex justify-center">
             {links.map(({ href, label }) => {
               const selected = pathname === href;
@@ -229,7 +224,6 @@ export default function Navbar() {
             })}
           </ul>
 
-          {/* CTA desktop */}
           <div className="hidden md:flex justify-end items-center gap-6 font-medium">
             <Link
               href="/#contact"
@@ -242,47 +236,88 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Hamburguesa mobile (right-justified → X perfecta) */}
+          {/* --- BOTÓN MOBILE CON LIQUID GLASS CUANDO elevated === true --- */}
           <div className="flex md:hidden justify-end items-center">
             <button
-              className={[
-                "relative h-10 w-10 grid place-items-center rounded outline-none",
-                "transition-colors duration-200",
-                open && onDark
-                  ? "text-white hover:bg-white/10"
-                  : "text-zinc-700 hover:bg-zinc-100",
-              ].join(" ")}
               onClick={() => setOpen((v) => !v)}
               aria-expanded={open}
               aria-label="Toggle menu"
               aria-controls="mobile-menu"
+              className={[
+                "relative flex md:hidden items-center gap-1 pl-2 pr-4 rounded-full border max-w-max h-auto cursor-pointer transition-all",
+                "active:scale-[0.98]",
+                elevated
+                  ? [
+                      "supports-[backdrop-filter]:backdrop-blur-md",
+                      "bg-white/20",
+                      onDark ? "border-white/20" : "border-black/10",
+                      "shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),0_4px_20px_rgba(0,0,0,0.10)]",
+                      onDark ? "ring-1 ring-white/10" : "ring-1 ring-black/5",
+                      "overflow-hidden",
+                    ].join(" ")
+                  : "border-transparent",
+              ].join(" ")}
             >
-              {/* Línea superior */}
-              <span
+              {elevated && (
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 rounded-full"
+                  style={{
+                    background:
+                      "linear-gradient(180deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.15) 40%, rgba(255,255,255,0) 100%)",
+                    mixBlendMode: "screen",
+                    opacity: 0.7,
+                  }}
+                />
+              )}
+              {elevated && (
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-[1px] rounded-full"
+                  style={{
+                    boxShadow:
+                      "inset 0 0 0 1px rgba(255,255,255,0.15), inset 0 8px 20px rgba(255,255,255,0.08)",
+                  }}
+                />
+              )}
+
+              <div
                 className={[
-                  "pointer-events-none absolute right-2 block h-[2.5px] w-7 rounded-full bg-current",
-                  "origin-center transform-gpu will-change-transform",
-                  "transition-[transform,width,background-color,top] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
-                  open ? "top-1/2 rotate-45" : "top-[calc(50%-6px)] rotate-0",
+                  "relative",
+                  "h-10 w-10 grid place-items-center rounded outline-none",
+                  "transition-colors duration-200",
+                  open && onDark
+                    ? "text-white hover:bg-white/10"
+                    : onDark
+                    ? "text-white hover:bg-white/10"
+                    : "text-zinc-700 hover:bg-zinc-100",
                 ].join(" ")}
-              />
-              {/* Línea inferior (más corta en closed) */}
-              <span
-                className={[
-                  "pointer-events-none absolute right-2 block h-[2.5px] rounded-full bg-current",
-                  "origin-center transform-gpu will-change-transform",
-                  "transition-[transform,width,background-color,top] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
-                  open
-                    ? "top-1/2 w-7 -rotate-45"
-                    : "top-[calc(50%+6px)] w-5 rotate-0",
-                ].join(" ")}
-              />
+              >
+                <span
+                  className={[
+                    "pointer-events-none absolute right-2 block h-[2.5px] w-6 rounded-full bg-current",
+                    "origin-center transform-gpu will-change-transform",
+                    "transition-[transform,width,background-color,top] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
+                    open ? "top-1/2 rotate-45" : "top-[calc(50%-5px)] rotate-0",
+                  ].join(" ")}
+                />
+                <span
+                  className={[
+                    "pointer-events-none absolute right-2 block h-[2.5px] rounded-full bg-current",
+                    "origin-center transform-gpu will-change-transform",
+                    "transition-[transform,width,background-color,top] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
+                    open
+                      ? "top-1/2 w-6 -rotate-45"
+                      : "top-[calc(50%+5px)] w-4 rotate-0",
+                  ].join(" ")}
+                />
+              </div>
+              <p className="relative text-lg font-medium">Menu</p>
             </button>
           </div>
         </nav>
       </header>
 
-      {/* Backdrop animado (siempre montado) */}
       <button
         type="button"
         aria-label="Close menu"
