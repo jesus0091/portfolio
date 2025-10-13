@@ -26,24 +26,19 @@ const absTop = (el: Element) =>
 
 export default function Navbar() {
   const pathname = usePathname();
-
   const headerRef = useRef<HTMLElement | null>(null);
   const rafRef = useRef<number | null>(null);
   const boundariesRef = useRef<Boundary[]>([]);
-
   const [open, setOpen] = useState(false);
   const [elevated, setElevated] = useState(false);
   const [onDark, setOnDark] = useState(false);
   const [navH, setNavH] = useState(80);
-
   const [compact, setCompact] = useState(false);
   const lastScrollYRef = useRef(0);
   const COMPACT_DELTA = 5; // umbral anti-ruido
-
   const scrollYRef = useRef(0);
   const prevBodyPaddingRightRef = useRef<string>("");
   const prevHeaderPaddingRightRef = useRef<string>("");
-
   const getScrollbarW = () =>
     typeof window === "undefined"
       ? 0
@@ -53,9 +48,7 @@ export default function Navbar() {
     if (typeof window === "undefined") return;
     const body = document.body;
     const sbw = getScrollbarW();
-
     scrollYRef.current = window.scrollY || 0;
-
     prevBodyPaddingRightRef.current = body.style.paddingRight;
     prevHeaderPaddingRightRef.current = headerRef.current
       ? headerRef.current.style.paddingRight
@@ -100,7 +93,6 @@ export default function Navbar() {
     return () => unlockScroll();
   }, [open, lockScroll, unlockScroll]);
 
-  /* -------- Tema por sentinels + medir nav -------- */
   const measureNav = useCallback(() => {
     const h = headerRef.current?.getBoundingClientRect().height ?? 80;
     setNavH(Math.max(1, Math.round(h)));

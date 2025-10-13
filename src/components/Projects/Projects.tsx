@@ -9,7 +9,7 @@ import Quote from "./Quote";
 
 export default function Projects() {
   return (
-    <div className="w-full overflow-clip">
+    <div className="w-full">
       <HeroProjects />
       <GalleryProjects />
       <Quote />

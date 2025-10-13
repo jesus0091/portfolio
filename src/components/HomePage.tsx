@@ -124,7 +124,7 @@ export default function HomePage() {
         className="text-black pt-[20vh] pb-10 px-4 h-[100dvh] w-full flex flex-col justify-between items-center"
       >
         <div className="flex flex-col items-center py-[10vh] md:py-0 text-center w-full gap-2">
-          <p ref={greetRef} className="text-base md:text-2xl font-medium">
+          <p ref={greetRef} className="text-lg md:text-2xl font-medium">
             👋, My name is Jesús Hernández
           </p>
 
@@ -167,7 +167,7 @@ export default function HomePage() {
           </StyledTitle>
           <div
             ref={footerCityRef}
-            className="text-base flex flex-row w-full justify-between max-w-3xl mx-auto md:text-2xl font-medium mt-3 md:mt-4"
+            className="text-lg flex flex-row w-full justify-between px-10 max-w-xl lg:max-w-3xl mx-auto md:text-2xl font-medium mt-3 md:mt-4"
           >
             <p> Based in Argentina</p>
             <p>Freelance</p>
@@ -175,7 +175,7 @@ export default function HomePage() {
         </div>
 
         <div className="flex flex-col-reverse md:flex-col w-full justify-between items-center text-center gap-2 md:gap-3">
-          <p ref={subtitleRef} className="text-base md:text-2xl font-medium ">
+          <p ref={subtitleRef} className="text-lg md:text-2xl font-medium ">
             Building digital products and experience
           </p>
           <div ref={footerSocialRef} className="flex flex-row gap-1">
