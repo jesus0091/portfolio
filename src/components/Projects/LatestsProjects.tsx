@@ -169,7 +169,7 @@ function FilterChip<T extends string>({
 export default function LatestProjects() {
   const [category, setCategory] = useState<Category | "all">("all");
   const [mode, setMode] = useState<Mode | "all">("all");
-  const [query, setQuery] = useState("");
+  const [query] = useState("");
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();

@@ -287,7 +287,7 @@ export default function Footer({
                       target="_blank"
                       rel="noreferrer"
                       aria-label={s.label}
-                      className="inline-flex items-center gap-2  border border-white/15 px-3 py-2 text-sm text-gray-200 hover:bg-white/10 transition"
+                      className="inline-flex items-center gap-2 rounded-full border border-white/15 px-3 py-2 text-sm text-gray-200 hover:bg-white/10 transition"
                     >
                       <span className="[&>svg]:h-5 [&>svg]:w-5">{s.icon}</span>
                       <span>{s.label}</span>

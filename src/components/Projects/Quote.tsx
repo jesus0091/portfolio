@@ -46,7 +46,9 @@ const Quote: React.FC = () => {
       gsap.set(p1Ref.current, { opacity: 1, y: 0 });
       gsap.set(miniLayoutRef.current, { opacity: 1, y: 0, scale: 1 });
       const items1 = miniLayoutRef.current?.querySelectorAll(".ml-item");
-      items1 && gsap.set(items1, { opacity: 1, y: 0 });
+      if (items1) {
+        gsap.set(items1, { opacity: 1, y: 0 });
+      }
 
       // Escena 2 reduced
       gsap.set(o2AuroraRef.current, {
@@ -57,12 +59,16 @@ const Quote: React.FC = () => {
       });
       gsap.set(o2LayoutRef.current, { opacity: 1, y: 0, scale: 1 });
       const items2 = o2LayoutRef.current?.querySelectorAll(".ml-item");
-      items2 && gsap.set(items2, { opacity: 1, y: 0 });
+      if (items2) {
+        gsap.set(items2, { opacity: 1, y: 0 });
+      }
 
       gsap.set(strikeRef.current, { autoAlpha: 1, scaleX: 1 });
       gsap.set(cleanPanelRef.current, { xPercent: 110 });
 
-      if (greatRef.current) (greatRef.current.style as any).color = "#000000";
+      if (greatRef.current) {
+        greatRef.current.style.color = "#000000";
+      }
       return;
     }
 
@@ -79,7 +85,9 @@ const Quote: React.FC = () => {
       // Mini layout base (Escena 1)
       gsap.set(miniLayoutRef.current, { opacity: 0, y: 16, scale: 0.985 });
       const mlItems1 = miniLayoutRef.current?.querySelectorAll(".ml-item");
-      mlItems1 && gsap.set(mlItems1, { opacity: 0, y: 8 });
+      if (mlItems1) {
+        gsap.set(mlItems1, { opacity: 0, y: 8 });
+      }
 
       // Strike relativo al ancho del texto (Escena 1)
       gsap.set(strikeRef.current, {
@@ -97,10 +105,14 @@ const Quote: React.FC = () => {
       });
       gsap.set(o2LayoutRef.current, { opacity: 0, y: 20, scale: 0.985 });
       const mlItems2 = o2LayoutRef.current?.querySelectorAll(".ml-item");
-      mlItems2 && gsap.set(mlItems2, { opacity: 0, y: 8 });
+      if (mlItems2) {
+        gsap.set(mlItems2, { opacity: 0, y: 8 });
+      }
 
       gsap.set(cleanPanelRef.current, { xPercent: -110 });
-      if (greatRef.current) (greatRef.current.style as any).color = "#000000";
+      if (greatRef.current) {
+        greatRef.current.style.color = "#000000";
+      }
 
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -223,10 +235,12 @@ const Quote: React.FC = () => {
             xPercent: 110,
             duration: 0.8,
             ease: "power3.inOut",
-            onStart: () =>
-              cleanPanelRef.current?.classList.remove("pointer-events-none"),
-            onComplete: () =>
-              cleanPanelRef.current?.classList.add("pointer-events-none"),
+            onStart: () => {
+              cleanPanelRef.current?.classList.remove("pointer-events-none");
+            },
+            onComplete: () => {
+              cleanPanelRef.current?.classList.add("pointer-events-none");
+            },
           },
           "wipe"
         )
