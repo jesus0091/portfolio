@@ -2,7 +2,9 @@
 
 import { useLayoutEffect, useRef } from "react";
 
+import Image from "next/image";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { SignatureIcon } from "../AboutMe/SkillsIcons";
 import gsap from "gsap";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -56,27 +58,40 @@ export default function GalleryProjects() {
   }, []);
 
   const gallery = [
-    { id: 1 },
-    { id: 2 },
-    { id: 3 },
-    { id: 4 },
-    { id: 5 },
-    { id: 6 },
-    { id: 7 },
+    { id: 1, urlImage: "/images/gallery-2.png" },
+    { id: 2, urlImage: "/images/gallery-3.png" },
+    { id: 3, urlImage: "/images/gallery-1.png" },
+    { id: 4, urlImage: "/images/gallery-4.png" },
+    { id: 5, urlImage: "/images/gallery-1.png" },
+    { id: 6, urlImage: "/images/gallery-1.png" },
+    { id: 7, urlImage: "/images/gallery-1.png" },
   ];
 
   return (
     <div
       ref={rootRef}
-      className="overflow-hidden h-[40vh] md:h-[60vh] -mt-[30vh] flex justify-center items-center md:-mt-[25vh]"
+      className="overflow-hidden h-[70vh] -mt-[30vh] md:-mt-[15vh] flex flex-col justify-center items-center"
     >
       <div className="flex flex-row gap-1 md:gap-4">
         {gallery.map((item) => (
           <div
             key={item.id}
-            className="g-item w-[15vw] min-w-[110px] md:min-w-[260px] aspect-[9/11] bg-gray-500 mb-4"
-          />
+            className="g-item w-[15vw] relative min-w-[110px] rounded-md md:rounded-xl overflow-clip md:min-w-[260px] flex items-start aspect-[9/11] shadow-2xs bg-gray-500 mb-4"
+          >
+            <Image
+              src={item.urlImage}
+              alt={`Gallery image ${item.id}`}
+              fill
+              className="object-top object-cover"
+            />
+          </div>
         ))}
+      </div>
+      <div className="flex flex-col items-center mt-4">
+        <p className="text-center text-xl md:text-4xl font-medium">
+          Join to my projects
+        </p>
+        <SignatureIcon className="h-25 md:h-40" />
       </div>
     </div>
   );

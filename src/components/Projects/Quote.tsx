@@ -9,8 +9,10 @@ import gsap from "gsap";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const STRIKE_DELAY = 1.0; // cuando empieza el tachado
-const STRIKE_DRAW_DURATION = 0.8; // duración del “dibujado” del tachado
+const STRIKE_DELAY = 1.0;
+const STRIKE_DRAW_DURATION = 0.8;
+
+const isDiv = (el: HTMLDivElement | null): el is HTMLDivElement => el !== null;
 
 const Quote: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
@@ -26,13 +28,15 @@ const Quote: React.FC = () => {
   const o2Ref = useRef<HTMLDivElement>(null);
   const p2Ref = useRef<HTMLParagraphElement>(null);
   const greatRef = useRef<HTMLSpanElement>(null);
-  const o2AuroraRef = useRef<HTMLDivElement>(null); // ⬅️ contenedor de la aurora
-  const o2LayoutRef = useRef<HTMLDivElement>(null); // ⬅️ contenedor del card/layout
+  const o2AuroraRef = useRef<HTMLDivElement>(null);
+  const o2LayoutRef = useRef<HTMLDivElement>(null);
 
   // Escena 3
   const o3Ref = useRef<HTMLDivElement>(null);
   const p3Ref = useRef<HTMLParagraphElement>(null);
   const cleanPanelRef = useRef<HTMLDivElement>(null);
+  const o3LineLeftRef = useRef<HTMLDivElement>(null);
+  const o3LineRightRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
     const section = sectionRef.current;
@@ -46,9 +50,7 @@ const Quote: React.FC = () => {
       gsap.set(p1Ref.current, { opacity: 1, y: 0 });
       gsap.set(miniLayoutRef.current, { opacity: 1, y: 0, scale: 1 });
       const items1 = miniLayoutRef.current?.querySelectorAll(".ml-item");
-      if (items1) {
-        gsap.set(items1, { opacity: 1, y: 0 });
-      }
+      items1 && gsap.set(items1, { opacity: 1, y: 0 });
 
       // Escena 2 reduced
       gsap.set(o2AuroraRef.current, {
@@ -59,21 +61,28 @@ const Quote: React.FC = () => {
       });
       gsap.set(o2LayoutRef.current, { opacity: 1, y: 0, scale: 1 });
       const items2 = o2LayoutRef.current?.querySelectorAll(".ml-item");
-      if (items2) {
-        gsap.set(items2, { opacity: 1, y: 0 });
-      }
+      items2 && gsap.set(items2, { opacity: 1, y: 0 });
 
       gsap.set(strikeRef.current, { autoAlpha: 1, scaleX: 1 });
       gsap.set(cleanPanelRef.current, { xPercent: 110 });
 
-      if (greatRef.current) {
-        greatRef.current.style.color = "#000000";
-      }
+      // Escena 3 estático
+      gsap.set(p3Ref.current, { opacity: 1, y: 0, scale: 1 });
+      gsap.set(o3LineLeftRef.current, {
+        scaleX: 1,
+        transformOrigin: "left center",
+      });
+      gsap.set(o3LineRightRef.current, {
+        scaleX: 1,
+        transformOrigin: "right center",
+      });
+
+      if (greatRef.current) greatRef.current.style.color = "#000000";
       return;
     }
 
     const ctx = gsap.context(() => {
-      // Estados base
+      // Estados base escenas
       gsap.set(o1Ref.current, { opacity: 1, zIndex: 10 });
       gsap.set(o2Ref.current, { opacity: 0, zIndex: 20 });
       gsap.set(o3Ref.current, { opacity: 0, zIndex: 30 });
@@ -82,21 +91,19 @@ const Quote: React.FC = () => {
       gsap.set(p2Ref.current, { opacity: 0, y: 100 });
       gsap.set(p3Ref.current, { opacity: 0, y: 30, scale: 0.98 });
 
-      // Mini layout base (Escena 1)
+      // Mini layout base (E1)
       gsap.set(miniLayoutRef.current, { opacity: 0, y: 16, scale: 0.985 });
       const mlItems1 = miniLayoutRef.current?.querySelectorAll(".ml-item");
-      if (mlItems1) {
-        gsap.set(mlItems1, { opacity: 0, y: 8 });
-      }
+      mlItems1 && gsap.set(mlItems1, { opacity: 0, y: 8 });
 
-      // Strike relativo al ancho del texto (Escena 1)
+      // Strike (E1)
       gsap.set(strikeRef.current, {
         scaleX: 0,
         autoAlpha: 0,
         transformOrigin: "left center",
       });
 
-      // Escena 2: estados base para AURORA + LAYOUT
+      // E2 bases
       gsap.set(o2AuroraRef.current, {
         opacity: 0,
         y: 30,
@@ -105,25 +112,30 @@ const Quote: React.FC = () => {
       });
       gsap.set(o2LayoutRef.current, { opacity: 0, y: 20, scale: 0.985 });
       const mlItems2 = o2LayoutRef.current?.querySelectorAll(".ml-item");
-      if (mlItems2) {
-        gsap.set(mlItems2, { opacity: 0, y: 8 });
-      }
+      mlItems2 && gsap.set(mlItems2, { opacity: 0, y: 8 });
+
+      // E3 líneas laterales
+      gsap.set(o3LineLeftRef.current, {
+        scaleX: 0,
+        transformOrigin: "left center",
+      });
+      gsap.set(o3LineRightRef.current, {
+        scaleX: 0,
+        transformOrigin: "right center",
+      });
 
       gsap.set(cleanPanelRef.current, { xPercent: -110 });
-      if (greatRef.current) {
-        greatRef.current.style.color = "#000000";
-      }
+      if (greatRef.current) greatRef.current.style.color = "#000000";
 
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
           start: "top top",
-          end: "+=1800",
+          end: "+=2200", // un poco más de tiempo tras la escena 3
           scrub: 0.6,
           pin: true,
           anticipatePin: 1,
           onEnter: () => {
-            // Evita recortes del pin-spacer
             const spacer = section.parentElement as HTMLElement | null;
             if (spacer) spacer.style.overflow = "visible";
           },
@@ -135,19 +147,14 @@ const Quote: React.FC = () => {
         defaults: { ease: "power2.out" },
       });
 
-      /* =========================
-         ESCENA 1
-      ========================= */
+      /* ========= ESCENA 1 ========= */
       tl.addLabel("o1Enter")
-        // 1) Texto
         .to(p1Ref.current, { opacity: 1, y: 0, duration: 0.45 }, "o1Enter")
-        // 2) Mini layout contenedor
         .to(
           miniLayoutRef.current,
           { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "power3.out" },
           "o1Enter+=0.12"
         )
-        // 3) Stagger de elementos internos del mini layout
         .to(
           mlItems1 || [],
           {
@@ -159,7 +166,6 @@ const Quote: React.FC = () => {
           },
           "<+0.05"
         )
-        // 4) Tachado relativo al texto
         .addLabel("strikeStart", `o1Enter+=${STRIKE_DELAY}`)
         .to(strikeRef.current, { autoAlpha: 1, duration: 0.12 }, "strikeStart")
         .to(
@@ -167,7 +173,6 @@ const Quote: React.FC = () => {
           { scaleX: 1, duration: STRIKE_DRAW_DURATION },
           "strikeStart"
         )
-        // micro “snap” del strike (opcional)
         .to(
           strikeRef.current,
           {
@@ -179,9 +184,7 @@ const Quote: React.FC = () => {
           "strikeStart+=0.8"
         );
 
-      /* =========================
-         ESCENA 2 (animar aurora + layout)
-      ========================= */
+      /* ========= ESCENA 2 ========= */
       tl.addLabel("o2Enter")
         .to(o1Ref.current, { opacity: 0, duration: 0.4 }, "o2Enter")
         .to(o2Ref.current, { opacity: 1, duration: 0.45 }, "<+0.05")
@@ -190,7 +193,6 @@ const Quote: React.FC = () => {
           { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" },
           "<"
         )
-        // AURORA: fade / blur-out / scale-in
         .to(
           o2AuroraRef.current,
           {
@@ -201,15 +203,13 @@ const Quote: React.FC = () => {
             duration: 0.8,
             ease: "power3.out",
           },
-          "<" // justo con el texto
+          "<"
         )
-        // LAYOUT contenedor
         .to(
           o2LayoutRef.current,
           { opacity: 1, y: 0, scale: 1, duration: 0.55, ease: "power3.out" },
           "<+0.05"
         )
-        // LAYOUT items internos (stagger)
         .to(
           mlItems2 || [],
           {
@@ -221,12 +221,9 @@ const Quote: React.FC = () => {
           },
           "<+0.05"
         )
-        // Asegura color estático en "great" (no animado)
         .to(greatRef.current, { color: "#000000", duration: 0.2 }, "<");
 
-      /* =========================
-         ESCENA 3
-      ========================= */
+      /* ========= ESCENA 3 ========= */
       tl.addLabel("wipe", "o2Enter+=1.7")
         .to(o3Ref.current, { opacity: 1, duration: 0.25 }, "wipe")
         .to(
@@ -235,17 +232,16 @@ const Quote: React.FC = () => {
             xPercent: 110,
             duration: 0.8,
             ease: "power3.inOut",
-            onStart: () => {
-              cleanPanelRef.current?.classList.remove("pointer-events-none");
-            },
-            onComplete: () => {
-              cleanPanelRef.current?.classList.add("pointer-events-none");
-            },
+            onStart: () =>
+              cleanPanelRef.current?.classList.remove("pointer-events-none"),
+            onComplete: () =>
+              cleanPanelRef.current?.classList.add("pointer-events-none"),
           },
           "wipe"
         )
+        // ⬇️ Evitamos pasar null a GSAP filtrando con el type guard
         .to(
-          [o1Ref.current, o2Ref.current],
+          [o1Ref.current, o2Ref.current].filter(isDiv),
           { opacity: 0, duration: 0.3 },
           "wipe+=0.05"
         )
@@ -253,7 +249,19 @@ const Quote: React.FC = () => {
           p3Ref.current,
           { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: "power3.out" },
           "wipe+=0.25"
-        );
+        )
+        .to(
+          o3LineLeftRef.current,
+          { scaleX: 1, duration: 0.6, ease: "power3.out" },
+          "wipe+=0.35"
+        )
+        .to(
+          o3LineRightRef.current,
+          { scaleX: 1, duration: 0.6, ease: "power3.out" },
+          "wipe+=0.40"
+        )
+        // margen extra al final para “respirar” un poco más
+        .addPause("+=0.6");
     }, section);
 
     return () => ctx.revert();
@@ -297,13 +305,12 @@ const Quote: React.FC = () => {
               <div className="h-9 md:h-10 w-full border-b border-neutral-100 flex items-center gap-2 px-3">
                 <span className="ml-item h-2.5 w-2.5 rounded-full bg-red-400" />
                 <span className="ml-item h-2.5 w-2.5 rounded-full bg-yellow-400" />
-                <span className="ml-item h-2.5 w-2.5 rounded-full bg-green-400" />
+                <span className="ml-item h-2.5 w-2.5 rounded-full bg.green-400" />
                 <div className="ml-item ml-2 h-2 w-24 md:w-32 rounded bg-white" />
               </div>
 
               {/* Body */}
               <div className="grid grid-cols-12 gap-3 p-3 md:p-4">
-                {/* Sidebar */}
                 <div className="col-span-6 space-y-2 flex flex-col justify-center animate-pulse">
                   <div className="ml-item h-2.5 rounded bg-black/20 w-3/4" />
                   <div className="ml-item h-2.5 rounded bg-black/20 w-2/3" />
@@ -315,7 +322,6 @@ const Quote: React.FC = () => {
                     <IconPhoto />
                   </div>
                 </div>
-                {/* Body Content */}
                 <div className="col-span-12">
                   <div className="flex gap-2">
                     <div className="ml-item h-2.5 flex-1 rounded bg-neutral-200" />
@@ -360,7 +366,7 @@ const Quote: React.FC = () => {
         </div>
       </div>
 
-      {/* ========== ESCENA 2 (Aurora + Layout animados) ========== */}
+      {/* ========== ESCENA 2 (Aurora + Layout) ========== */}
       <div
         ref={o2Ref}
         className="absolute flex-col inset-0 flex items-center justify-end px-4 text-center py-[15vh] overflow-visible"
@@ -406,7 +412,7 @@ const Quote: React.FC = () => {
             <div className="grid grid-cols-12 gap-3 p-3 md:p-4">
               <div className="col-span-6 space-y-2 flex flex-col justify-center animate-pulse">
                 <div className="ml-item h-2.5 rounded bg-white w-3/4" />
-                <div className="ml-item h-2.5 rounded bg-white w-2/3" />
+                <div className="ml-item h-2.5 rounded bg.white w-2/3" />
                 <div className="ml-item h-2.5 rounded bg-white w-4/5" />
                 <div className="ml-item h-2.5 rounded bg-white w-1/2" />
               </div>
@@ -438,6 +444,7 @@ const Quote: React.FC = () => {
             </div>
           </div>
 
+          {/* overlays existentes */}
           <div
             aria-hidden
             className="pointer-events-none absolute left-0 right-0 h-[70%] bottom-0 rounded-2xl"
@@ -457,6 +464,7 @@ const Quote: React.FC = () => {
         </div>
       </div>
 
+      {/* ========== ESCENA 3 (línea + texto + línea) ========== */}
       <div
         ref={o3Ref}
         className="absolute inset-0 flex items-center justify-center px-4 text-center"
@@ -466,12 +474,24 @@ const Quote: React.FC = () => {
           aria-hidden
           className="pointer-events-none absolute inset-0 z-40 bg-[#e4e4e4] flex items-center justify-center"
         />
-        <p
-          ref={p3Ref}
-          className="relative z-50 text-4xl md:text-8xl max-w-6xl font-black tracking-tight text-orange-600 leading-none"
-        >
-          Great products happen when design meets code.
-        </p>
+        <div className="relative z-50 flex items-center w-full gap-3 md:gap-6">
+          <div
+            ref={o3LineLeftRef}
+            className="h-[3px] md:h-[5px] rounded-full bg-orange-600 flex-1"
+            style={{ transform: "scaleX(0)", transformOrigin: "left center" }}
+          />
+          <p
+            ref={p3Ref}
+            className="text-4xl md:text-8xl max-w-6xl font-black tracking-tight text-orange-600 leading-none"
+          >
+            Great products happen when design meets code.
+          </p>
+          <div
+            ref={o3LineRightRef}
+            className="h-[3px] md:h-[5px] rounded-full bg-orange-600 flex-1"
+            style={{ transform: "scaleX(0)", transformOrigin: "right center" }}
+          />
+        </div>
       </div>
     </section>
   );
