@@ -121,7 +121,7 @@ export default function HomePage() {
       <Cursor active={cursorActive} />
       <section
         ref={sectionRef}
-        className="text-black pt-[20vh] pb-10 px-10 h-[100dvh] w-full flex flex-col justify-between items-center"
+        className="text-black pt-[20vh] pb-10 px-4 h-[100dvh] w-full flex flex-col justify-between items-center"
       >
         <div className="flex flex-col items-center py-[10vh] md:py-0 text-center w-full gap-2">
           <p ref={greetRef} className="text-base md:text-2xl font-medium">
@@ -215,7 +215,7 @@ const StyledTitle = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 0;
-  font-size: clamp(32px, 8vw, 120px);
+  font-size: clamp(34px, 8vw, 120px);
   line-height: 1;
   white-space: nowrap;
   letter-spacing: -0.02em;
@@ -246,8 +246,6 @@ const Row = styled.div<{ $filled: boolean; $ready: boolean }>`
 `;
 
 const FrontendRow = styled(Row)`
-  padding: 0 0.35em;
-
   .angle {
     font-weight: 300;
     will-change: color, -webkit-text-stroke-width, transform;
