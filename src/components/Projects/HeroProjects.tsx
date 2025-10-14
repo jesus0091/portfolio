@@ -55,7 +55,7 @@ export default function HeroProject() {
   return (
     <section
       ref={rootRef}
-      className="hero h-[100dvh] flex justify-center items-center relative overflow-clip"
+      className="hero h-[calc(100dvh-80px)] flex justify-center items-center relative overflow-clip"
     >
       <div className="light-top-sentinel h-10 absolute top-0 w-full" />
       <div className="hero-orbit absolute will-change-transform">

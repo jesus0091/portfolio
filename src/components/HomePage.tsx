@@ -135,9 +135,6 @@ export default function HomePage() {
     return () => ctx.revert();
   }, []);
 
-  /* ==============================
-     Swipe horizontal SOLO mobile
-  ============================== */
   useEffect(() => {
     const el = sectionRef.current;
     if (!el || typeof window === "undefined") return;
@@ -209,8 +206,7 @@ export default function HomePage() {
       <Cursor active={cursorActive} />
       <section
         ref={sectionRef}
-        className="
-          text-black pt-[20vh] pb-10 px-4 h-[100dvh] w-full
+        className="pt-[20vh] pb-10 px-4 h-[calc(100dvh-80px)] w-full
           flex flex-col justify-between items-center
           touch-pan-y select-none
           overflow-x-clip

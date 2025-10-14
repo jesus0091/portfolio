@@ -190,7 +190,7 @@ export default function LatestProjects() {
   return (
     <section
       id="projects"
-      className="relative w-full overflow-clip py-50 scrollbar-hide px-4"
+      className="relative w-full overflow-clip py-50 scrollbar-hide px-8"
     >
       <div className="mx-auto max-w-6xl flex flex-col gap-6">
         <header className="mb-6 flex flex-col gap-2">

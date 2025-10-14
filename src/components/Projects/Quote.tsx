@@ -42,17 +42,13 @@ const Quote: React.FC = () => {
     const section = sectionRef.current;
     if (!section) return;
 
-    // Reduced motion
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       gsap.set([o1Ref.current], { opacity: 1 });
       gsap.set([o2Ref.current, o3Ref.current], { opacity: 0 });
-
       gsap.set(p1Ref.current, { opacity: 1, y: 0 });
       gsap.set(miniLayoutRef.current, { opacity: 1, y: 0, scale: 1 });
       const items1 = miniLayoutRef.current?.querySelectorAll(".ml-item");
       items1 && gsap.set(items1, { opacity: 1, y: 0 });
-
-      // Escena 2 reduced
       gsap.set(o2AuroraRef.current, {
         opacity: 1,
         y: 0,
@@ -62,11 +58,8 @@ const Quote: React.FC = () => {
       gsap.set(o2LayoutRef.current, { opacity: 1, y: 0, scale: 1 });
       const items2 = o2LayoutRef.current?.querySelectorAll(".ml-item");
       items2 && gsap.set(items2, { opacity: 1, y: 0 });
-
       gsap.set(strikeRef.current, { autoAlpha: 1, scaleX: 1 });
       gsap.set(cleanPanelRef.current, { xPercent: 110 });
-
-      // Escena 3 estático
       gsap.set(p3Ref.current, { opacity: 1, y: 0, scale: 1 });
       gsap.set(o3LineLeftRef.current, {
         scaleX: 1,
@@ -82,28 +75,20 @@ const Quote: React.FC = () => {
     }
 
     const ctx = gsap.context(() => {
-      // Estados base escenas
       gsap.set(o1Ref.current, { opacity: 1, zIndex: 10 });
       gsap.set(o2Ref.current, { opacity: 0, zIndex: 20 });
       gsap.set(o3Ref.current, { opacity: 0, zIndex: 30 });
-
       gsap.set(p1Ref.current, { opacity: 0, y: 30 });
       gsap.set(p2Ref.current, { opacity: 0, y: 100 });
       gsap.set(p3Ref.current, { opacity: 0, y: 30, scale: 0.98 });
-
-      // Mini layout base (E1)
       gsap.set(miniLayoutRef.current, { opacity: 0, y: 16, scale: 0.985 });
       const mlItems1 = miniLayoutRef.current?.querySelectorAll(".ml-item");
       mlItems1 && gsap.set(mlItems1, { opacity: 0, y: 8 });
-
-      // Strike (E1)
       gsap.set(strikeRef.current, {
         scaleX: 0,
         autoAlpha: 0,
         transformOrigin: "left center",
       });
-
-      // E2 bases
       gsap.set(o2AuroraRef.current, {
         opacity: 0,
         y: 30,
@@ -113,8 +98,6 @@ const Quote: React.FC = () => {
       gsap.set(o2LayoutRef.current, { opacity: 0, y: 20, scale: 0.985 });
       const mlItems2 = o2LayoutRef.current?.querySelectorAll(".ml-item");
       mlItems2 && gsap.set(mlItems2, { opacity: 0, y: 8 });
-
-      // E3 líneas laterales
       gsap.set(o3LineLeftRef.current, {
         scaleX: 0,
         transformOrigin: "left center",
@@ -131,7 +114,7 @@ const Quote: React.FC = () => {
         scrollTrigger: {
           trigger: section,
           start: "top top",
-          end: "+=2200", // un poco más de tiempo tras la escena 3
+          end: "+=2200",
           scrub: 0.6,
           pin: true,
           anticipatePin: 1,
@@ -147,7 +130,6 @@ const Quote: React.FC = () => {
         defaults: { ease: "power2.out" },
       });
 
-      /* ========= ESCENA 1 ========= */
       tl.addLabel("o1Enter")
         .to(p1Ref.current, { opacity: 1, y: 0, duration: 0.45 }, "o1Enter")
         .to(
@@ -184,7 +166,6 @@ const Quote: React.FC = () => {
           "strikeStart+=0.8"
         );
 
-      /* ========= ESCENA 2 ========= */
       tl.addLabel("o2Enter")
         .to(o1Ref.current, { opacity: 0, duration: 0.4 }, "o2Enter")
         .to(o2Ref.current, { opacity: 1, duration: 0.45 }, "<+0.05")
@@ -223,7 +204,6 @@ const Quote: React.FC = () => {
         )
         .to(greatRef.current, { color: "#000000", duration: 0.2 }, "<");
 
-      /* ========= ESCENA 3 ========= */
       tl.addLabel("wipe", "o2Enter+=1.7")
         .to(o3Ref.current, { opacity: 1, duration: 0.25 }, "wipe")
         .to(
@@ -239,7 +219,6 @@ const Quote: React.FC = () => {
           },
           "wipe"
         )
-        // ⬇️ Evitamos pasar null a GSAP filtrando con el type guard
         .to(
           [o1Ref.current, o2Ref.current].filter(isDiv),
           { opacity: 0, duration: 0.3 },
@@ -260,7 +239,6 @@ const Quote: React.FC = () => {
           { scaleX: 1, duration: 0.6, ease: "power3.out" },
           "wipe+=0.40"
         )
-        // margen extra al final para “respirar” un poco más
         .addPause("+=0.6");
     }, section);
 
@@ -272,26 +250,25 @@ const Quote: React.FC = () => {
       ref={sectionRef}
       className="relative h-[100dvh] w-full overflow-x-hidden overflow-y-visible"
     >
-      {/* ========== ESCENA 1 ========== */}
       <div
         ref={o1Ref}
-        className="absolute inset-0 flex items-center justify-end flex-col px-4 py-[15vh] text-center"
+        className="absolute inset-0 flex items-center justify-center flex-col px-4 py-[15vh] text-center"
       >
         <div className="relative flex flex-col items-center w-full">
           <p
             ref={p1Ref}
-            className="text-3xl md:text-7xl font-medium tracking-tight"
+            className="text-3xl md:text-7xl font-medium tracking-tight -mb-8"
           >
             <span ref={textWrapRef} className="relative inline-block">
               You need a website
               <span
                 ref={strikeRef}
-                className="absolute left-0 top-1/2 -translate-y-1/2 h-[3px] md:h-[10px] w-full rounded-full bg-orange-500 block"
+                className="absolute left-0 top-1/2 -translate-y-1/2 h-[3px] md:h-[10px] w-full rounded-full bg-[var(--orange)] block"
               />
             </span>
           </p>
 
-          <div className="flex flex-col w-full items-center relative px-8 py-15 md:py-15 md:px-15">
+          <div className="flex flex-col w-full items-center relative px-8 py-15 md:px-15 -mb-15">
             <div
               ref={miniLayoutRef}
               className="
@@ -301,15 +278,12 @@ const Quote: React.FC = () => {
                 overflow-hidden text-left
               "
             >
-              {/* Header */}
               <div className="h-9 md:h-10 w-full border-b border-neutral-100 flex items-center gap-2 px-3">
                 <span className="ml-item h-2.5 w-2.5 rounded-full bg-red-400" />
                 <span className="ml-item h-2.5 w-2.5 rounded-full bg-yellow-400" />
                 <span className="ml-item h-2.5 w-2.5 rounded-full bg.green-400" />
                 <div className="ml-item ml-2 h-2 w-24 md:w-32 rounded bg-white" />
               </div>
-
-              {/* Body */}
               <div className="grid grid-cols-12 gap-3 p-3 md:p-4">
                 <div className="col-span-6 space-y-2 flex flex-col justify-center animate-pulse">
                   <div className="ml-item h-2.5 rounded bg-black/20 w-3/4" />
@@ -344,42 +318,29 @@ const Quote: React.FC = () => {
                 </div>
               </div>
             </div>
-
-            {/* overlays existentes */}
             <div
               aria-hidden
-              className="pointer-events-none absolute left-0 right-0 h-[70%] bottom-0 rounded-2xl"
-              style={{
-                background:
-                  "linear-gradient(to bottom, #e4e4e400 0%, #e4e4e4 100%)",
-              }}
+              className="pointer-events-none absolute left-0 right-0 h-[70%] bottom-0 rounded-2xl bg-gradient-to-t from-[var(--background)] to-transparent"
             />
             <div
               aria-hidden
-              className="pointer-events-none absolute left-0 right-0 h-[30%] bottom-0 rounded-2xl"
-              style={{
-                background:
-                  "linear-gradient(to bottom, #e4e4e400 0%, #e4e4e4 100%)",
-              }}
+              className="pointer-events-none absolute left-0 right-0 h-[30%] bottom-0 rounded-2xl bg-gradient-to-t from-[var(--background)] to-transparent"
             />
           </div>
         </div>
       </div>
-
-      {/* ========== ESCENA 2 (Aurora + Layout) ========== */}
       <div
         ref={o2Ref}
-        className="absolute flex-col inset-0 flex items-center justify-end px-4 text-center py-[15vh] overflow-visible"
+        className="absolute flex-col inset-0 flex items-center justify-center px-4 text-center py-[20vh] overflow-visible"
       >
-        <p ref={p2Ref} className="text-3xl md:text-7xl">
+        <p ref={p2Ref} className="text-3xl md:text-7xl -mb-8">
           You need a{" "}
           <span ref={greatRef} className="font-black text-black">
             great
           </span>{" "}
           website.
         </p>
-
-        <div className="flex flex-col w-full items-center relative px-8 py-15 md:py-15 md:px-15">
+        <div className="flex flex-col w-full items-center relative px-8 py-15 md:px-15 -mb-15">
           <div
             ref={o2AuroraRef}
             className="absolute -z-10 inset-0 overflow-visible flex flex-col items-center justify-end"
@@ -443,28 +404,16 @@ const Quote: React.FC = () => {
               </div>
             </div>
           </div>
-
-          {/* overlays existentes */}
           <div
             aria-hidden
-            className="pointer-events-none absolute left-0 right-0 h-[70%] bottom-0 rounded-2xl"
-            style={{
-              background:
-                "linear-gradient(to bottom, #e4e4e400 0%, #e4e4e4 100%)",
-            }}
+            className="pointer-events-none absolute left-0 right-0 h-[70%] bottom-0 rounded-2xl bg-gradient-to-t from-[var(--background)] to-transparent"
           />
           <div
             aria-hidden
-            className="pointer-events-none absolute left-0 right-0 h-[30%] bottom-0 rounded-2xl"
-            style={{
-              background:
-                "linear-gradient(to bottom, #e4e4e400 0%, #e4e4e4 100%)",
-            }}
+            className="pointer-events-none absolute left-0 right-0 h-[30%] bottom-0 rounded-2xl bg-gradient-to-t from-[var(--background)] to-transparent"
           />
         </div>
       </div>
-
-      {/* ========== ESCENA 3 (línea + texto + línea) ========== */}
       <div
         ref={o3Ref}
         className="absolute inset-0 flex items-center justify-center px-4 text-center"
@@ -472,7 +421,7 @@ const Quote: React.FC = () => {
         <div
           ref={cleanPanelRef}
           aria-hidden
-          className="pointer-events-none absolute inset-0 z-40 bg-[#e4e4e4] flex items-center justify-center"
+          className="pointer-events-none absolute inset-0 z-40 bg-[var(--background)] flex items-center justify-center"
         />
         <div className="relative z-50 flex items-center w-full gap-3 md:gap-6">
           <div

@@ -192,7 +192,7 @@ export default function Navbar() {
       <header
         ref={headerRef}
         className={[
-          "fixed top-0 z-50 w-full transition-colors duration-300",
+          "w-full transition-colors duration-300",
           onDark ? " text-white" : "bg-transparent text-black",
         ].join(" ")}
       >

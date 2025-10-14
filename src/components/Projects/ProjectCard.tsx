@@ -62,7 +62,7 @@ export default function ProjectCard({ project }: { project: Project }) {
           {p.mode === "solo" ? "Solo Project" : "Collaborative"}
         </span>
       </div>
-      <div className="px-6 py-4 flex-1 flex flex-col">
+      <div className="px-4 md:px-6 py-3 md:py-4 flex-1 flex flex-col">
         <div>
           <h3 className="text-base md:text-xl font-bold leading-tight">
             {p.title}
@@ -76,14 +76,14 @@ export default function ProjectCard({ project }: { project: Project }) {
         </p>
         <div className="flex flex-col gap-1 mt-1 md:mt-2">
           <p className="text-sm text-gray-500">Tools:</p>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1 md:gap-2">
             {p.stack.map((s) => (
               <Chip key={s}>{s}</Chip>
             ))}
           </div>
         </div>
       </div>
-      <div className="flex items-center justify-between border-t px-6 py-4 text-sm text-zinc-600">
+      <div className="flex items-center justify-between border-t-2 border-t-[var(--background)] px-4 md:px-6 py-2 md:py-4 text-sm text-zinc-600">
         <span className="text-gray-500 text-base">{p.productName}</span>
         <div className="flex items-center gap-3">
           {(p.links ?? []).map((l) => (
