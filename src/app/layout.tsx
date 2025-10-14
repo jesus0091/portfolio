@@ -54,7 +54,7 @@ export const metadata: Metadata = {
       "Explore the portfolio of Jesus Hernandez: front-end engineering, UX/UI design, and crafted digital experiences.",
     images: [
       {
-        url: "/og-image.jpg",
+        url: "/images/share.png",
         width: 1200,
         height: 630,
         alt: "Portfolio — Jesus Hernandez — Front-End Developer & UX/UI Designer",
@@ -66,7 +66,7 @@ export const metadata: Metadata = {
     title: "Jesus Hernandez — Front-End Developer & UX/UI Designer",
     description:
       "Front-end development and UX/UI design portfolio by Jesus Hernandez.",
-    images: ["/og-image.jpg"],
+    images: ["/images/share.png"],
   },
   icons: {
     icon: [
