@@ -207,7 +207,7 @@ export default function HomePage() {
       <Cursor active={cursorActive} />
       <section
         ref={sectionRef}
-        className="pt-[20vh] pb-10 px-4 h-[100dvh] w-full
+        className="pb-10 px-4 h-[100dvh] w-full
           flex flex-col justify-between items-center
           touch-pan-y select-none
           overflow-x-clip

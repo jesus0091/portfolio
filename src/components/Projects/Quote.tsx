@@ -283,11 +283,11 @@ const Quote: React.FC = () => {
     >
       <div
         ref={o1Ref}
-        className="absolute flex-col inset-0 flex items-center justify-center px-4 gap-6 md:gap-8 text-center py-[15vh]"
+        className="absolute flex-col inset-0 flex items-center justify-end px-4 gap-6 md:gap-8 text-center py-[8vh]"
       >
         <p
           ref={p1Ref}
-          className="text-3xl md:text-6xl font-medium tracking-tight"
+          className="text-3xl md:text-6xl font-medium tracking-tight z-10"
         >
           <span ref={textWrapRef} className="relative inline-block">
             You need a website
@@ -298,10 +298,11 @@ const Quote: React.FC = () => {
           </span>
         </p>
         <MiniLayout ref={miniLayoutRef} />
+        <div className="absolute inset-0 bg-gradient-to-t from-[var(--background)] to-transparent" />
       </div>
       <div
         ref={o2Ref}
-        className="absolute flex-col inset-0 flex items-center justify-center px-4 gap-6 md:gap-8 text-center py-[15vh]"
+        className="absolute flex-col inset-0 flex items-center justify-end px-4 gap-6 md:gap-8 text-center py-[8vh]"
       >
         <div
           ref={o2AuroraRef}
@@ -315,7 +316,10 @@ const Quote: React.FC = () => {
             extraBlur={false}
           />
         </div>
-        <p ref={p2Ref} className="text-3xl md:text-6xl !bg-transparent">
+        <p
+          ref={p2Ref}
+          className="text-3xl font-medium md:text-6xl !bg-transparent z-10"
+        >
           You need a{" "}
           <span ref={greatRef} className="font-black !text-[var(--orange)]">
             great
@@ -323,6 +327,7 @@ const Quote: React.FC = () => {
           website.
         </p>
         <MiniLayout ref={o2LayoutRef} />
+        <div className="absolute inset-0 bg-gradient-to-t from-[var(--background)] to-transparent" />
       </div>
       <div
         ref={o3Ref}

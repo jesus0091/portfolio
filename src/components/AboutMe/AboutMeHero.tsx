@@ -4,6 +4,7 @@ import { Fragment, useLayoutEffect, useRef } from "react";
 
 import { AuroraGlow } from "../AuroraGlow";
 import ButtonOutlined from "../ButtonOutlined";
+import Navbar from "../Navbar";
 import SkillsCarousel from "./Skills";
 import gsap from "gsap";
 
@@ -53,37 +54,40 @@ const AboutMeHero = () => {
 
   return (
     <Fragment>
-      <section className="h-[100dvh] relative flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 -z-10 flex items-center justify-center">
-          <AuroraGlow blobSize={600} speed={4} />
+      <section className="h-[100dvh] relative flex flex-col items-center justify-between overflow-hidden">
+        <div className="absolute inset-0 flex items-center z-0">
+          <AuroraGlow
+            blobSize={600}
+            speed={4}
+            colors={["#007bff1f", "#ff00bb1f", "#00ff951f"]}
+          />
         </div>
-
+        <Navbar />
+        <div className="hidden md:flex w-full h-[80px]" />
         <div
           ref={rootRef}
-          className="flex flex-col items-center justify-center gap-6 w-full"
+          className="flex flex-col z-10 items-center px-4 justify-center gap-6 w-full"
         >
           <div className="flex flex-col items-center justify-center gap-2 w-full">
             <p
               ref={nameRef}
-              className="select-none text-lg md:text-xl tracking-wide leading-none font-normal block text-center text-orange-600"
+              className="select-none text-lg md:text-xl tracking-wide leading-none font-normal block text-center text-[var(--orange)]"
             >
               Jesus Hernandez
             </p>
             <p
               ref={titleRef}
-              className="text-4xl md:text-[90px] font-black tracking-tight leading-none text-center text-black max-w-4xl"
+              className="text-4xl md:text-[90px] font-black tracking-tight leading-none text-center text-[var(--black)] max-w-4xl"
             >
               The Creative Mind Behind the Code
             </p>
           </div>
-
           <div ref={ctaRef}>
             <ButtonOutlined>Lets start a project together</ButtonOutlined>
           </div>
-
-          <div ref={skillsRef} className="absolute bottom-0 w-full">
-            <SkillsCarousel />
-          </div>
+        </div>
+        <div ref={skillsRef} className="w-full">
+          <SkillsCarousel />
         </div>
       </section>
     </Fragment>

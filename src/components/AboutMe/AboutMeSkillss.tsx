@@ -1,287 +1,225 @@
 // components/AboutMeSkills.tsx
 "use client";
 
+import {
+  IconCode,
+  IconPalette,
+  IconProps,
+  IconUsersGroup,
+} from "@tabler/icons-react";
 import React, { useLayoutEffect, useRef } from "react";
 
-import Flip from "gsap/Flip";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import gsap from "gsap";
 
-const SKILL_CHIPS = [
-  "React",
-  "Next.js",
-  "TypeScript",
-  "JavaScript",
-  "TailwindCSS",
-  "GSAP",
-  "Framer Motion",
-  "Zustand",
-  "Jotai",
-  "Redux",
-  "Figma",
-  "Design System",
-  "Prototyping",
-  "UX Research",
-  "Accessibility",
-  "Jest",
-  "RTL",
-  "Storybook",
-  "Git",
-  "CI/CD",
+type Category = {
+  key: "dev" | "design" | "soft";
+  label: string;
+  icon: React.ComponentType<IconProps>;
+  skills: string[];
+};
+
+const CATEGORIES: Category[] = [
+  {
+    key: "dev",
+    label: "Development",
+    icon: IconCode,
+    skills: [
+      "React",
+      "Next.js",
+      "TypeScript",
+      "JavaScript",
+      "TailwindCSS",
+      "Jotai",
+      "Redux",
+      "Storybook",
+      "Git",
+      "GSAP",
+      "Framer Motion",
+    ],
+  },
+  {
+    key: "design",
+    label: "Design",
+    icon: IconPalette,
+    skills: [
+      "Figma",
+      "Design System",
+      "Prototyping",
+      "UX Research",
+      "Accessibility",
+    ],
+  },
+  {
+    key: "soft",
+    label: "Soft Skills",
+    icon: IconUsersGroup,
+    skills: [
+      "Communication",
+      "Teamwork",
+      "Problem Solving",
+      "Empathy",
+      "Ownership",
+      "Mentoring",
+    ],
+  },
 ];
 
 const AboutMeSkills: React.FC = () => {
   const sectionRef = useRef<HTMLElement | null>(null);
-
-  // Título overlay (vuela) y título estático (destino)
-  const titleOverlayRef = useRef<HTMLHeadingElement | null>(null);
-  const titleStaticRef = useRef<HTMLHeadingElement | null>(null);
-
-  // Stage (arena del caos) y Grid (destino ordenado)
-  const stageRef = useRef<HTMLDivElement | null>(null);
-  const gridRef = useRef<HTMLUListElement | null>(null);
+  const titleRef = useRef<HTMLHeadingElement | null>(null);
+  const subtitleRef = useRef<HTMLParagraphElement | null>(null);
+  const groupsWrapRef = useRef<HTMLDivElement | null>(null);
 
   useLayoutEffect(() => {
     if (typeof window === "undefined") return;
+    gsap.registerPlugin(ScrollTrigger);
 
-    const reduce =
-      window.matchMedia &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const section = sectionRef.current!;
+    const title = titleRef.current!;
+    const subtitle = subtitleRef.current!;
+    const groupsWrap = groupsWrapRef.current!;
+    const groupCards = groupsWrap.querySelectorAll<HTMLElement>("[data-group]");
+    const chips = groupsWrap.querySelectorAll<HTMLElement>("[data-chip]");
 
-    gsap.registerPlugin(ScrollTrigger, Flip);
+    // Estado inicial
+    gsap.set([title, subtitle], {
+      autoAlpha: 0,
+      y: 30,
+      willChange: "transform,opacity",
+    });
+    gsap.set(groupCards, {
+      autoAlpha: 0,
+      y: 40,
+      scale: 0.985,
+      willChange: "transform,opacity",
+    });
+    gsap.set(chips, {
+      autoAlpha: 0,
+      y: 18,
+      willChange: "transform,opacity",
+    });
 
-    const ctx = gsap.context(() => {
-      const section = sectionRef.current!;
-      const overlay = titleOverlayRef.current!;
-      const staticH2 = titleStaticRef.current!;
-      const stage = stageRef.current!;
-      const grid = gridRef.current!;
-      const chips = Array.from(
-        grid.querySelectorAll<HTMLElement>("[data-chip]")
-      );
-
-      // ========= ESTADO INICIAL =========
-      // 1) Título overlay gigante centrado
-      const initialScale = 2.2;
-      gsap.set(overlay, {
-        position: "fixed",
-        left: "50%",
-        top: "50%",
-        xPercent: -50,
-        yPercent: -50,
-        x: 0,
-        y: 0,
-        scale: initialScale,
-        opacity: 1,
-        transformOrigin: "50% 50%",
-        zIndex: 40,
-        willChange: "transform, opacity",
-      });
-      gsap.set(staticH2, { opacity: 0 });
-
-      // 2) Mover chips al STAGE (caos) y ponerlos fuera de la “arena”
-      //    OJO: grid arranca vacío visualmente; no pasa nada.
-      chips.forEach((chip) => {
-        if (chip.parentElement !== stage) stage.appendChild(chip);
-      });
-
-      const stageRect = () => stage.getBoundingClientRect();
-      const floorY = () => stageRect().height - 44; // "piso"
-      const minX = 20;
-      const maxX = () => stageRect().width - 140;
-
-      gsap.set(chips, {
-        position: "absolute",
-        x: () => gsap.utils.random(minX, Math.max(minX + 40, maxX())),
-        y: () => gsap.utils.random(-200, -80),
-        rotation: () => gsap.utils.random(-28, 28),
-        opacity: 1,
-        zIndex: 10,
-        willChange: "transform",
-      });
-
-      // ========= FASE 1: TÍTULO viaja centro → top center (scrub) =========
-      const centerToTop = () => {
-        const r = staticH2.getBoundingClientRect();
-        const cx = r.left + r.width / 2;
-        const cy = r.top + r.height / 2;
-        return {
-          x: cx - window.innerWidth / 2,
-          y: cy - window.innerHeight / 2,
-        };
-      };
-
-      const tlTitle = gsap.timeline({
-        defaults: { ease: "power3.out" },
-        scrollTrigger: {
-          trigger: section,
-          start: "top top",
-          end: "+=90%", // tramo para el viaje del título
-          scrub: true, // reversible
-          pin: true,
-          anticipatePin: 1,
-        },
-      });
-
-      tlTitle.to(
-        overlay,
-        reduce
-          ? {
-              x: () => centerToTop().x,
-              y: () => centerToTop().y,
-              scale: 1,
-              duration: 0.001,
-            }
-          : {
-              x: () => centerToTop().x,
-              y: () => centerToTop().y,
-              scale: 1,
-              duration: 0.6,
-            }
-      );
-      // cross-fade limpio sin saltos
-      tlTitle.to(staticH2, { opacity: 1, duration: 0.2 }, 0.6);
-      tlTitle.to(overlay, { opacity: 0, duration: 0.2 }, 0.6);
-
-      // ========= FASE 2: CAÍDA (una sola vez) =========
-      // Cuando la sección ya está visible, tiramos los chips con bounce.
-      if (!reduce) {
-        ScrollTrigger.create({
-          trigger: section,
-          start: "top 75%",
-          once: true,
-          onEnter: () => {
-            gsap.to(chips, {
-              y: () => floorY() + gsap.utils.random(-12, 12),
-              x: (i) =>
-                gsap.utils.snap(
-                  10,
-                  gsap.utils.random(
-                    minX + (i % 6) * 18,
-                    Math.max(minX + 40, maxX()) - (i % 6) * 10
-                  )
-                ),
-              rotation: () => gsap.utils.random(-12, 12),
-              ease: "bounce.out",
-              duration: 0.9,
-              stagger: { from: "random", amount: 0.35 },
-            });
-          },
-        });
-      } else {
-        gsap.set(chips, { y: floorY(), rotation: 0 });
-      }
-
-      // ========= FASE 3: DEL MONTÓN → GRID FINAL (scrub con Flip) =========
-      // La grid final está en el DOM pero vacía (porque movimos chips al stage).
-      // Creamos una animación Flip desde el estado actual (stage) hacia grid,
-      // y la controlamos con scroll (scrub).
-      const createFlipToGrid = () => {
-        // capturamos "from" (stage)
-        const state = Flip.getState(chips);
-        // movemos al destino (grid)
-        chips.forEach((chip) => {
-          if (chip.parentElement !== grid) grid.appendChild(chip);
-        });
-        // animamos hacia el layout de grid
-        return Flip.from(state, {
-          absolute: true,
-          ease: "power3.inOut",
-          stagger: 0.02,
-          duration: reduce ? 0.01 : 1.2,
-        });
-      };
-
-      // El scrub debe empezar después de la fase de título (cuando el pin termina)
-      const tlFlip = createFlipToGrid();
-
-      ScrollTrigger.create({
+    const tl = gsap.timeline({
+      scrollTrigger: {
         trigger: section,
-        start: "top 30%", // ajusta dónde empieza el “orden”
-        end: "bottom top",
+        start: "top 80%",
+        end: "top 50%",
         scrub: true,
-        animation: tlFlip,
+      },
+    });
+
+    tl.to(title, { autoAlpha: 1, y: 0, duration: 0.8, ease: "power3.out" })
+      .to(
+        subtitle,
+        { autoAlpha: 1, y: 0, duration: 0.8, ease: "power3.out" },
+        "-=0.4"
+      )
+      .to(groupCards, {
+        autoAlpha: 1,
+        y: 0,
+        scale: 1,
+        duration: 0.9,
+        ease: "power2.out",
+        stagger: 0.12,
       });
 
-      // ========= HANDLE RESIZE =========
-      const onResize = () => {
-        // Si todavía no “ordenaste” (estás arriba), re-randomizamos un poco para que no quede fuera
-        ScrollTrigger.refresh();
-      };
-      window.addEventListener("resize", onResize);
+    ScrollTrigger.batch(chips, {
+      start: "top 88%",
+      onEnter: (batch) => {
+        gsap.to(batch, {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.6,
+          ease: "power2.out",
+          stagger: { each: 0.03, from: "center" },
+        });
+      },
+    });
 
-      return () => {
-        window.removeEventListener("resize", onResize);
-        ScrollTrigger.getAll().forEach((s) => s.kill());
-      };
-    }, sectionRef);
-
-    return () => ctx.revert();
+    return () => {
+      tl.kill();
+      ScrollTrigger.getAll().forEach((st) => st.kill());
+    };
   }, []);
 
   return (
     <section
       id="skills"
       ref={sectionRef}
-      className="relative py-28"
+      className="relative py-28 min-h-[90dvh] flex flex-col justify-center"
       aria-labelledby="skills-title"
     >
-      {/* fondo de cuadrícula sutil */}
+      {/* Grid de fondo */}
       <div
-        className="pointer-events-none absolute inset-0 -z-10"
+        className="pointer-events-none absolute inset-0"
         style={{
-          backgroundImage:
-            "linear-gradient(to right, rgba(0,0,0,0.07) 1px, transparent 1px),linear-gradient(to bottom, rgba(0,0,0,0.07) 1px, transparent 1px)",
-          backgroundSize: "96px 96px",
+          backgroundImage: `
+            linear-gradient(to right, var(--grid-rgba) 1px, transparent 1px),
+            linear-gradient(to bottom, var(--grid-rgba) 1px, transparent 1px)
+          `,
+          backgroundSize: "100px 100px",
           backgroundPosition: "center",
+          WebkitMaskImage:
+            "linear-gradient(to bottom, transparent 0%, black 30%, black 100%)",
+          WebkitMaskRepeat: "no-repeat",
+          WebkitMaskSize: "100% 100%",
+          maskImage:
+            "linear-gradient(to bottom, transparent 0%, black 30%, black 100%)",
+          maskRepeat: "no-repeat",
+          maskSize: "100% 100%",
         }}
       />
 
-      <div className="mx-auto max-w-6xl px-4">
-        {/* header */}
-        <header className="relative mb-10">
-          {/* título overlay que viaja */}
-          <h2
-            ref={titleOverlayRef}
-            className="pointer-events-none select-none text-center text-6xl sm:text-7xl md:text-8xl leading-none font-black text-orange-600"
-            aria-hidden
-          >
-            Skills
-          </h2>
-
-          {/* título estático (top center) que se revela al llegar el overlay */}
-          <h2
-            ref={titleStaticRef}
-            id="skills-title"
-            className="text-center text-6xl sm:text-7xl md:text-8xl leading-none font-black text-orange-600"
-          >
-            Skills
-          </h2>
-        </header>
-
-        {/* STAGE: arena donde “caen” y se amontonan (altura fija) */}
-        <div
-          ref={stageRef}
-          className="relative mb-10 h-[320px] w-full rounded-2xl border border-zinc-200/60 bg-white/60 backdrop-blur"
-          aria-hidden
-        />
-
-        {/* GRID FINAL: destino ordenado (flex-wrap / grid) */}
-        <ul
-          ref={gridRef}
-          className="flex flex-wrap justify-center gap-3"
-          // grid alternativa: className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+      <div className="mx-auto max-w-6xl flex flex-col gap-4 px-4">
+        <h2
+          ref={titleRef}
+          id="skills-title"
+          className="select-none text-center text-3xl md:text-6xl leading-none font-black text-[var(--orange)]"
         >
-          {SKILL_CHIPS.map((name) => (
-            <li
-              key={name}
-              data-chip
-              className="select-none rounded-xl border border-zinc-200 bg-white px-3 py-2 text-center text-sm font-medium text-zinc-700 shadow-sm"
+          Skills
+        </h2>
+        <p
+          ref={subtitleRef}
+          className="text-center text-lg md:text-2xl font-medium text-[var(--black)]/70 max-w-2xl mx-auto"
+        >
+          A balanced mix of development expertise, design sensibility, and soft
+          skills that bring projects to life.
+        </p>
+
+        <div
+          ref={groupsWrapRef}
+          className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mt-6"
+        >
+          {CATEGORIES.map(({ key, label, icon: Icon, skills }) => (
+            <article
+              key={key}
+              data-group
+              aria-label={`${label} skills`}
+              className="rounded-2xl bg-[var(--white)] backdrop-blur p-6 flex flex-col gap-4"
             >
-              {name}
-            </li>
+              <header className="flex items-center gap-3">
+                <span className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-[var(--black)]/10">
+                  <Icon className="w-6 h-6 text-[var(--black)]/80" />
+                </span>
+                <h3 className="text-xl md:text-2xl font-extrabold text-[var(--black)] tracking-tight">
+                  {label}
+                </h3>
+              </header>
+              <ul className="flex flex-wrap gap-2">
+                {skills.map((name) => (
+                  <li
+                    key={`${key}-${name}`}
+                    data-chip
+                    className="select-none rounded-xl bg-[var(--black)]/8 text-[var(--black)] border border-[var(--black)]/15 px-3 py-2 text-center text-base font-medium"
+                  >
+                    {name}
+                  </li>
+                ))}
+              </ul>
+            </article>
           ))}
-        </ul>
+        </div>
       </div>
     </section>
   );
