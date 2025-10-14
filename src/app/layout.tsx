@@ -1,9 +1,9 @@
-// app/layout.tsx
 import "./globals.css";
 
 import type { Metadata, Viewport } from "next";
 
 import { Inter } from "next/font/google";
+import { ThemeProvider } from "@/components/AboutMe/ThemeController";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -11,56 +11,62 @@ const inter = Inter({
   display: "swap",
 });
 
+const CANONICAL = "https://jesushernandez.vercel.app";
+
 export const metadata: Metadata = {
   title: {
-    default: "Jesus Hernández - Frontend Developer & UX/UI Designer",
-    template: "%s | Jesus Hernández",
+    default: "Jesus Hernandez — Front-End Developer & UX/UI Designer",
+    template: "%s | Jesus Hernandez",
   },
   description:
-    "Portafolio de Jesus Hernández, Frontend Developer & UX/UI Designer especializado en React, Next.js y diseño de experiencias digitales.",
+    "Portfolio of Jesus Hernandez, Front-End Developer & UX/UI Designer specialized in React, Next.js, and crafting polished digital experiences.",
   keywords: [
-    "Frontend Developer",
+    "Front-End Developer",
+    "Frontend Engineer",
     "UX/UI Designer",
     "React",
     "Next.js",
+    "TypeScript",
     "Portfolio",
-    "Diseño Web",
-    "Desarrollo Web",
+    "Web Design",
+    "Web Development",
   ],
-  authors: [{ name: "Jesus Hernández", url: "https://jesus.dev" }],
-  creator: "Jesus Hernández",
-  publisher: "Jesus Hernández",
+  authors: [{ name: "Jesus Hernandez", url: CANONICAL }],
+  creator: "Jesus Hernandez",
+  publisher: "Jesus Hernandez",
   robots: {
     index: true,
     follow: true,
+    "max-image-preview": "large",
+    "max-snippet": -1,
+    "max-video-preview": -1,
   },
   alternates: {
-    canonical: "https://jesushernandez.vercel.app",
+    canonical: CANONICAL,
   },
   openGraph: {
     type: "website",
-    locale: "es_ES",
-    url: "https://jesus.dev",
-    siteName: "Jesus Hernández Portfolio",
-    title: "Jesus Hernández - Frontend Developer & UX/UI Designer",
+    locale: "en_US",
+    siteName: "Jesus Hernandez Portfolio",
+    url: CANONICAL,
+    title: "Jesus Hernandez — Front-End Developer & UX/UI Designer",
     description:
-      "Explora el portafolio de Jesus Hernández: proyectos de desarrollo frontend, diseño UX/UI y experiencias digitales creativas.",
+      "Explore the portfolio of Jesus Hernandez: front-end engineering, UX/UI design, and crafted digital experiences.",
     images: [
       {
-        url: "/og-image.jpg", // 👈 crea esta imagen en /public/
+        url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "Portafolio de Jesus Hernández - Frontend Developer & UX/UI Designer",
+        alt: "Portfolio — Jesus Hernandez — Front-End Developer & UX/UI Designer",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Jesus Hernández - Frontend Developer & UX/UI Designer",
+    title: "Jesus Hernandez — Front-End Developer & UX/UI Designer",
     description:
-      "Portafolio de desarrollo frontend y diseño UX/UI de Jesus Hernández.",
+      "Front-end development and UX/UI design portfolio by Jesus Hernandez.",
     images: ["/og-image.jpg"],
-    creator: "Jesus Hernandez", // 👈 cámbialo por tu @ real
   },
   icons: {
     icon: [
@@ -73,9 +79,9 @@ export const metadata: Metadata = {
     ],
     shortcut: ["/favicon.ico"],
   },
+  manifest: "/site.webmanifest",
 };
 
-// 👇 Bloque que evita zoom en la página
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
@@ -85,16 +91,71 @@ export const viewport: Viewport = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
+  const personJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: "Jesus Hernandez",
+    url: CANONICAL,
+    jobTitle: "Front-End Developer & UX/UI Designer",
+    sameAs: [],
+  };
+
+  const websiteJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "Jesus Hernandez Portfolio",
+    url: CANONICAL,
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${CANONICAL}/search?q={search_term_string}`,
+      "query-input": "required name=search_term_string",
+    },
+  };
+
   return (
     <html
-      lang="es"
+      lang="en"
       className={`${inter.variable} font-sans scrollbar-hide bg-background text-foreground`}
+      suppressHydrationWarning
     >
+      <head>
+        <meta id="theme-color" name="theme-color" content="#ffffff" />
+
+        <meta httpEquiv="X-Content-Type-Options" content="nosniff" />
+        <meta httpEquiv="X-Frame-Options" content="DENY" />
+        <meta
+          httpEquiv="Referrer-Policy"
+          content="strict-origin-when-cross-origin"
+        />
+        <meta
+          httpEquiv="Permissions-Policy"
+          content="camera=(), microphone=(), geolocation=()"
+        />
+        <meta httpEquiv="Cross-Origin-Opener-Policy" content="same-origin" />
+        <meta httpEquiv="Cross-Origin-Resource-Policy" content="same-origin" />
+        <meta httpEquiv="Cross-Origin-Embedder-Policy" content="require-corp" />
+      </head>
+
       <body className="antialiased w-full bg-background text-foreground">
-        {children}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+        />
+
+        <ThemeProvider
+          colors={{ light: "#ffffff", dark: "#0b0b0f" }}
+          defaultMode="system"
+          storageKey="theme"
+        >
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

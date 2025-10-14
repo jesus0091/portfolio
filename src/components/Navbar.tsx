@@ -17,6 +17,7 @@ import {
 
 import Image from "next/image";
 import Link from "next/link";
+import ThemeToggleButton from "./AboutMe/Toggle";
 import { usePathname } from "next/navigation";
 
 type Boundary = { y: number; dark: boolean };
@@ -235,8 +236,6 @@ export default function Navbar() {
               />
             </Link>
           </div>
-
-          {/* NAV DESKTOP */}
           <ul className="hidden items-center gap-6 md:flex justify-center">
             {links.map(({ href, label }) => {
               const selected = pathname === href;
@@ -264,8 +263,6 @@ export default function Navbar() {
               );
             })}
           </ul>
-
-          {/* CTA DESKTOP */}
           <div className="hidden md:flex justify-end items-center gap-6 font-medium">
             <Link
               href="mailto:jesushernandez120491@gmail.com"
@@ -279,7 +276,6 @@ export default function Navbar() {
               hello @jesus
             </Link>
           </div>
-
           <div className="flex md:hidden justify-end items-center">
             <button
               onClick={() => setOpen((v) => !v)}
@@ -352,8 +348,6 @@ export default function Navbar() {
           </div>
         </nav>
       </header>
-
-      {/* Backdrop menú mobile */}
       <button
         type="button"
         aria-label="Close menu"
@@ -365,7 +359,6 @@ export default function Navbar() {
             : "opacity-0 pointer-events-none bg-transparent",
         ].join(" ")}
       />
-
       <button
         type="button"
         aria-label={open ? "Close menu" : "Open menu"}
@@ -384,7 +377,6 @@ export default function Navbar() {
       >
         {open ? <IconX size={20} /> : <IconMenu2 size={20} />} <span>Menu</span>
       </button>
-
       <Link
         href="mailto:jesushernandez120491@gmail.com"
         aria-label="Contact"
@@ -403,8 +395,6 @@ export default function Navbar() {
         <IconMail size={18} />
         hello @jesus
       </Link>
-
-      {/* Sheet del menú mobile */}
       {open ? (
         <div
           id="mobile-menu"

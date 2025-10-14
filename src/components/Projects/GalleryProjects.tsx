@@ -62,9 +62,9 @@ export default function GalleryProjects() {
     { id: 2, urlImage: "/images/gallery-3.png" },
     { id: 3, urlImage: "/images/gallery-1.png" },
     { id: 4, urlImage: "/images/gallery-4.png" },
-    { id: 5, urlImage: "/images/gallery-1.png" },
-    { id: 6, urlImage: "/images/gallery-1.png" },
-    { id: 7, urlImage: "/images/gallery-1.png" },
+    { id: 5, urlImage: "/images/gallery-2.png" },
+    { id: 6, urlImage: "/images/gallery-6.png" },
+    { id: 7, urlImage: "/images/gallery-4.png" },
   ];
 
   return (

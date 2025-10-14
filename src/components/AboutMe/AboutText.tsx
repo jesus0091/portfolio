@@ -125,7 +125,7 @@ const AboutText: React.FC<AboutTextProps> = ({
         <div className="flex-1 flex h-full w-full items-center justify-center">
           <div
             ref={boxRef}
-            className="bg-[var(--white)] flex flex-col w-full min-h-[260px] md:min-h-[500px]"
+            className="bg-[var(--white)] rounded-2xl flex flex-col w-full min-h-[260px] md:min-h-[500px]"
           >
             <div className="flex-1" />
             <div className="flex flex-row gap-1 p-4 justify-end">

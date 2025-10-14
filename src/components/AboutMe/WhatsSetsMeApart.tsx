@@ -82,14 +82,13 @@ const WhatsSetsMeApart: React.FC = () => {
             thinking that makes every project stand out.
           </p>
         </div>
-
         <div
           ref={cardsWrapRef}
           className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6"
         >
           <article
             data-card
-            className="bg-[var(--white)] flex flex-col gap-4 p-6 rounded-2xl shadow-sm"
+            className="bg-[var(--white)] flex flex-col gap-4 p-6 rounded-2xl"
           >
             <div className="w-18 flex items-center justify-center h-18 bg-[var(--black)]/20 rounded-xl">
               <IconCode className="text-[var(--black)] w-10 h-10" />
@@ -104,10 +103,9 @@ const WhatsSetsMeApart: React.FC = () => {
               </p>
             </div>
           </article>
-
           <article
             data-card
-            className="bg-[var(--white)] flex flex-col gap-4 p-6 rounded-2xl shadow-sm"
+            className="bg-[var(--white)] flex flex-col gap-4 p-6 rounded-2xl"
           >
             <div className="w-18 flex items-center justify-center h-18 bg-[var(--black)]/20 rounded-xl">
               <IconHierarchy2 className="text-[var(--black)] w-10 h-10" />
@@ -122,10 +120,9 @@ const WhatsSetsMeApart: React.FC = () => {
               </p>
             </div>
           </article>
-
           <article
             data-card
-            className="bg-[var(--white)] flex flex-col gap-4 p-6 rounded-2xl shadow-sm"
+            className="bg-[var(--white)] flex flex-col gap-4 p-6 rounded-2xl"
           >
             <div className="w-18 flex items-center justify-center h-18 bg-[var(--black)]/20 rounded-xl">
               <IconTypography className="text-[var(--black)] w-10 h-10" />

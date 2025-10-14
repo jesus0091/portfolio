@@ -211,7 +211,7 @@ const AboutMeSkills: React.FC = () => {
                   <li
                     key={`${key}-${name}`}
                     data-chip
-                    className="select-none rounded-xl bg-[var(--black)]/8 text-[var(--black)] border border-[var(--black)]/15 px-3 py-2 text-center text-base font-medium"
+                    className="select-none rounded-xl bg-[var(--black)]/5 text-[var(--black)] border border-[var(--black)]/10 px-3 py-2 text-center text-base font-medium"
                   >
                     {name}
                   </li>
