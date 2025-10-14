@@ -53,6 +53,11 @@ export default function HeroProject() {
     return () => ctx.revert();
   }, []);
 
+  // funcion para mandar mail a jesushernandez120491@gmail.com
+  const sendEmail = () => {
+    window.open("mailto:jesushernandez120491@gmail.com");
+  };
+
   return (
     <section
       ref={rootRef}

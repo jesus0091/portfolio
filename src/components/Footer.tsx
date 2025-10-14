@@ -31,21 +31,24 @@ export default function Footer({
   email = "hello @jesus",
   quickLinks = [
     { label: "About Me", href: "/about" },
-    { label: "Projects", href: "/#projects" },
-    { label: "Contact", href: "/contact" },
+    { label: "Projects", href: "/projects" },
   ],
   social = [
     {
       label: "LinkedIn",
-      href: "https://linkedin.com/",
+      href: "https://www.linkedin.com/in/jesushernandez91/",
       icon: <IconBrandLinkedin />,
     },
     {
       label: "Behance",
-      href: "https://behance.net/",
+      href: "https://www.behance.net/devjesushernandez#",
       icon: <IconBrandBehance />,
     },
-    { label: "GitHub", href: "https://github.com/", icon: <IconBrandGithub /> },
+    {
+      label: "GitHub",
+      href: "https://github.com/jesus0091",
+      icon: <IconBrandGithub />,
+    },
   ],
 }: FooterProps) {
   const [year, setYear] = useState<number>(new Date().getFullYear());
@@ -160,7 +163,6 @@ export default function Footer({
         });
       };
 
-      // ScrollTrigger para disparar el burst en ambos sentidos
       ScrollTrigger.create({
         trigger: footer,
         start: "top 78%",
@@ -191,7 +193,7 @@ export default function Footer({
           data-aurora
         >
           <AuroraGlow
-            blobSize={isMobile ? 300 : 600}
+            blobSize={isMobile ? 400 : 600}
             speed={4}
             colors={["#1723c537", "#aa1f1f2f", "#9f871039"]}
           />
@@ -298,16 +300,16 @@ export default function Footer({
             </div>
           </div>
         </div>
-
         <div
           data-footer-col
-          className="flex flex-col max-w-6xl mx-auto sm:flex-row items-center justify-between gap-3 border-t border-white/10 pt-4"
+          className="flex flex-col-reverse pb-[10vh] md:pb-4 max-w-6xl mx-auto sm:flex-row items-center justify-between gap-3 border-t border-white/10 pt-4"
         >
           <p className="text-sm md:text-base text-center text-gray-500">
             © {year} Jesús Hernández. All rights reserved.
           </p>
-          <p className="text-sm md:text-base text-center text-gray-500">
-            Built with: <br /> ReactJS · Next.JS · TypeScript · TailwindCSS
+          <p className="md:whitespace-nowrap text-sm md:text-base text-center text-gray-500">
+            Built with: <br className="inline md:hidden" /> ReactJS · Next.JS ·
+            TypeScript · TailwindCSS
           </p>
         </div>
       </div>

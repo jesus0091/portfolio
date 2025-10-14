@@ -8,7 +8,12 @@ import {
   useRef,
   useState,
 } from "react";
-import { IconArrowUpRight, IconMail } from "@tabler/icons-react";
+import {
+  IconArrowUpRight,
+  IconMail,
+  IconMenu2,
+  IconX,
+} from "@tabler/icons-react";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -26,19 +31,26 @@ const absTop = (el: Element) =>
 
 export default function Navbar() {
   const pathname = usePathname();
+
   const headerRef = useRef<HTMLElement | null>(null);
   const rafRef = useRef<number | null>(null);
   const boundariesRef = useRef<Boundary[]>([]);
+  const lastScrollYRef = useRef(0);
+  const scrollYRef = useRef(0);
+
   const [open, setOpen] = useState(false);
   const [elevated, setElevated] = useState(false);
   const [onDark, setOnDark] = useState(false);
   const [navH, setNavH] = useState(80);
   const [compact, setCompact] = useState(false);
-  const lastScrollYRef = useRef(0);
-  const COMPACT_DELTA = 5; // umbral anti-ruido
-  const scrollYRef = useRef(0);
+
+  // FABs aparecen al scrollear
+  const [showFab, setShowFab] = useState(false);
+
+  const COMPACT_DELTA = 5;
   const prevBodyPaddingRightRef = useRef<string>("");
   const prevHeaderPaddingRightRef = useRef<string>("");
+
   const getScrollbarW = () =>
     typeof window === "undefined"
       ? 0
@@ -89,11 +101,8 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    if (open) {
-      lockScroll();
-    } else {
-      unlockScroll();
-    }
+    if (open) lockScroll();
+    else unlockScroll();
     return () => {
       unlockScroll();
     };
@@ -131,19 +140,17 @@ export default function Navbar() {
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
     rafRef.current = requestAnimationFrame(() => {
       const y = window.scrollY;
+
       setElevated(y > 8);
       decideTheme();
 
-      // --- Dirección de scroll para compactar/expandir
+      // FABs visibles en mobile con scroll
+      setShowFab(y > 12);
+
+      // Compactación por dirección de scroll
       const last = lastScrollYRef.current;
-      if (y > last + COMPACT_DELTA) {
-        // Scrollea hacia abajo → compacta
-        setCompact(true);
-      } else if (y < last - COMPACT_DELTA) {
-        // Scrollea hacia arriba → vuelve a tamaño original
-        setCompact(false);
-      }
-      // Cerca del top, siempre full
+      if (y > last + COMPACT_DELTA) setCompact(true);
+      else if (y < last - COMPACT_DELTA) setCompact(false);
       if (y < 4) setCompact(false);
 
       lastScrollYRef.current = y;
@@ -217,7 +224,6 @@ export default function Navbar() {
                 height={54}
                 priority
               />
-
               {/* Dark */}
               <Image
                 src="/images/brand-dark.png"
@@ -229,6 +235,8 @@ export default function Navbar() {
               />
             </Link>
           </div>
+
+          {/* NAV DESKTOP */}
           <ul className="hidden items-center gap-6 md:flex justify-center">
             {links.map(({ href, label }) => {
               const selected = pathname === href;
@@ -257,9 +265,10 @@ export default function Navbar() {
             })}
           </ul>
 
+          {/* CTA DESKTOP */}
           <div className="hidden md:flex justify-end items-center gap-6 font-medium">
             <Link
-              href="/#contact"
+              href="mailto:jesushernandez120491@gmail.com"
               className={`px-4 py-2 text-lg rounded-full transition flex gap-2 items-center ${
                 onDark
                   ? "bg-[var(--white)] text-[var(--black)]"
@@ -270,9 +279,8 @@ export default function Navbar() {
               hello @jesus
             </Link>
           </div>
-          <div
-            className={["flex md:hidden justify-end items-center"].join(" ")}
-          >
+
+          <div className="flex md:hidden justify-end items-center">
             <button
               onClick={() => setOpen((v) => !v)}
               aria-expanded={open}
@@ -281,9 +289,7 @@ export default function Navbar() {
               className={[
                 "relative flex md:hidden items-center h-auto border-[0.5px] rounded-full max-w-max cursor-pointer",
                 "transition-all duration-200 ease-out active:scale-[0.98]",
-                // padding varía según compact
                 compact ? "pl-1.5 pr-3" : "pl-2 pr-4",
-                // liquid glass solo en elevated
                 elevated
                   ? [
                       "bg-white/20 text-[var(--black)] supports-[backdrop-filter]:backdrop-blur-md",
@@ -293,7 +299,7 @@ export default function Navbar() {
                   : "border-transparent",
               ].join(" ")}
             >
-              {/* Icono hamburguesa con tamaño dinámico */}
+              {/* Grupo del ícono hamburguesa animado */}
               <div
                 className={[
                   "relative rounded outline-none grid place-items-center transition-all duration-200",
@@ -305,6 +311,7 @@ export default function Navbar() {
                     : "text-[var(--black)]",
                 ].join(" ")}
               >
+                {/* Barra superior */}
                 <span
                   className={[
                     "pointer-events-none absolute right-2 block h-[2.5px] rounded-full bg-current",
@@ -317,6 +324,7 @@ export default function Navbar() {
                       : "top-[calc(50%-5px)] w-6 rotate-0",
                   ].join(" ")}
                 />
+                {/* Barra inferior */}
                 <span
                   className={[
                     "pointer-events-none absolute right-2 block h-[2.5px] rounded-full bg-current",
@@ -331,7 +339,7 @@ export default function Navbar() {
                 />
               </div>
 
-              {/* Texto con tamaño dinámico y ocultamiento progresivo si compact */}
+              {/* Texto */}
               <p
                 className={[
                   "relative text-[var(--black)] font-medium transition-all duration-200",
@@ -345,6 +353,7 @@ export default function Navbar() {
         </nav>
       </header>
 
+      {/* Backdrop menú mobile */}
       <button
         type="button"
         aria-label="Close menu"
@@ -356,6 +365,46 @@ export default function Navbar() {
             : "opacity-0 pointer-events-none bg-transparent",
         ].join(" ")}
       />
+
+      <button
+        type="button"
+        aria-label={open ? "Close menu" : "Open menu"}
+        onClick={() => setOpen((v) => !v)}
+        className={[
+          "md:hidden fixed z-[62]",
+          "right-[calc(env(safe-area-inset-right,0px)+16px)]",
+          "top-[calc(env(safe-area-inset-top,0px)+16px)]",
+          "h-10 px-3 flex flex-row rounded-full items-center gap-2",
+          "shadow-lg transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] transform-gpu",
+          showFab && !open
+            ? "opacity-100 translate-y-0 pointer-events-auto"
+            : "opacity-0 -translate-y-2 pointer-events-none",
+          onDark ? "bg-white text-black" : "bg-black text-white",
+        ].join(" ")}
+      >
+        {open ? <IconX size={20} /> : <IconMenu2 size={20} />} <span>Menu</span>
+      </button>
+
+      <Link
+        href="mailto:jesushernandez120491@gmail.com"
+        aria-label="Contact"
+        className={[
+          "md:hidden fixed z-[60] flex items-center gap-2",
+          "right-[calc(env(safe-area-inset-right,0px)+16px)]",
+          "bottom-[calc(env(safe-area-inset-bottom,0px)+16px)]",
+          "transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] transform-gpu",
+          showFab && !open
+            ? "opacity-100 translate-y-0 pointer-events-auto"
+            : "opacity-0 translate-y-3 pointer-events-none",
+          "shadow-lg rounded-full px-5 py-3 font-semibold tracking-tight",
+          onDark ? "bg-white text-black" : "bg-black text-white",
+        ].join(" ")}
+      >
+        <IconMail size={18} />
+        hello @jesus
+      </Link>
+
+      {/* Sheet del menú mobile */}
       {open ? (
         <div
           id="mobile-menu"

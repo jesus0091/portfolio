@@ -64,7 +64,7 @@ const WhatsSetsMeApart: React.FC = () => {
   return (
     <div
       ref={sectionRef}
-      className="min-h-[100vh] flex items-center w-full px-6 md:px-10"
+      className="min-h-[100vh] py-[10vh] flex items-center w-full px-6 md:px-10"
     >
       <div className="mx-auto max-w-6xl flex flex-col gap-8 w-full">
         <div className="flex flex-col gap-3">
