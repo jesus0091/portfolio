@@ -213,6 +213,7 @@ export default function HomePage() {
           overflow-x-clip
         "
       >
+        <div className="hidden md:block"></div>
         <Navbar />
         <div className="flex flex-col items-center py-[10vh] md:py-0 text-center w-full gap-2">
           <p ref={greetRef} className="text-lg md:text-2xl font-medium">
