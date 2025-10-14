@@ -59,11 +59,10 @@ const StyledButton = styled.button`
   min-width: 44px;
   min-height: 44px;
 
-  /* Estilos base */
   font-size: 18px;
   line-height: 1;
-  border: 2px solid #000;
-  color: #000;
+  border: 2px solid var(--button);
+  color: var(--black);
   background: transparent;
   cursor: pointer;
   user-select: none;
@@ -105,7 +104,7 @@ const StyledButton = styled.button`
   &:hover {
     /* texto a blanco cuando ya cubre */
     .btn__content {
-      color: #fff;
+      color: var(--white);
     }
     /* ajusta timing para hover-in */
     --t: 480ms;

@@ -68,7 +68,7 @@ export default function HeroProject() {
           <p className="hero-eyebrow text-lg md:text-xl tracking-wide text-orange-600">
             From Concept to Code
           </p>
-          <p className="hero-title text-3xl md:text-[90px] tracking-tight font-black leading-none text-black text-center">
+          <p className="hero-title text-3xl md:text-[90px] tracking-tight font-black leading-none text-[var(--black)] text-center">
             Building Digital <br /> Products & Experience
           </p>
         </div>

@@ -9,6 +9,7 @@ import {
 
 import Cursor from "./Cursor";
 import Link from "next/link";
+import Navbar from "./Navbar";
 import gsap from "gsap";
 import styled from "styled-components";
 import { useRouter } from "next/navigation";
@@ -206,12 +207,13 @@ export default function HomePage() {
       <Cursor active={cursorActive} />
       <section
         ref={sectionRef}
-        className="pt-[20vh] pb-10 px-4 h-[calc(100dvh-80px)] w-full
+        className="pt-[20vh] pb-10 px-4 h-[100dvh] w-full
           flex flex-col justify-between items-center
           touch-pan-y select-none
           overflow-x-clip
         "
       >
+        <Navbar />
         <div className="flex flex-col items-center py-[10vh] md:py-0 text-center w-full gap-2">
           <p ref={greetRef} className="text-lg md:text-2xl font-medium">
             👋, My name is Jesús Hernández
@@ -327,8 +329,9 @@ const Row = styled.div<{ $filled: boolean; $ready: boolean }>`
       $ready
         ? `color .4s ${EASE_SOFT}, -webkit-text-stroke-width .4s ${EASE_SOFT}`
         : "none"};
-    color: ${({ $filled }) => ($filled ? "black" : "transparent")};
-    -webkit-text-stroke: ${({ $filled }) => ($filled ? "0px" : "1.2px")} black;
+    color: ${({ $filled }) => ($filled ? "var(--black)" : "transparent")};
+    -webkit-text-stroke: ${({ $filled }) => ($filled ? "0px" : "1.2px")}
+      var(--black);
   }
   .strong {
     font-weight: 900;

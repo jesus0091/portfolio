@@ -1,15 +1,22 @@
 "use client";
 
+import {
+  IconImageInPicture,
+  IconPhoto,
+  IconPictureInPicture,
+} from "@tabler/icons-react";
 import React, { useLayoutEffect, useRef } from "react";
 
+import AuroraGlow from "../AuroraGlow";
 import AuroraGlowYellow from "../AuroraGlowYellow";
-import { IconPhoto } from "@tabler/icons-react";
+import MiniLayout from "./MiniLayout";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import gsap from "gsap";
+import { useIsMobile } from "@/app/utils/useIsMobile";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const STRIKE_DELAY = 2; // ⬅ controla cuándo aparece el tachado después de que entra todo en E1
+const STRIKE_DELAY = 1.0;
 const STRIKE_DRAW_DURATION = 0.8;
 
 const isDiv = (el: HTMLDivElement | null): el is HTMLDivElement => el !== null;
@@ -42,32 +49,31 @@ const Quote: React.FC = () => {
     const section = sectionRef.current;
     if (!section) return;
 
+    // Reduced motion
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       gsap.set([o1Ref.current], { opacity: 1 });
       gsap.set([o2Ref.current, o3Ref.current], { opacity: 0 });
 
-      // E1
-      gsap.set([p1Ref.current, miniLayoutRef.current], {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-      });
+      gsap.set(p1Ref.current, { opacity: 1, y: 0 });
+      gsap.set(miniLayoutRef.current, { opacity: 1, y: 0, scale: 1 });
       const items1 = miniLayoutRef.current?.querySelectorAll(".ml-item");
       items1 && gsap.set(items1, { opacity: 1, y: 0 });
-      gsap.set(strikeRef.current, { autoAlpha: 1, scaleX: 1 });
 
-      // E2
-      gsap.set([p2Ref.current, o2AuroraRef.current, o2LayoutRef.current], {
+      // Escena 2 reduced
+      gsap.set(o2AuroraRef.current, {
         opacity: 1,
         y: 0,
         scale: 1,
         filter: "blur(0px)",
       });
+      gsap.set(o2LayoutRef.current, { opacity: 1, y: 0, scale: 1 });
       const items2 = o2LayoutRef.current?.querySelectorAll(".ml-item");
       items2 && gsap.set(items2, { opacity: 1, y: 0 });
 
-      // E3
+      gsap.set(strikeRef.current, { autoAlpha: 1, scaleX: 1 });
       gsap.set(cleanPanelRef.current, { xPercent: 110 });
+
+      // Escena 3 estático
       gsap.set(p3Ref.current, { opacity: 1, y: 0, scale: 1 });
       gsap.set(o3LineLeftRef.current, {
         scaleX: 1,
@@ -83,16 +89,21 @@ const Quote: React.FC = () => {
     }
 
     const ctx = gsap.context(() => {
-      // Estados base
+      // Estados base escenas
       gsap.set(o1Ref.current, { opacity: 1, zIndex: 10 });
       gsap.set(o2Ref.current, { opacity: 0, zIndex: 20 });
       gsap.set(o3Ref.current, { opacity: 0, zIndex: 30 });
 
-      // E1 bases
-      gsap.set([p1Ref.current], { opacity: 0, y: 30 });
+      gsap.set(p1Ref.current, { opacity: 0, y: 30 });
+      gsap.set(p2Ref.current, { opacity: 0, y: 100 });
+      gsap.set(p3Ref.current, { opacity: 0, y: 30, scale: 0.98 });
+
+      // Mini layout base (E1)
       gsap.set(miniLayoutRef.current, { opacity: 0, y: 16, scale: 0.985 });
       const mlItems1 = miniLayoutRef.current?.querySelectorAll(".ml-item");
       mlItems1 && gsap.set(mlItems1, { opacity: 0, y: 8 });
+
+      // Strike (E1)
       gsap.set(strikeRef.current, {
         scaleX: 0,
         autoAlpha: 0,
@@ -100,7 +111,6 @@ const Quote: React.FC = () => {
       });
 
       // E2 bases
-      gsap.set([p2Ref.current], { opacity: 0, y: 100 });
       gsap.set(o2AuroraRef.current, {
         opacity: 0,
         y: 30,
@@ -111,8 +121,7 @@ const Quote: React.FC = () => {
       const mlItems2 = o2LayoutRef.current?.querySelectorAll(".ml-item");
       mlItems2 && gsap.set(mlItems2, { opacity: 0, y: 8 });
 
-      // E3 bases
-      gsap.set([p3Ref.current], { opacity: 0, y: 30, scale: 0.98 });
+      // E3 líneas laterales
       gsap.set(o3LineLeftRef.current, {
         scaleX: 0,
         transformOrigin: "left center",
@@ -129,7 +138,7 @@ const Quote: React.FC = () => {
         scrollTrigger: {
           trigger: section,
           start: "top top",
-          end: "+=2000",
+          end: "+=2200", // un poco más de tiempo tras la escena 3
           scrub: 0.6,
           pin: true,
           anticipatePin: 1,
@@ -142,54 +151,86 @@ const Quote: React.FC = () => {
             if (spacer) spacer.style.overflow = "visible";
           },
         },
-        defaults: { ease: "power3.out" },
+        defaults: { ease: "power2.out" },
       });
 
-      /* ========= ESCENA 1: todo junto; tachado con delay ========= */
+      /* ========= ESCENA 1 ========= */
       tl.addLabel("o1Enter")
-        // Texto + contenedor juntos
+        .to(p1Ref.current, { opacity: 1, y: 0, duration: 0.45 }, "o1Enter")
         .to(
-          [p1Ref.current, miniLayoutRef.current],
-          { opacity: 1, y: 0, scale: 1, duration: 0.5 },
-          "o1Enter"
+          miniLayoutRef.current,
+          { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "power3.out" },
+          "o1Enter+=0.12"
         )
-        // Items internos del mini-layout, al mismo tiempo
-        .to(mlItems1 || [], { opacity: 1, y: 0, duration: 0.5 }, "o1Enter")
-        // Tachado después del delay
+        .to(
+          mlItems1 || [],
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.35,
+            stagger: 0.04,
+            ease: "power2.out",
+          },
+          "<+0.05"
+        )
         .addLabel("strikeStart", `o1Enter+=${STRIKE_DELAY}`)
-        .to(strikeRef.current, { autoAlpha: 1, duration: 0.1 }, "strikeStart")
+        .to(strikeRef.current, { autoAlpha: 1, duration: 0.12 }, "strikeStart")
         .to(
           strikeRef.current,
           { scaleX: 1, duration: STRIKE_DRAW_DURATION },
           "strikeStart"
+        )
+        .to(
+          strikeRef.current,
+          {
+            keyframes: [
+              { scaleX: 1.02, duration: 0.12, ease: "power2.out" },
+              { scaleX: 1.0, duration: 0.12, ease: "power2.in" },
+            ],
+          },
+          "strikeStart+=0.8"
         );
 
-      /* ========= ESCENA 2: todo junto ========= */
+      /* ========= ESCENA 2 ========= */
       tl.addLabel("o2Enter")
-        // Cambio de escenas
-        .to(o1Ref.current, { opacity: 0, duration: 0.35 }, "o2Enter")
-        .to(o2Ref.current, { opacity: 1, duration: 0.35 }, "o2Enter")
-        // Texto + aurora + layout juntos
+        .to(o1Ref.current, { opacity: 0, duration: 0.4 }, "o2Enter")
+        .to(o2Ref.current, { opacity: 1, duration: 0.45 }, "<+0.05")
         .to(
-          [p2Ref.current, o2AuroraRef.current, o2LayoutRef.current],
+          p2Ref.current,
+          { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" },
+          "<"
+        )
+        .to(
+          o2AuroraRef.current,
           {
             opacity: 1,
             y: 0,
             scale: 1,
             filter: "blur(0px)",
-            duration: 0.6,
+            duration: 0.8,
+            ease: "power3.out",
           },
-          "o2Enter"
+          "<"
         )
-        // Items internos del layout al mismo tiempo
-        .to(mlItems2 || [], { opacity: 1, y: 0, duration: 0.6 }, "o2Enter")
         .to(
-          greatRef.current,
-          { color: "currentColor", duration: 0.2 },
-          "o2Enter"
-        );
+          o2LayoutRef.current,
+          { opacity: 1, y: 0, scale: 1, duration: 0.55, ease: "power3.out" },
+          "<+0.05"
+        )
+        .to(
+          mlItems2 || [],
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.35,
+            stagger: 0.04,
+            ease: "power2.out",
+          },
+          "<+0.05"
+        )
+        .to(greatRef.current, { color: "#000000", duration: 0.2 }, "<");
 
-      /* ========= ESCENA 3: todo junto ========= */
+      /* ========= ESCENA 3 ========= */
       tl.addLabel("wipe", "o2Enter+=1.7")
         .to(o3Ref.current, { opacity: 1, duration: 0.25 }, "wipe")
         .to(
@@ -205,196 +246,83 @@ const Quote: React.FC = () => {
           },
           "wipe"
         )
+        // ⬇️ Evitamos pasar null a GSAP filtrando con el type guard
         .to(
           [o1Ref.current, o2Ref.current].filter(isDiv),
-          { opacity: 0, duration: 0.25 },
-          "wipe"
+          { opacity: 0, duration: 0.3 },
+          "wipe+=0.05"
         )
-        // Texto + líneas (izq/der) juntos
         .to(
-          [p3Ref.current],
-          { opacity: 1, y: 0, scale: 1, duration: 0.6 },
+          p3Ref.current,
+          { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: "power3.out" },
           "wipe+=0.25"
         )
         .to(
-          [o3LineLeftRef.current, o3LineRightRef.current],
-          { scaleX: 1, duration: 0.6 },
-          "wipe+=0.25"
+          o3LineLeftRef.current,
+          { scaleX: 1, duration: 0.6, ease: "power3.out" },
+          "wipe+=0.35"
         )
+        .to(
+          o3LineRightRef.current,
+          { scaleX: 1, duration: 0.6, ease: "power3.out" },
+          "wipe+=0.40"
+        )
+        // margen extra al final para “respirar” un poco más
         .addPause("+=0.6");
     }, section);
 
     return () => ctx.revert();
   }, []);
 
+  const isMobile = useIsMobile(768);
+
   return (
     <section
       ref={sectionRef}
-      className="relative h-[100dvh] w-full overflow-x-hidden overflow-y-visible"
+      className="relative h-[100dvh] w-full overflow-clip"
     >
       <div
         ref={o1Ref}
-        className="absolute inset-0 flex items-center justify-center flex-col px-4 py-[15vh] text-center"
+        className="absolute flex-col inset-0 flex items-center justify-center px-4 gap-6 md:gap-8 text-center py-[15vh]"
       >
-        <div className="relative flex flex-col items-center w-full">
-          <p
-            ref={p1Ref}
-            className="text-3xl md:text-7xl font-medium tracking-tight -mb-8 md:-mb-3"
-          >
-            <span ref={textWrapRef} className="relative inline-block">
-              You need a website
-              <span
-                ref={strikeRef}
-                className="absolute left-0 top-1/2 -translate-y-1/2 h-[3px] md:h-[10px] w-full rounded-full bg-[var(--orange)] block"
-              />
-            </span>
-          </p>
-
-          <div className="flex flex-col w-full items-center relative px-8 py-15 md:px-15 -mb-15">
-            <div
-              ref={miniLayoutRef}
-              className="
-                w-full max-w-[min(92vw,420px)]
-                rounded-2xl border border-neutral-100 bg-white/20 backdrop-blur
-                shadow-[0_8px_30px_rgba(0,0,0,0.06)]
-                overflow-hidden text-left
-              "
-            >
-              <div className="h-9 md:h-10 w-full border-b border-neutral-100 flex items-center gap-2 px-3">
-                <span className="ml-item h-2.5 w-2.5 rounded-full bg-red-400" />
-                <span className="ml-item h-2.5 w-2.5 rounded-full bg-yellow-400" />
-                <span className="ml-item h-2.5 w-2.5 rounded-full bg.green-400" />
-                <div className="ml-item ml-2 h-2 w-24 md:w-32 rounded bg-white" />
-              </div>
-              <div className="grid grid-cols-12 gap-3 p-3 md:p-4">
-                <div className="col-span-6 space-y-2 flex flex-col justify-center animate-pulse">
-                  <div className="ml-item h-2.5 rounded bg-black/20 w-3/4" />
-                  <div className="ml-item h-2.5 rounded bg-black/20 w-2/3" />
-                  <div className="ml-item h-2.5 rounded bg-black/20 w-4/5" />
-                  <div className="ml-item h-2.5 rounded bg-black/20 w-1/2" />
-                </div>
-                <div className="col-span-6 space-y-2">
-                  <div className="ml-item h-28 md:h-32 flex items-center justify-center rounded-lg bg-white border-neutral-200">
-                    <IconPhoto />
-                  </div>
-                </div>
-                <div className="col-span-12">
-                  <div className="flex gap-2">
-                    <div className="ml-item h-2.5 flex-1 rounded bg-neutral-200" />
-                    <div className="ml-item h-2.5 flex-[0.5] rounded bg-neutral-200" />
-                  </div>
-                  <div className="flex gap-2">
-                    <div className="ml-item h-2.5 flex-1 rounded bg-white" />
-                    <div className="ml-item h-2.5 flex-[0.3] rounded bg-white" />
-                  </div>
-                </div>
-                <div className="col-span-12">
-                  <div className="flex gap-2 space-y-1">
-                    <div className="ml-item h-2.5 flex-1 rounded bg-neutral-200" />
-                    <div className="ml-item h-2.5 flex-[0.5] rounded bg-neutral-200" />
-                  </div>
-                  <div className="flex gap-2 space-y-1">
-                    <div className="ml-item h-2.5 flex-1 rounded bg-white" />
-                    <div className="ml-item h-2.5 flex-[0.3] rounded bg-white" />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              aria-hidden
-              className="pointer-events-none absolute left-0 right-0 h-[70%] bottom-0 rounded-2xl bg-gradient-to-t from-[var(--background)] to-transparent"
+        <p
+          ref={p1Ref}
+          className="text-3xl md:text-6xl font-medium tracking-tight"
+        >
+          <span ref={textWrapRef} className="relative inline-block">
+            You need a website
+            <span
+              ref={strikeRef}
+              className="absolute left-0 top-1/2 -translate-y-1/2 h-[3px] md:h-[10px] w-full rounded-full bg-[var(--orange)] block"
             />
-            <div
-              aria-hidden
-              className="pointer-events-none absolute left-0 right-0 h-[30%] bottom-0 rounded-2xl bg-gradient-to-t from-[var(--background)] to-transparent"
-            />
-          </div>
-        </div>
+          </span>
+        </p>
+        <MiniLayout ref={miniLayoutRef} />
       </div>
       <div
         ref={o2Ref}
-        className="absolute flex-col inset-0 flex items-center justify-center px-4 text-center py-[20vh] overflow-visible"
+        className="absolute flex-col inset-0 flex items-center justify-center px-4 gap-6 md:gap-8 text-center py-[15vh]"
       >
-        <p ref={p2Ref} className="text-3xl md:text-7xl -mb-8 md:-mb-3">
+        <div
+          ref={o2AuroraRef}
+          className="absolute -z-10 inset-0 flex flex-col items-center justify-center"
+        >
+          <AuroraGlow
+            opacity={1}
+            blobSize={isMobile ? 300 : 500}
+            speed={8}
+            colors={["#0ea5e440", "#ffa91440", "#fb249340"]}
+            extraBlur={false}
+          />
+        </div>
+        <p ref={p2Ref} className="text-3xl md:text-6xl !bg-transparent">
           You need a{" "}
-          <span ref={greatRef} className="font-black text-[var(--orange)]">
+          <span ref={greatRef} className="font-black !text-[var(--orange)]">
             great
           </span>{" "}
           website.
         </p>
-        <div className="flex flex-col w-full items-center relative px-8 py-15 md:px-15 -mb-15">
-          <div
-            ref={o2AuroraRef}
-            className="absolute -z-10 inset-0 overflow-visible flex flex-col items-center justify-end"
-          >
-            <AuroraGlowYellow
-              opacity={0.9}
-              blobSize={180}
-              speed={5}
-              colors={["#0ea5e9", "#ffa914", "#fb2493"]}
-              extraBlur={false}
-            />
-          </div>
-
-          <div
-            ref={o2LayoutRef}
-            className="
-              w-full max-w-[min(92vw,420px)]
-              rounded-2xl border border-neutral-100 bg-white/20 backdrop-blur
-              shadow-[0_8px_30px_rgba(0,0,0,0.06)]
-              overflow-hidden text-left
-            "
-          >
-            <div className="h-9 md:h-10 w-full border-b border-neutral-100 flex items-center gap-2 px-3">
-              <span className="ml-item h-2.5 w-2.5 rounded-full bg-red-400" />
-              <span className="ml-item h-2.5 w-2.5 rounded-full bg-yellow-400" />
-              <span className="ml-item h-2.5 w-2.5 rounded-full bg-green-400" />
-              <div className="ml-item ml-2 h-2 w-24 md:w-32 rounded bg-white" />
-            </div>
-
-            <div className="grid grid-cols-12 gap-3 p-3 md:p-4">
-              <div className="col-span-6 space-y-2 flex flex-col justify-center animate-pulse">
-                <div className="ml-item h-2.5 rounded bg-white w-3/4" />
-                <div className="ml-item h-2.5 rounded bg.white w-2/3" />
-                <div className="ml-item h-2.5 rounded bg-white w-4/5" />
-                <div className="ml-item h-2.5 rounded bg-white w-1/2" />
-              </div>
-              <div className="col-span-6 space-y-2 animate-pulse">
-                <div className="ml-item h-28 md:h-32 rounded-lg bg-white border-neutral-200 flex items-center justify-center">
-                  <IconPhoto />
-                </div>
-              </div>
-              <div className="col-span-12">
-                <div className="flex gap-2">
-                  <div className="ml-item h-2.5 flex-1 rounded bg-neutral-200" />
-                  <div className="ml-item h-2.5 flex-[0.5] rounded bg-neutral-200" />
-                </div>
-                <div className="flex gap-2">
-                  <div className="ml-item h-2.5 flex-1 rounded bg-white" />
-                  <div className="ml-item h-2.5 flex-[0.3] rounded bg-white" />
-                </div>
-              </div>
-              <div className="col-span-12">
-                <div className="flex gap-2 space-y-1">
-                  <div className="ml-item h-2.5 flex-1 rounded bg-neutral-200" />
-                  <div className="ml-item h-2.5 flex-[0.5] rounded bg-neutral-200" />
-                </div>
-                <div className="flex gap-2 space-y-1">
-                  <div className="ml-item h-2.5 flex-1 rounded bg-white" />
-                  <div className="ml-item h-2.5 flex-[0.3] rounded bg-white" />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div
-            aria-hidden
-            className="pointer-events-none absolute left-0 right-0 h-[70%] bottom-0 rounded-2xl bg-gradient-to-t from-[var(--background)] to-transparent"
-          />
-          <div
-            aria-hidden
-            className="pointer-events-none absolute left-0 right-0 h-[30%] bottom-0 rounded-2xl bg-gradient-to-t from-[var(--background)] to-transparent"
-          />
-        </div>
+        <MiniLayout ref={o2LayoutRef} />
       </div>
       <div
         ref={o3Ref}
@@ -408,14 +336,14 @@ const Quote: React.FC = () => {
         <div className="relative z-50 flex items-center w-full gap-3 md:gap-6">
           <div
             ref={o3LineLeftRef}
-            className="h-[3px] md:h-[5px] rounded-full bg-orange-600 flex-1"
+            className="h-[3px] md:h-[5px] rounded-full bg-[var(--orange)] flex-1"
             style={{ transform: "scaleX(0)", transformOrigin: "left center" }}
           />
           <p
             ref={p3Ref}
-            className="text-4xl md:text-6xl max-w-3xl font-black tracking-tight text-orange-600 leading-none"
+            className="text-4xl md:text-6xl max-w-3xl font-black tracking-tight text-[var(--orange)] leading-none"
           >
-            Great products happen when design meets code.
+            Great products happen when design meets code
           </p>
           <div
             ref={o3LineRightRef}

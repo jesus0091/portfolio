@@ -3,22 +3,37 @@
 :root {
   --background: #e4e4e4;
   --foreground: #4f4f4f;
+  --card: #ffffff;
   --black: #000000;
+  --white: #ffffff;
+  --layout: #ffffff;
+  --content: #ffffff80;
   --orange: #ff6600;
-  --muted: #f5f5f5;
+  --muted: #595959;
   --border: #e5e5e5;
   --primary: #2563eb;
   --secondary: #9333ea;
+  --gray: #b9c1d2;
+  --grid-rgba: rgba(65, 34, 0, 0.09);
+  --button: #00000060;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #e4e4e4;
+    --background: #111112;
     --foreground: #8d8d8d;
-    --muted: #3d3d3d;
+    --card: #1a1a1a;
+    --layout: #9f9f9f;
+    --content: #ababab80;
+    --black: #ffffff;
+    --white: #000000;
+    --orange: #d95700;
+    --muted: #999999;
     --border: #1f1f1f;
     --primary: #3b82f6;
     --secondary: #a855f7;
+    --grid-rgba: rgba(255, 255, 255, 0.06);
+    --button: #ffffff60;
   }
 }
 

@@ -25,7 +25,7 @@ export type Project = {
 
 function Chip({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-flex rounded-full items-center bg-gray-100 px-2.5 py-0.5 text-sm md:text-base font-medium text-zinc-700">
+    <span className="inline-flex rounded-full items-center bg-[var(--background)] px-3 py-0.5 text-sm md:text-base font-medium text-[var(--muted)]">
       {children}
     </span>
   );
@@ -36,7 +36,7 @@ export default function ProjectCard({ project }: { project: Project }) {
 
   return (
     <article
-      className="p-card will-change-transform rounded-2xl flex flex-col overflow-hidden md:h-[550px] bg-white transition shadow-[0px_0px_50px_rgba(0,0,0,0.1)] hover:shadow-[0px_10px_50px_rgba(0,0,0,0.2)] hover:-translate-y-1 cursor-pointer"
+      className="p-card will-change-transform rounded-2xl flex flex-col overflow-hidden md:h-[550px] bg-[var(--card)] transition shadow-[0px_0px_50px_rgba(0,0,0,0.1)] hover:shadow-[0px_10px_50px_rgba(0,0,0,0.2)] hover:-translate-y-1 cursor-pointer"
       data-id={p.id}
     >
       <div className="relative aspect-[16/9] max-h-[250px] min-w-full w-full bg-zinc-100 overflow-hidden">
@@ -64,14 +64,14 @@ export default function ProjectCard({ project }: { project: Project }) {
       </div>
       <div className="px-4 md:px-6 py-3 md:py-4 flex-1 flex flex-col">
         <div>
-          <h3 className="text-base md:text-xl font-bold leading-tight">
+          <h3 className="text-base text-[var(--black)] md:text-xl font-bold leading-tight">
             {p.title}
           </h3>
-          <div className="text-sm md:text-base font-semibold text-orange-600">
+          <div className="text-sm md:text-base font-semibold text-[var(--orange)]">
             {p.role}
           </div>
         </div>
-        <p className="mt-2 line-clamp-2 text-sm md:text-base leading text-zinc-700">
+        <p className="mt-2 line-clamp-2 text-sm md:text-base leading">
           {p.summary}
         </p>
         <div className="flex flex-col gap-1 mt-1 md:mt-2">

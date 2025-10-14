@@ -93,7 +93,7 @@ export const AuroraGlowYellow: React.FC<AuroraGlowProps> = ({
   opacity = 0.9,
   blobSize = 560,
   speed = 1,
-  colors = ["#8EC5FF", "#fd8a8a", "#f9f586", "#ffb3ff"],
+  colors = ["#007bff1f", "#ff00001f", "#fff7001f", "#ff00ff1f"],
   extraBlur = false,
   className,
   style,

@@ -157,8 +157,8 @@ function FilterChip<T extends string>({
       onClick={() => onChange(payload)}
       className={`inline-flex cursor-pointer rounded-full items-center gap-2 px-4 py-1 md:py-2 text-sm md:text-base font-medium transition ${
         active
-          ? "border-black bg-black text-white"
-          : "border-neutral-300 bg-white text-neutral-800 hover:border-neutral-800"
+          ? "text-[var(--white)] bg-[var(--black)] hover:bg-[var(--gray)]"
+          : "text-[var(--white)] bg-[var(--black)]/30 hover:bg-[var(--gray)]/50"
       }`}
     >
       <span>{label}</span>
@@ -192,19 +192,39 @@ export default function LatestProjects() {
       id="projects"
       className="relative w-full overflow-clip py-50 scrollbar-hide px-8"
     >
-      <div className="mx-auto max-w-6xl flex flex-col gap-6">
+      <div
+        className="absolute inset-0"
+        style={{
+          backgroundImage: `
+      linear-gradient(to right, var(--grid-rgba) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid-rgba) 1px, transparent 1px)
+    `,
+          backgroundSize: "100px 100px",
+          backgroundPosition: "center",
+          WebkitMaskImage:
+            "linear-gradient(to bottom, transparent 0%, black 30%, black 100%)",
+          WebkitMaskRepeat: "no-repeat",
+          WebkitMaskSize: "100% 100%",
+          maskImage:
+            "linear-gradient(to bottom, transparent 0%, black 30%, black 100%)",
+          maskRepeat: "no-repeat",
+          maskSize: "100% 100%",
+        }}
+      />
+
+      <div className="mx-auto max-w-6xl flex flex-col gap-6 z-10">
         <header className="mb-6 flex flex-col gap-2">
-          <h2 className="text-4xl md:text-7xl text-black font-black tracking-tight">
+          <h2 className="text-4xl md:text-7xl text-[var(--black)] font-black tracking-tight">
             Latest Projects
           </h2>
-          <p className="text-lg md:text-2xl max-w-lg text-gray-700">
+          <p className="text-lg md:text-2xl max-w-lg">
             Highlights of collaborative and solo projects that shaped my
             expertise.
           </p>
         </header>
 
         {/* Chips */}
-        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between z-10">
           <div className="flex flex-col gap-2 md:flex-row md:items-center md:gap-6">
             <div className="flex flex-wrap gap-1 md:gap-2">
               <FilterChip<Category>
@@ -250,11 +270,11 @@ export default function LatestProjects() {
         </div>
 
         {/* Grid */}
-        <div className="grid gap-6 grid-cols-[repeat(auto-fit,minmax(240px,1fr))] md:grid-cols-[repeat(auto-fit,minmax(380px,1fr))]">
+        <div className="grid gap-6 z-10 grid-cols-[repeat(auto-fit,minmax(240px,1fr))] md:grid-cols-2">
           {filtered.length > 0 ? (
             filtered.map((p) => <ProjectCard key={p.id} project={p} />)
           ) : (
-            <div className="col-span-full h-[50vh] flex items-center justify-center text-xl border border-dashed p-10 text-center text-neutral-600">
+            <div className="col-span-full rounded-2xl h-[50vh] backdrop-blur-sm flex items-center justify-center text-xl border border-dashed p-10 text-center text-neutral-600">
               No projects match your filters. Try adjusting the search or chips.
             </div>
           )}

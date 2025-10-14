@@ -206,12 +206,23 @@ export default function Navbar() {
         >
           <div className="flex items-center justify-start">
             <Link href="/" className="text-base font-bold tracking-tight">
+              {/* Light */}
               <Image
                 src={
                   onDark ? "/images/brand-dark.png" : "/images/brand-light.png"
                 }
                 alt="Logo"
-                className="h-[60px] max-w-max md:h-auto object-contain"
+                className="block dark:hidden h-[60px] max-w-max md:h-auto object-contain"
+                width={108}
+                height={54}
+                priority
+              />
+
+              {/* Dark */}
+              <Image
+                src="/images/brand-dark.png"
+                alt="Logo"
+                className="hidden dark:block h-[60px] max-w-max md:h-auto object-contain"
                 width={108}
                 height={54}
                 priority
@@ -229,11 +240,11 @@ export default function Navbar() {
                     className={`px-2 text-lg flex flex-row gap-2 items-center transition-all relative ${
                       selected
                         ? onDark
-                          ? "text-orange-500 hover:text-orange-300 font-semibold "
-                          : "font-semibold text-orange-500 hover:text-orange-700"
+                          ? "text-[var(--orange)] hover:text-orange-300 font-semibold "
+                          : "font-semibold text-[var(--orange)] hover:text-orange-700"
                         : onDark
-                        ? "text-gray-500 hover:text-white"
-                        : "text-zinc-700 hover:text-black"
+                        ? "text-[var(--muted)] hover:text-[var(--black)]"
+                        : "text-[var(--muted)] hover:text-[var(--black)]"
                     }`}
                   >
                     {selected ? (
@@ -250,7 +261,9 @@ export default function Navbar() {
             <Link
               href="/#contact"
               className={`px-4 py-2 text-lg rounded-full transition flex gap-2 items-center ${
-                onDark ? "bg-white text-black" : "bg-black text-white"
+                onDark
+                  ? "bg-[var(--white)] text-[var(--black)]"
+                  : "bg-[var(--black)] text-[var(--white)]"
               }`}
             >
               <IconMail />
@@ -273,7 +286,7 @@ export default function Navbar() {
                 // liquid glass solo en elevated
                 elevated
                   ? [
-                      "bg-white/20 supports-[backdrop-filter]:backdrop-blur-md",
+                      "bg-white/20 text-[var(--black)] supports-[backdrop-filter]:backdrop-blur-md",
                       "shadow-[0_4px_16px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.18),inset_0_-6px_20px_rgba(0,0,0,0.10)]",
                       onDark ? "border-white/5" : "border-black/5",
                     ].join(" ")
@@ -286,10 +299,10 @@ export default function Navbar() {
                   "relative rounded outline-none grid place-items-center transition-all duration-200",
                   compact ? "h-8 w-8" : "h-10 w-10",
                   open && onDark
-                    ? "text-white"
+                    ? "text-[var(--black)]"
                     : onDark
-                    ? "text-white"
-                    : "text-zinc-700",
+                    ? "text-[var(--white)]"
+                    : "text-[var(--black)]",
                 ].join(" ")}
               >
                 <span
@@ -321,7 +334,7 @@ export default function Navbar() {
               {/* Texto con tamaño dinámico y ocultamiento progresivo si compact */}
               <p
                 className={[
-                  "relative font-medium transition-all duration-200",
+                  "relative text-[var(--black)] font-medium transition-all duration-200",
                   compact ? "text-sm" : "text-lg",
                 ].join(" ")}
               >
