@@ -192,14 +192,16 @@ export default function Navbar() {
       <header
         ref={headerRef}
         className={[
-          "w-full transition-colors duration-300",
+          "w-full transition-colors duration-300 md:fixed md:top-0 h-[80px] md:left-0 md:right-0 z-50",
           onDark ? " text-white" : "bg-transparent text-black",
+          elevated
+            ? "bg-gradient-to-b from-[var(--background)]/20 to-transparent backdrop-blur-sm"
+            : "",
         ].join(" ")}
       >
         <nav
           className={[
             "grid grid-cols-2 md:grid-cols-3 transition-all px-2 md:px-6 mx-auto",
-            elevated ? "h-[60px]" : "h-[80px]",
           ].join(" ")}
         >
           <div className="flex items-center justify-start">
@@ -216,7 +218,6 @@ export default function Navbar() {
               />
             </Link>
           </div>
-
           <ul className="hidden items-center gap-6 md:flex justify-center">
             {links.map(({ href, label }) => {
               const selected = pathname === href;
@@ -228,7 +229,7 @@ export default function Navbar() {
                     className={`px-2 text-lg flex flex-row gap-2 items-center transition-all relative ${
                       selected
                         ? onDark
-                          ? "text-orange-500 hover:text-orange-300 font-semibold"
+                          ? "text-orange-500 hover:text-orange-300 font-semibold "
                           : "font-semibold text-orange-500 hover:text-orange-700"
                         : onDark
                         ? "text-gray-500 hover:text-white"
@@ -248,7 +249,7 @@ export default function Navbar() {
           <div className="hidden md:flex justify-end items-center gap-6 font-medium">
             <Link
               href="/#contact"
-              className={`px-4 py-2 text-lg transition flex gap-2 items-center ${
+              className={`px-4 py-2 text-lg rounded-full transition flex gap-2 items-center ${
                 onDark ? "bg-white text-black" : "bg-black text-white"
               }`}
             >
@@ -256,9 +257,9 @@ export default function Navbar() {
               hello @jesus
             </Link>
           </div>
-
-          {/* --- BOTÓN MOBILE: liquid glass + tamaño dinámico por dirección de scroll --- */}
-          <div className="flex md:hidden justify-end items-center">
+          <div
+            className={["flex md:hidden justify-end items-center"].join(" ")}
+          >
             <button
               onClick={() => setOpen((v) => !v)}
               aria-expanded={open}

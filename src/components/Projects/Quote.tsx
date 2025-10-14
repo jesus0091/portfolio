@@ -9,7 +9,7 @@ import gsap from "gsap";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const STRIKE_DELAY = 1.0;
+const STRIKE_DELAY = 2; // ⬅ controla cuándo aparece el tachado después de que entra todo en E1
 const STRIKE_DRAW_DURATION = 0.8;
 
 const isDiv = (el: HTMLDivElement | null): el is HTMLDivElement => el !== null;
@@ -45,20 +45,28 @@ const Quote: React.FC = () => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       gsap.set([o1Ref.current], { opacity: 1 });
       gsap.set([o2Ref.current, o3Ref.current], { opacity: 0 });
-      gsap.set(p1Ref.current, { opacity: 1, y: 0 });
-      gsap.set(miniLayoutRef.current, { opacity: 1, y: 0, scale: 1 });
+
+      // E1
+      gsap.set([p1Ref.current, miniLayoutRef.current], {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+      });
       const items1 = miniLayoutRef.current?.querySelectorAll(".ml-item");
       items1 && gsap.set(items1, { opacity: 1, y: 0 });
-      gsap.set(o2AuroraRef.current, {
+      gsap.set(strikeRef.current, { autoAlpha: 1, scaleX: 1 });
+
+      // E2
+      gsap.set([p2Ref.current, o2AuroraRef.current, o2LayoutRef.current], {
         opacity: 1,
         y: 0,
         scale: 1,
         filter: "blur(0px)",
       });
-      gsap.set(o2LayoutRef.current, { opacity: 1, y: 0, scale: 1 });
       const items2 = o2LayoutRef.current?.querySelectorAll(".ml-item");
       items2 && gsap.set(items2, { opacity: 1, y: 0 });
-      gsap.set(strikeRef.current, { autoAlpha: 1, scaleX: 1 });
+
+      // E3
       gsap.set(cleanPanelRef.current, { xPercent: 110 });
       gsap.set(p3Ref.current, { opacity: 1, y: 0, scale: 1 });
       gsap.set(o3LineLeftRef.current, {
@@ -75,12 +83,13 @@ const Quote: React.FC = () => {
     }
 
     const ctx = gsap.context(() => {
+      // Estados base
       gsap.set(o1Ref.current, { opacity: 1, zIndex: 10 });
       gsap.set(o2Ref.current, { opacity: 0, zIndex: 20 });
       gsap.set(o3Ref.current, { opacity: 0, zIndex: 30 });
-      gsap.set(p1Ref.current, { opacity: 0, y: 30 });
-      gsap.set(p2Ref.current, { opacity: 0, y: 100 });
-      gsap.set(p3Ref.current, { opacity: 0, y: 30, scale: 0.98 });
+
+      // E1 bases
+      gsap.set([p1Ref.current], { opacity: 0, y: 30 });
       gsap.set(miniLayoutRef.current, { opacity: 0, y: 16, scale: 0.985 });
       const mlItems1 = miniLayoutRef.current?.querySelectorAll(".ml-item");
       mlItems1 && gsap.set(mlItems1, { opacity: 0, y: 8 });
@@ -89,6 +98,9 @@ const Quote: React.FC = () => {
         autoAlpha: 0,
         transformOrigin: "left center",
       });
+
+      // E2 bases
+      gsap.set([p2Ref.current], { opacity: 0, y: 100 });
       gsap.set(o2AuroraRef.current, {
         opacity: 0,
         y: 30,
@@ -98,6 +110,9 @@ const Quote: React.FC = () => {
       gsap.set(o2LayoutRef.current, { opacity: 0, y: 20, scale: 0.985 });
       const mlItems2 = o2LayoutRef.current?.querySelectorAll(".ml-item");
       mlItems2 && gsap.set(mlItems2, { opacity: 0, y: 8 });
+
+      // E3 bases
+      gsap.set([p3Ref.current], { opacity: 0, y: 30, scale: 0.98 });
       gsap.set(o3LineLeftRef.current, {
         scaleX: 0,
         transformOrigin: "left center",
@@ -114,7 +129,7 @@ const Quote: React.FC = () => {
         scrollTrigger: {
           trigger: section,
           start: "top top",
-          end: "+=2200",
+          end: "+=2000",
           scrub: 0.6,
           pin: true,
           anticipatePin: 1,
@@ -127,83 +142,54 @@ const Quote: React.FC = () => {
             if (spacer) spacer.style.overflow = "visible";
           },
         },
-        defaults: { ease: "power2.out" },
+        defaults: { ease: "power3.out" },
       });
 
+      /* ========= ESCENA 1: todo junto; tachado con delay ========= */
       tl.addLabel("o1Enter")
-        .to(p1Ref.current, { opacity: 1, y: 0, duration: 0.45 }, "o1Enter")
+        // Texto + contenedor juntos
         .to(
-          miniLayoutRef.current,
-          { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "power3.out" },
-          "o1Enter+=0.12"
+          [p1Ref.current, miniLayoutRef.current],
+          { opacity: 1, y: 0, scale: 1, duration: 0.5 },
+          "o1Enter"
         )
-        .to(
-          mlItems1 || [],
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.35,
-            stagger: 0.04,
-            ease: "power2.out",
-          },
-          "<+0.05"
-        )
+        // Items internos del mini-layout, al mismo tiempo
+        .to(mlItems1 || [], { opacity: 1, y: 0, duration: 0.5 }, "o1Enter")
+        // Tachado después del delay
         .addLabel("strikeStart", `o1Enter+=${STRIKE_DELAY}`)
-        .to(strikeRef.current, { autoAlpha: 1, duration: 0.12 }, "strikeStart")
+        .to(strikeRef.current, { autoAlpha: 1, duration: 0.1 }, "strikeStart")
         .to(
           strikeRef.current,
           { scaleX: 1, duration: STRIKE_DRAW_DURATION },
           "strikeStart"
-        )
-        .to(
-          strikeRef.current,
-          {
-            keyframes: [
-              { scaleX: 1.02, duration: 0.12, ease: "power2.out" },
-              { scaleX: 1.0, duration: 0.12, ease: "power2.in" },
-            ],
-          },
-          "strikeStart+=0.8"
         );
 
+      /* ========= ESCENA 2: todo junto ========= */
       tl.addLabel("o2Enter")
-        .to(o1Ref.current, { opacity: 0, duration: 0.4 }, "o2Enter")
-        .to(o2Ref.current, { opacity: 1, duration: 0.45 }, "<+0.05")
+        // Cambio de escenas
+        .to(o1Ref.current, { opacity: 0, duration: 0.35 }, "o2Enter")
+        .to(o2Ref.current, { opacity: 1, duration: 0.35 }, "o2Enter")
+        // Texto + aurora + layout juntos
         .to(
-          p2Ref.current,
-          { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" },
-          "<"
-        )
-        .to(
-          o2AuroraRef.current,
+          [p2Ref.current, o2AuroraRef.current, o2LayoutRef.current],
           {
             opacity: 1,
             y: 0,
             scale: 1,
             filter: "blur(0px)",
-            duration: 0.8,
-            ease: "power3.out",
+            duration: 0.6,
           },
-          "<"
+          "o2Enter"
         )
+        // Items internos del layout al mismo tiempo
+        .to(mlItems2 || [], { opacity: 1, y: 0, duration: 0.6 }, "o2Enter")
         .to(
-          o2LayoutRef.current,
-          { opacity: 1, y: 0, scale: 1, duration: 0.55, ease: "power3.out" },
-          "<+0.05"
-        )
-        .to(
-          mlItems2 || [],
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.35,
-            stagger: 0.04,
-            ease: "power2.out",
-          },
-          "<+0.05"
-        )
-        .to(greatRef.current, { color: "#000000", duration: 0.2 }, "<");
+          greatRef.current,
+          { color: "currentColor", duration: 0.2 },
+          "o2Enter"
+        );
 
+      /* ========= ESCENA 3: todo junto ========= */
       tl.addLabel("wipe", "o2Enter+=1.7")
         .to(o3Ref.current, { opacity: 1, duration: 0.25 }, "wipe")
         .to(
@@ -221,23 +207,19 @@ const Quote: React.FC = () => {
         )
         .to(
           [o1Ref.current, o2Ref.current].filter(isDiv),
-          { opacity: 0, duration: 0.3 },
-          "wipe+=0.05"
+          { opacity: 0, duration: 0.25 },
+          "wipe"
         )
+        // Texto + líneas (izq/der) juntos
         .to(
-          p3Ref.current,
-          { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: "power3.out" },
+          [p3Ref.current],
+          { opacity: 1, y: 0, scale: 1, duration: 0.6 },
           "wipe+=0.25"
         )
         .to(
-          o3LineLeftRef.current,
-          { scaleX: 1, duration: 0.6, ease: "power3.out" },
-          "wipe+=0.35"
-        )
-        .to(
-          o3LineRightRef.current,
-          { scaleX: 1, duration: 0.6, ease: "power3.out" },
-          "wipe+=0.40"
+          [o3LineLeftRef.current, o3LineRightRef.current],
+          { scaleX: 1, duration: 0.6 },
+          "wipe+=0.25"
         )
         .addPause("+=0.6");
     }, section);
@@ -257,7 +239,7 @@ const Quote: React.FC = () => {
         <div className="relative flex flex-col items-center w-full">
           <p
             ref={p1Ref}
-            className="text-3xl md:text-7xl font-medium tracking-tight -mb-8"
+            className="text-3xl md:text-7xl font-medium tracking-tight -mb-8 md:-mb-3"
           >
             <span ref={textWrapRef} className="relative inline-block">
               You need a website
@@ -333,9 +315,9 @@ const Quote: React.FC = () => {
         ref={o2Ref}
         className="absolute flex-col inset-0 flex items-center justify-center px-4 text-center py-[20vh] overflow-visible"
       >
-        <p ref={p2Ref} className="text-3xl md:text-7xl -mb-8">
+        <p ref={p2Ref} className="text-3xl md:text-7xl -mb-8 md:-mb-3">
           You need a{" "}
-          <span ref={greatRef} className="font-black text-black">
+          <span ref={greatRef} className="font-black text-[var(--orange)]">
             great
           </span>{" "}
           website.
@@ -431,7 +413,7 @@ const Quote: React.FC = () => {
           />
           <p
             ref={p3Ref}
-            className="text-4xl md:text-8xl max-w-6xl font-black tracking-tight text-orange-600 leading-none"
+            className="text-4xl md:text-6xl max-w-3xl font-black tracking-tight text-orange-600 leading-none"
           >
             Great products happen when design meets code.
           </p>

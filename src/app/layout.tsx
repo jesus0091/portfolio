@@ -90,9 +90,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={`${inter.variable} font-sans scrollbar-hide`}>
-      <body className="antialiased bg-background text-foreground w-full">
-        <Navbar />
+    <html
+      lang="es"
+      className={`${inter.variable} font-sans scrollbar-hide bg-background text-foreground`}
+    >
+      <body className="antialiased w-full bg-background text-foreground">
         {children}
       </body>
     </html>

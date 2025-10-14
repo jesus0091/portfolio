@@ -70,7 +70,7 @@ export default function GalleryProjects() {
   return (
     <div
       ref={rootRef}
-      className="overflow-hidden h-[70vh] -mt-[30vh] md:-mt-[15vh] flex flex-col justify-center items-center"
+      className="overflow-hidden h-[70vh] -mt-[30vh] md:-mt-[20vh] flex flex-col justify-center items-center"
     >
       <div className="flex flex-row gap-1 md:gap-4">
         {gallery.map((item) => (

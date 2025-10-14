@@ -3,6 +3,7 @@
 import { useLayoutEffect, useRef } from "react";
 
 import ButtonOutlined from "../ButtonOutlined";
+import Navbar from "../Navbar";
 import { OrbitFusion } from "../OrbitFusion";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import gsap from "gsap";
@@ -55,13 +56,13 @@ export default function HeroProject() {
   return (
     <section
       ref={rootRef}
-      className="hero h-[calc(100dvh-80px)] flex justify-center items-center relative overflow-clip"
+      className="hero h-[100dvh] flex flex-col justify-center items-center relative overflow-clip"
     >
+      <Navbar />
       <div className="light-top-sentinel h-10 absolute top-0 w-full" />
       <div className="hero-orbit absolute will-change-transform">
         <OrbitFusion />
       </div>
-
       <div className="flex flex-col gap-6 px-4 items-center justify-center h-full z-10">
         <div className="flex flex-col items-center gap-2">
           <p className="hero-eyebrow text-lg md:text-xl tracking-wide text-orange-600">
