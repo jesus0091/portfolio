@@ -12,6 +12,10 @@
 
 # testing
 /coverage
+/test
+__mocks__/
+jest.config.js
+jest.setup.ts
 
 # next.js
 /.next/
@@ -23,6 +27,9 @@
 # misc
 .DS_Store
 *.pem
+npm-cache/
+/src/app/test/
+/src/components/Button.tsx
 
 # debug
 npm-debug.log*
