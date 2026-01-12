@@ -1,8 +1,5 @@
 import Projects from "@/components/Projects/Projects";
-import React from "react";
 
-const page = () => {
+export default function ProjectsPage() {
   return <Projects />;
-};
-
-export default page;
+}

@@ -1,5 +1,5 @@
 import AboutMeHero from "./AboutMeHero";
-import AboutMeSkills from "./AboutMeSkillss";
+import AboutMeSkills from "./AboutMeSkillsBarChart";
 import AboutText from "./AboutText";
 import Footer from "../Footer";
 import { Fragment } from "react";

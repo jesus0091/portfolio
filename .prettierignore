@@ -1,0 +1,28 @@
+# Dependencies
+node_modules
+npm-cache
+.pnpm-store
+
+# Build outputs
+.next
+out
+build
+dist
+
+# Logs
+*.log
+
+# Cache
+.cache
+.turbo
+
+# Misc
+.DS_Store
+*.pem
+
+# Coverage
+coverage
+
+# Environment
+.env*
+!.env.example

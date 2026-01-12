@@ -69,17 +69,8 @@ export const metadata: Metadata = {
     images: ["/images/share.png"],
   },
   icons: {
-    icon: [
-      { url: "/favicon.ico", sizes: "any" },
-      { url: "/icon-32.png", type: "image/png", sizes: "32x32" },
-      { url: "/icon-16.png", type: "image/png", sizes: "16x16" },
-    ],
-    apple: [
-      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
-    ],
-    shortcut: ["/favicon.ico"],
+    icon: "/favicon.ico",
   },
-  manifest: "/site.webmanifest",
 };
 
 export const viewport: Viewport = {

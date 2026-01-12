@@ -1,8 +1,5 @@
 import AboutMe from "@/components/AboutMe/AboutMe";
-import React from "react";
 
-const index = () => {
+export default function AboutPage() {
   return <AboutMe />;
-};
-
-export default index;
+}
