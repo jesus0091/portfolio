@@ -183,10 +183,8 @@ export default function Footer({
   return (
     <footer
       ref={footerRef}
-      className={`relative min-h-[100vh] overflow-hidden flex flex-col border-t bg-black border-black/10 dark:border-white/10 ${className}`}
+      className={`relative min-h-[100vh] overflow-hidden flex flex-col border-t bg-black border-black/10 ${className}`}
     >
-      <div className="dark-top-sentinel h-10 w-full absolute top-0" />
-
       <div className="relative min-h-[100dvh] md:min-h-0 flex flex-col justify-center flex-1 z-10">
         <div
           className="absolute inset-0 flex items-center justify-center"

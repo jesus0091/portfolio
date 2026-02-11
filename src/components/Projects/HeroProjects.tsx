@@ -64,7 +64,6 @@ export default function HeroProject() {
       className="hero h-[100dvh] flex flex-col justify-center items-center relative overflow-clip"
     >
       <Navbar />
-      <div className="light-top-sentinel h-10 absolute top-0 w-full" />
       <div className="hero-orbit absolute will-change-transform">
         <OrbitFusion />
       </div>

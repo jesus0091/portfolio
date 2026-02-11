@@ -3,7 +3,6 @@ import "./globals.css";
 import type { Metadata, Viewport } from "next";
 
 import { Inter } from "next/font/google";
-import { ThemeProvider } from "@/components/AboutMe/ThemeController";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -110,10 +109,9 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${inter.variable} font-sans scrollbar-hide bg-background text-foreground`}
-      suppressHydrationWarning
     >
       <head>
-        <meta id="theme-color" name="theme-color" content="#ffffff" />
+        <meta id="theme-color" name="theme-color" content="#e4e4e4" />
 
         <meta httpEquiv="X-Content-Type-Options" content="nosniff" />
         <meta httpEquiv="X-Frame-Options" content="DENY" />
@@ -140,13 +138,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
         />
 
-        <ThemeProvider
-          colors={{ light: "#ffffff", dark: "#0b0b0f" }}
-          defaultMode="system"
-          storageKey="theme"
-        >
-          {children}
-        </ThemeProvider>
+        {children}
       </body>
     </html>
   );

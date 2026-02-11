@@ -17,31 +17,23 @@ import {
 
 import Image from "next/image";
 import Link from "next/link";
-import ThemeToggleButton from "./AboutMe/Toggle";
 import { usePathname } from "next/navigation";
-
-type Boundary = { y: number; dark: boolean };
 
 const links = [
   { href: "/about", label: "About Me" },
   { href: "/projects", label: "Projects" },
 ];
 
-const absTop = (el: Element) =>
-  (el as HTMLElement).getBoundingClientRect().top + window.scrollY;
-
 export default function Navbar() {
   const pathname = usePathname();
 
   const headerRef = useRef<HTMLElement | null>(null);
   const rafRef = useRef<number | null>(null);
-  const boundariesRef = useRef<Boundary[]>([]);
   const lastScrollYRef = useRef(0);
   const scrollYRef = useRef(0);
 
   const [open, setOpen] = useState(false);
   const [elevated, setElevated] = useState(false);
-  const [onDark, setOnDark] = useState(false);
   const [navH, setNavH] = useState(80);
   const [compact, setCompact] = useState(false);
 
@@ -114,36 +106,12 @@ export default function Navbar() {
     setNavH(Math.max(1, Math.round(h)));
   }, []);
 
-  const buildBoundaries = useCallback(() => {
-    const lightTop = Array.from(
-      document.querySelectorAll(".light-top-sentinel")
-    );
-    const darkTop = Array.from(document.querySelectorAll(".dark-top-sentinel"));
-    const b: Boundary[] = [];
-    lightTop.forEach((el) => b.push({ y: absTop(el), dark: false }));
-    darkTop.forEach((el) => b.push({ y: absTop(el), dark: true }));
-    b.sort((a, z) => a.y - z.y);
-    boundariesRef.current = b;
-  }, []);
-
-  const decideTheme = useCallback(() => {
-    const refLine = window.scrollY + navH;
-    const b = boundariesRef.current;
-    let dark = false;
-    for (let i = 0; i < b.length; i++) {
-      if (b[i].y <= refLine) dark = b[i].dark;
-      else break;
-    }
-    setOnDark(dark);
-  }, [navH]);
-
   const onScroll = useCallback(() => {
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
     rafRef.current = requestAnimationFrame(() => {
       const y = window.scrollY;
 
       setElevated(y > 8);
-      decideTheme();
 
       // FABs visibles en mobile con scroll
       setShowFab(y > 12);
@@ -156,30 +124,20 @@ export default function Navbar() {
 
       lastScrollYRef.current = y;
     });
-  }, [decideTheme]);
+  }, []);
 
   useLayoutEffect(() => {
     measureNav();
-    buildBoundaries();
-    decideTheme();
-  }, [measureNav, buildBoundaries, decideTheme]);
+  }, [measureNav]);
 
   useEffect(() => {
     const handleResize = () => {
       measureNav();
-      buildBoundaries();
-      decideTheme();
     };
 
     handleResize();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", handleResize);
-
-    const mo = new MutationObserver(() => {
-      buildBoundaries();
-      decideTheme();
-    });
-    mo.observe(document.body, { childList: true, subtree: true });
 
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
     window.addEventListener("keydown", onKey);
@@ -188,10 +146,9 @@ export default function Navbar() {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", handleResize);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      mo.disconnect();
       window.removeEventListener("keydown", onKey);
     };
-  }, [onScroll, measureNav, buildBoundaries, decideTheme]);
+  }, [onScroll, measureNav]);
 
   useEffect(() => setOpen(false), [pathname]);
 
@@ -201,7 +158,7 @@ export default function Navbar() {
         ref={headerRef}
         className={[
           "w-full transition-colors duration-300 md:fixed md:top-0 h-[80px] md:left-0 md:right-0 z-50",
-          onDark ? " text-white" : "bg-transparent text-black",
+          "bg-transparent text-black",
           elevated
             ? "bg-gradient-to-b from-[var(--background)]/20 to-transparent backdrop-blur-sm"
             : "",
@@ -214,22 +171,10 @@ export default function Navbar() {
         >
           <div className="flex items-center justify-start">
             <Link href="/" className="text-base font-bold tracking-tight">
-              {/* Light */}
               <Image
-                src={
-                  onDark ? "/images/brand-dark.png" : "/images/brand-light.png"
-                }
+                src="/images/brand-light.png"
                 alt="Logo"
-                className="block dark:hidden h-[60px] max-w-max md:h-auto object-contain"
-                width={108}
-                height={54}
-                priority
-              />
-              {/* Dark */}
-              <Image
-                src="/images/brand-dark.png"
-                alt="Logo"
-                className="hidden dark:block h-[60px] max-w-max md:h-auto object-contain"
+                className="h-[60px] max-w-max md:h-auto object-contain"
                 width={108}
                 height={54}
                 priority
@@ -246,11 +191,7 @@ export default function Navbar() {
                     aria-current={selected ? "page" : undefined}
                     className={`px-2 text-lg flex flex-row gap-2 items-center transition-all relative ${
                       selected
-                        ? onDark
-                          ? "text-[var(--orange)] hover:text-orange-300 font-semibold "
-                          : "font-semibold text-[var(--orange)] hover:text-orange-700"
-                        : onDark
-                        ? "text-[var(--muted)] hover:text-[var(--black)]"
+                        ? "font-semibold text-[var(--orange)] hover:text-orange-700"
                         : "text-[var(--muted)] hover:text-[var(--black)]"
                     }`}
                   >
@@ -266,11 +207,7 @@ export default function Navbar() {
           <div className="hidden md:flex justify-end items-center gap-6 font-medium">
             <Link
               href="mailto:jesushernandez120491@gmail.com"
-              className={`px-4 py-2 text-lg rounded-full transition flex gap-2 items-center ${
-                onDark
-                  ? "bg-[var(--white)] text-[var(--black)]"
-                  : "bg-[var(--black)] text-[var(--white)]"
-              }`}
+              className="px-4 py-2 text-lg rounded-full transition flex gap-2 items-center bg-[var(--black)] text-[var(--white)]"
             >
               <IconMail />
               hello @jesus
@@ -290,7 +227,7 @@ export default function Navbar() {
                   ? [
                       "bg-white/20 text-[var(--black)] supports-[backdrop-filter]:backdrop-blur-md",
                       "shadow-[0_4px_16px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.18),inset_0_-6px_20px_rgba(0,0,0,0.10)]",
-                      onDark ? "border-white/5" : "border-black/5",
+                      "border-black/5",
                     ].join(" ")
                   : "border-transparent",
               ].join(" ")}
@@ -300,11 +237,7 @@ export default function Navbar() {
                 className={[
                   "relative rounded outline-none grid place-items-center transition-all duration-200",
                   compact ? "h-8 w-8" : "h-10 w-10",
-                  open && onDark
-                    ? "text-[var(--black)]"
-                    : onDark
-                    ? "text-[var(--white)]"
-                    : "text-[var(--black)]",
+                  "text-[var(--black)]",
                 ].join(" ")}
               >
                 {/* Barra superior */}
@@ -372,7 +305,7 @@ export default function Navbar() {
           showFab && !open
             ? "opacity-100 translate-y-0 pointer-events-auto"
             : "opacity-0 -translate-y-2 pointer-events-none",
-          onDark ? "bg-white text-black" : "bg-black text-white",
+          "bg-black text-white",
         ].join(" ")}
       >
         {open ? <IconX size={20} /> : <IconMenu2 size={20} />} <span>Menu</span>
@@ -389,7 +322,7 @@ export default function Navbar() {
             ? "opacity-100 translate-y-0 pointer-events-auto"
             : "opacity-0 translate-y-3 pointer-events-none",
           "shadow-lg rounded-full px-5 py-3 font-semibold tracking-tight",
-          onDark ? "bg-white text-black" : "bg-black text-white",
+          "bg-black text-white",
         ].join(" ")}
       >
         <IconMail size={18} />
@@ -408,21 +341,13 @@ export default function Navbar() {
           style={{ top: `${navH}px` }}
         >
           <ul
-            className={`text-xl shadow-2xl flex flex-col rounded-2xl border ${
-              onDark
-                ? "border-white/20 bg-white/10"
-                : "border-black/10 bg-white/90"
-            }`}
+            className="text-xl shadow-2xl flex flex-col rounded-2xl border border-black/10 bg-white/90"
           >
             {links.map(({ href, label }) => (
               <li key={href}>
                 <Link
                   href={href}
-                  className={`flex justify-between rounded px-6 py-4 transition border-b w-full ${
-                    onDark
-                      ? "text-white hover:bg-white/10 border-white/20"
-                      : "hover:bg-zinc-100 border-black/10"
-                  }`}
+                  className="flex justify-between rounded px-6 py-4 transition border-b w-full hover:bg-zinc-100 border-black/10"
                 >
                   {label} <IconArrowUpRight />
                 </Link>
@@ -431,9 +356,7 @@ export default function Navbar() {
             <li className="px-6 py-4">
               <Link
                 href="/#contact"
-                className={`block px-6 py-4 text-center w-full transition ${
-                  onDark ? "bg-white text-black" : "bg-black text-white"
-                }`}
+                className="block px-6 py-4 text-center w-full transition bg-black text-white"
               >
                 hello @jesus
               </Link>
