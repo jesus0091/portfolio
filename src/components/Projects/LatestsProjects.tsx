@@ -65,7 +65,7 @@ const PROJECTS: Project[] = [
     cover: "/images/mtc-design.png",
     category: "design",
     mode: "collab",
-    links: [{ type: "behance", href: "#", icon: <IconBrandBehance /> }],
+    links: [{ type: "behance", href: "https://www.behance.net/devjesushernandez", icon: <IconBrandBehance /> }],
   },
   {
     id: "ristario",
@@ -83,11 +83,11 @@ const PROJECTS: Project[] = [
       "Design System",
       "Branding",
     ],
-    cover: "/images/gallery-1.png",
+    cover: "/images/linkedin.png",
     category: "frontend",
     mode: "solo",
     links: [
-      { type: "behance", href: "#", icon: <IconBrandBehance /> },
+      { type: "behance", href: "https://www.behance.net/devjesushernandez", icon: <IconBrandBehance /> },
       { type: "github", href: "#", icon: <IconBrandGithub /> },
     ],
   },
@@ -106,10 +106,10 @@ const PROJECTS: Project[] = [
       "Prototyping",
       "Branding",
     ],
-    cover: "/images/gallery-2.png",
+    cover: "/images/Banner-10.png",
     category: "design",
     mode: "solo",
-    links: [{ type: "behance", href: "#", icon: <IconBrandBehance /> }],
+    links: [{ type: "behance", href: "https://www.behance.net/devjesushernandez", icon: <IconBrandBehance /> }],
   },
   {
     id: "iacon",
@@ -122,7 +122,7 @@ const PROJECTS: Project[] = [
     cover: "/images/iacon.png",
     category: "design",
     mode: "solo",
-    links: [{ type: "behance", href: "#", icon: <IconBrandBehance /> }],
+    links: [{ type: "behance", href: "https://www.behance.net/devjesushernandez", icon: <IconBrandBehance /> }],
   },
   {
     id: "psy-app",
@@ -143,7 +143,7 @@ const PROJECTS: Project[] = [
     cover: "/images/therapia.png",
     category: "design",
     mode: "solo",
-    links: [{ type: "behance", href: "#", icon: <IconBrandBehance /> }],
+    links: [{ type: "behance", href: "https://www.behance.net/devjesushernandez", icon: <IconBrandBehance /> }],
   },
   {
     id: "smart-factory",
@@ -156,7 +156,7 @@ const PROJECTS: Project[] = [
     cover: "/images/smart-f.png",
     category: "design",
     mode: "solo",
-    links: [{ type: "behance", href: "#", icon: <IconBrandBehance /> }],
+    links: [{ type: "behance", href: "https://www.behance.net/devjesushernandez", icon: <IconBrandBehance /> }],
   },
   {
     id: "cc-webapp",
@@ -176,7 +176,7 @@ const PROJECTS: Project[] = [
     cover: "/images/omnipad.png",
     category: "design",
     mode: "solo",
-    links: [{ type: "behance", href: "#", icon: <IconBrandBehance /> }],
+    links: [{ type: "behance", href: "https://www.behance.net/devjesushernandez", icon: <IconBrandBehance /> }],
   },
 ];
 
