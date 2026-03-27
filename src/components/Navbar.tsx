@@ -168,12 +168,12 @@ export default function Navbar() {
             <Image
               src="/images/facebrand.png"
               alt="Logo"
-              className="border border-black/10 rounded-xl bg-black/5 object-contain w-10 h-10"
+              className="border border-black/10 rounded-lg bg-black/5 object-contain w-10 h-10"
               width={40}
               height={40}
               priority
             />
-            <span className="hidden md:inline text-[15px] tracking-tight">
+            <span className="hidden md:inline text-lg font-semibold tracking-tight">
               Jesús Hernández
             </span>
           </Link>
