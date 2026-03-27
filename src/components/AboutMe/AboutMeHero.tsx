@@ -142,7 +142,7 @@ const AboutMeHero = () => {
       <section
         id="about"
         ref={rootRef}
-        className="relative py-20 md:py-28 flex flex-col items-center justify-between overflow-hidden gap-10"
+        className="relative min-h-[90vh] py-20 md:py-28 flex flex-col items-center justify-between overflow-hidden gap-10"
       >
         <div className="absolute inset-0 flex items-center z-0">
           <AuroraGlow

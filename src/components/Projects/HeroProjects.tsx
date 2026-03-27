@@ -76,7 +76,7 @@ export default function HeroProject() {
     <section
       id="projects"
       ref={rootRef}
-      className="relative py-20 md:py-28 flex flex-col justify-center items-center overflow-clip"
+      className="relative min-h-[80vh] py-20 md:py-28 flex flex-col justify-center items-center overflow-clip"
     >
       <div className="hero-orbit absolute inset-0 will-change-transform opacity-60">
         <OrbitFusion />

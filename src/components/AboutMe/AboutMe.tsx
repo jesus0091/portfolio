@@ -1,7 +1,6 @@
 import AboutMeHero from "./AboutMeHero";
 import AboutMeSkills from "./AboutMeSkillsBarChart";
 import AboutText from "./AboutText";
-import Footer from "../Footer";
 import { Fragment } from "react";
 import WhatsSetsMeApart from "./WhatsSetsMeApart";
 
@@ -12,7 +11,6 @@ const AboutMe = () => {
       <AboutText />
       <WhatsSetsMeApart />
       <AboutMeSkills />
-      <Footer />
     </Fragment>
   );
 };
