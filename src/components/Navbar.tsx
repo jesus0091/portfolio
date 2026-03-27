@@ -186,15 +186,16 @@ export default function Navbar() {
           ].join(" ")}
         >
           <div className="flex items-center justify-start">
-            <Link href="/" className="text-base font-bold tracking-tight">
+            <Link href="/" className="flex items-center gap-2 font-bold tracking-tight text-[var(--black)]">
               <Image
-                src="/images/brand-light.png"
+                src="/images/facebrand.png"
                 alt="Logo"
-                className="h-[60px] max-w-max md:h-auto object-contain"
-                width={108}
-                height={54}
+                className="border border-black/10 rounded-xl bg-black/5 object-contain"
+                width={44}
+                height={44}
                 priority
               />
+              <span className="hidden md:inline text-base">Jesús Hernández</span>
             </Link>
           </div>
           <ul className="hidden items-center gap-6 md:flex justify-center">
