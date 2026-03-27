@@ -200,6 +200,7 @@ export default function HomePage() {
             <Link
               href="https://www.linkedin.com/in/jesushernandez91/"
               target="_blank"
+              rel="noopener noreferrer"
               className="flex w-10 h-10 items-center justify-center rounded-full hover:bg-black/5 transition text-[var(--muted)] hover:text-[var(--black)]"
             >
               <IconBrandLinkedin size={20} />
@@ -207,6 +208,7 @@ export default function HomePage() {
             <Link
               href="https://github.com/jesus0091"
               target="_blank"
+              rel="noopener noreferrer"
               className="flex w-10 h-10 items-center justify-center rounded-full hover:bg-black/5 transition text-[var(--muted)] hover:text-[var(--black)]"
             >
               <IconBrandGithub size={20} />
@@ -214,6 +216,7 @@ export default function HomePage() {
             <Link
               href="https://www.behance.net/devjesushernandez"
               target="_blank"
+              rel="noopener noreferrer"
               className="flex w-10 h-10 items-center justify-center rounded-full hover:bg-black/5 transition text-[var(--muted)] hover:text-[var(--black)]"
             >
               <IconBrandBehance size={20} />
@@ -230,7 +233,7 @@ export default function HomePage() {
 const EASE_SOFT = "cubic-bezier(0.22, 1, 0.36, 1)";
 const EASE_SPRING = "cubic-bezier(0.16, 1, 0.3, 1)";
 
-const StyledTitle = styled.div`
+const StyledTitle = styled.h1`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -243,7 +246,7 @@ const StyledTitle = styled.div`
   cursor: none;
 `;
 
-const Row = styled.div<{ $filled: boolean; $ready: boolean }>`
+const Row = styled.span<{ $filled: boolean; $ready: boolean }>`
   display: inline-flex;
   align-items: baseline;
   gap: 0.25rem;
