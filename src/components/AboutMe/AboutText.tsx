@@ -7,6 +7,7 @@ import {
 } from "@tabler/icons-react";
 import React, { useLayoutEffect, useRef } from "react";
 
+import ButtonOutlined from "../ButtonOutlined";
 import Link from "next/link";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import gsap from "gsap";
@@ -72,11 +73,8 @@ const AboutText: React.FC<AboutTextProps> = ({
         defaults: { ease: "power3.out" },
         scrollTrigger: {
           trigger: section,
-          start: "top top",
-          end: `+=${pinDistance}%`,
-          scrub: true,
-          pin: true,
-          anticipatePin: 1,
+          start: "top 85%",
+          once: true,
         },
       });
 
@@ -84,7 +82,7 @@ const AboutText: React.FC<AboutTextProps> = ({
       tl.to(box, {
         opacity: 1,
         y: 0,
-        duration: 1,
+        duration: 0.6,
       });
 
       // Luego el título
@@ -93,9 +91,9 @@ const AboutText: React.FC<AboutTextProps> = ({
         {
           opacity: 1,
           y: 0,
-          duration: 1,
+          duration: 0.6,
         },
-        "-=0.5" // empieza mientras el recuadro termina
+        "-=0.3"
       );
 
       // Luego el párrafo palabra por palabra
@@ -107,7 +105,7 @@ const AboutText: React.FC<AboutTextProps> = ({
           duration: wordDuration,
           stagger: wordStagger,
         },
-        "-=0.3"
+        "-=0.2"
       );
     }, sectionRef);
 
@@ -119,13 +117,13 @@ const AboutText: React.FC<AboutTextProps> = ({
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-[100dvh] flex px-4 md:px-8 flex-col items-center justify-center"
+      className="relative py-20 md:py-28 flex  gap-16 flex-col items-center justify-center"
     >
-      <section className="relative flex flex-col md:flex-row-reverse max-w-[1280px] gap-10 mx-auto">
+      <div className="relative grid grid-cols-1 md:grid-cols-2 max-w-[1280px] w-full px-4 md:px-8 gap-10 mx-auto">
         <div className="flex-1 flex h-full w-full items-center justify-center">
           <div
             ref={boxRef}
-            className="bg-[var(--white)] rounded-2xl flex flex-col w-full min-h-[260px] md:min-h-[500px]"
+            className="bg-[var(--white)] rounded-2xl flex flex-col w-full min-h-[260px] md:min-h-full md:h-fit"
           >
             <div className="flex-1" />
             <div className="flex flex-row gap-1 p-4 justify-end">
@@ -154,17 +152,22 @@ const AboutText: React.FC<AboutTextProps> = ({
           </div>
         </div>
 
-        <div className="flex-1 flex flex-col gap-4">
+        <div className="flex-1 flex flex-col gap-6 py-3">
+          <div className="flex flex-col">
+
+          <p className="text-xl font-semibold text-[var(--orange)] tracking-wide mb-2">
+            About Me
+          </p>
           <h2
             ref={titleRef}
-            className="inline w-fit max-w-max select-none text-3xl md:text-7xl leading-none font-semibold text-[var(--orange)]"
+            className="select-none text-3xl md:text-6xl leading-tighter font-semibold text-[var(--black)]"
           >
-            .about-me
+            The Creative Mind Behind the Code
           </h2>
-
+          </div>
           <p
             ref={paraRef}
-            className="flex flex-wrap gap-y-1 gap-x-1.5 md:gap-2 text-lg md:text-2xl font-medium  md:tracking-tight"
+            className="flex flex-wrap gap-y-1 gap-x-1.5 md:gap-2 text-lg md:text-2xl font-medium md:tracking-tight"
           >
             {words.map((w, i) => (
               <span key={i} data-word>
@@ -172,8 +175,9 @@ const AboutText: React.FC<AboutTextProps> = ({
               </span>
             ))}
           </p>
+          <ButtonOutlined className="w-fit">See My Work</ButtonOutlined>
         </div>
-      </section>
+      </div>
     </section>
   );
 };

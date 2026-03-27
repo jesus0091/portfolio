@@ -33,7 +33,6 @@ const CarouselWrapper = styled.div`
   position: relative;
   width: 100%;
   overflow: hidden;
-  padding: 0.75rem 0;
 `;
 
 const CarouselTrack = styled.ul`

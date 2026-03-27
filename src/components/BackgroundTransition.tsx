@@ -8,8 +8,8 @@ import gsap from "gsap";
 gsap.registerPlugin(ScrollTrigger);
 
 const TRANSITIONS = [
-  { trigger: "#projects", color: "#ebebeb" },
-  { trigger: "#about", color: "#e4e4e4" },
+  { trigger: "#about", color: "#ebebeb" },
+  { trigger: "#projects", color: "#e4e4e4" },
 ];
 
 export default function BackgroundTransition() {

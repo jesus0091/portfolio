@@ -99,11 +99,6 @@ export default function RootLayout({
     "@type": "WebSite",
     name: "Jesus Hernandez Portfolio",
     url: CANONICAL,
-    potentialAction: {
-      "@type": "SearchAction",
-      target: `${CANONICAL}/search?q={search_term_string}`,
-      "query-input": "required name=search_term_string",
-    },
   };
 
   return (

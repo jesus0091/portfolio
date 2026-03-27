@@ -234,32 +234,16 @@ export default function LatestProjects() {
   return (
     <section
       id="projects"
-      className="relative w-full overflow-clip py-24 md:py-32 scrollbar-hide px-4 md:px-8"
+      className="relative w-full overflow-clip py-24 md:py-32 scrollbar-hide"
     >
-      <div
-        className="absolute inset-0"
-        style={{
-          backgroundImage: `
-      linear-gradient(to right, var(--grid-rgba) 1px, transparent 1px),
-      linear-gradient(to bottom, var(--grid-rgba) 1px, transparent 1px)
-    `,
-          backgroundSize: "100px 100px",
-          backgroundPosition: "center",
-          WebkitMaskImage:
-            "linear-gradient(to bottom, transparent 0%, black 30%, black 100%)",
-          WebkitMaskRepeat: "no-repeat",
-          WebkitMaskSize: "100% 100%",
-          maskImage:
-            "linear-gradient(to bottom, transparent 0%, black 30%, black 100%)",
-          maskRepeat: "no-repeat",
-          maskSize: "100% 100%",
-        }}
-      />
 
-      <div className="mx-auto max-w-[1280px] flex flex-col gap-6 z-10">
+      <div className="mx-auto max-w-[1280px] w-full px-4 md:px-8 flex flex-col gap-6 z-10">
         <header className="mb-6 flex flex-col gap-2">
-          <h2 className="text-4xl md:text-7xl text-[var(--black)] font-black tracking-tight">
-            Latest Projects
+          <p className="text-lg font-semibold text-[var(--orange)] tracking-widest">
+          Latest Projects
+          </p>
+          <h2 className="text-4xl md:text-6xl max-w-xl text-[var(--black)] font-semibold tracking-tight">
+            Building Digital Products & Experience
           </h2>
           <p className="text-lg md:text-2xl max-w-lg">
             Highlights of collaborative and solo projects that shaped my

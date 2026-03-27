@@ -7,6 +7,7 @@ import {
   IconBrandLinkedin,
 } from "@tabler/icons-react";
 
+import AuroraGlow from "./AuroraGlow";
 import Cursor from "./Cursor";
 import Link from "next/link";
 import gsap from "gsap";
@@ -136,7 +137,15 @@ export default function HomePage() {
           overflow-x-clip
         "
       >
-        <div className="flex flex-col items-center text-center w-full gap-2">
+        <div className="absolute inset-0 pointer-events-none z-0">
+          <AuroraGlow
+            blobSize={700}
+            speed={1.2}
+            opacity={0.55}
+            colors={["#a8c8ff", "#d4b8ff"]}
+          />
+        </div>
+        <div className="relative z-10 flex flex-col items-center text-center w-full gap-2">
           <p ref={greetRef} className="text-lg md:text-2xl font-medium">
             👋, My name is Jesús Hernández
           </p>
@@ -182,10 +191,9 @@ export default function HomePage() {
 
           <div
             ref={subtitleRef}
-            className="text-lg flex flex-row w-full justify-between px-10 max-w-xl lg:max-w-3xl mx-auto md:text-2xl font-medium mt-3 md:mt-4"
+            className="text-lg flex justify-center md:text-2xl font-medium mt-3 md:mt-4"
           >
             <p>Based in Argentina</p>
-            <p>Freelance</p>
           </div>
 
           <div ref={footerSocialRef} className="flex flex-row gap-1 mt-4">

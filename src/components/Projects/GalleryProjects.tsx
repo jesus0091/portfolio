@@ -88,7 +88,7 @@ export default function GalleryProjects() {
         ))}
       </div>
       <div className="flex flex-col items-center mt-4">
-        <p className="text-center text-xl md:text-4xl font-medium">
+        <p className="text-center text-lg md:text-2xl font-medium">
           Join to my projects
         </p>
         <SignatureIcon className="h-25 md:h-40" />

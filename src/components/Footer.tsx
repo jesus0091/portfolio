@@ -184,50 +184,52 @@ export default function Footer({
     <footer
       ref={footerRef}
       id="contact"
-      className={`relative min-h-[100vh] overflow-hidden flex flex-col border-t bg-[var(--background)] border-black/10 ${className}`}
+      className={`relative overflow-hidden flex flex-col bg-[var(--background)] ${className}`}
     >
-      <div className="relative min-h-[100dvh] md:min-h-0 flex flex-col justify-center flex-1 z-10">
-        <div
-          className="absolute inset-0 flex items-center justify-center"
-          data-aurora
-        >
-          <AuroraGlow
-            blobSize={isMobile ? 400 : 600}
-            speed={4}
-            colors={["#1723c537", "#aa1f1f2f", "#9f871039"]}
-          />
-        </div>
-        <div className="py-20 flex flex-col items-center gap-4 text-center">
-          <p
-            data-cta-label
-            className="text-xl tracking-wide uppercase text-orange-500"
+      {/* CTA como card */}
+      <div className="max-w-[1280px] mx-auto w-full px-4 md:px-8 pt-16 pb-8">
+        <div className="relative bg-white overflow-hidden rounded-3xl border border-black/10 z-10">
+          <div
+            className="absolute inset-0 flex items-center justify-center"
+            data-aurora
           >
-            From Concept to Code
-          </p>
-          <h3
-            data-cta-title
-            className="text-3xl sm:text-4xl md:text-7xl font-extrabold tracking-tight text-[var(--black)]"
-          >
-            Let&apos;s build something <br /> great together
-          </h3>
-
-          <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
-            <Link
-              href={`mailto:${email}`}
-              data-cta
-              className="relative inline-flex items-center rounded-full gap-2 border border-black/20 px-6 py-3 text-base cursor-pointer font-medium text-[var(--black)] hover:bg-black/5 transition"
-              aria-label="Send me an email"
+            <AuroraGlow
+              blobSize={isMobile ? 400 : 600}
+              speed={4}
+              colors={["#1723c537", "#aa1f1f2f", "#7c3aed2f"]}
+            />
+          </div>
+          <div className="relative z-10 py-20 flex flex-col items-center gap-4 text-center">
+            <p
+              data-cta-label
+              className="text-sm tracking-widest uppercase text-orange-500 font-semibold"
             >
-              <IconMail size={18} />
-              {email}
-            </Link>
+              From Concept to Code
+            </p>
+            <h3
+              data-cta-title
+              className="text-3xl sm:text-4xl md:text-7xl font-semibold tracking-tight text-[var(--black)]"
+            >
+              Let&apos;s build something <br /> great together
+            </h3>
+            <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
+              <Link
+                href={`mailto:${email}`}
+                data-cta
+                className="relative inline-flex items-center rounded-full gap-2 border border-black/20 px-6 py-3 text-base cursor-pointer font-medium text-[var(--black)] hover:bg-black/5 transition"
+                aria-label="Send me an email"
+              >
+                <IconMail size={18} />
+                {email}
+              </Link>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Cuerpo */}
-      <div className="px-4 sm:px-6 pb-10 border-t border-black/10 z-10">
-        <div className="flex flex-col md:grid md:grid-cols-12 gap-8 py-8 max-w-6xl mx-auto">
+      <div className="pb-10 z-10">
+        <div className="flex flex-col md:grid md:grid-cols-12 gap-8 py-8 max-w-[1280px] mx-auto px-4 md:px-8">
           <div
             data-footer-col
             className="w-full md:col-span-5 flex flex-col items-center md:items-start"
@@ -301,7 +303,7 @@ export default function Footer({
         </div>
         <div
           data-footer-col
-          className="flex flex-col-reverse pb-[10vh] md:pb-4 max-w-6xl mx-auto sm:flex-row items-center justify-between gap-3 border-t border-black/10 pt-4"
+          className="flex flex-col-reverse pb-[10vh] md:pb-4 max-w-[1280px] mx-auto px-4 md:px-8 sm:flex-row items-center justify-between gap-3 border-t border-black/10 pt-4"
         >
           <p className="text-sm md:text-base text-center text-gray-500">
             © {year} Jesús Hernández. All rights reserved.

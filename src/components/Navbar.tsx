@@ -32,11 +32,9 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [elevated, setElevated] = useState(false);
   const [navH, setNavH] = useState(72);
-  const [compact, setCompact] = useState(false);
   const [activeSection, setActiveSection] = useState<string>("hero");
   const [showFab, setShowFab] = useState(false);
 
-  const COMPACT_DELTA = 5;
   const prevBodyPaddingRightRef = useRef<string>("");
   const prevHeaderPaddingRightRef = useRef<string>("");
 
@@ -106,10 +104,6 @@ export default function Navbar() {
       const y = window.scrollY;
       setElevated(y > 8);
       setShowFab(y > 12);
-      const last = lastScrollYRef.current;
-      if (y > last + COMPACT_DELTA) setCompact(true);
-      else if (y < last - COMPACT_DELTA) setCompact(false);
-      if (y < 4) setCompact(false);
       lastScrollYRef.current = y;
     });
   }, []);
@@ -217,7 +211,7 @@ export default function Navbar() {
               className={[
                 "flex items-center gap-2 rounded-full font-medium transition-all duration-200",
                 "bg-[var(--black)] text-white hover:bg-zinc-800",
-                compact ? "px-4 py-1.5 text-sm" : "px-5 py-2 text-[15px]",
+                "px-5 py-2 text-[15px]",
               ].join(" ")}
             >
               <IconMail size={16} />
