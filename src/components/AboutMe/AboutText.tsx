@@ -130,6 +130,7 @@ const AboutText: React.FC<AboutTextProps> = ({
               <Link
                 href="https://www.linkedin.com/in/jesushernandez91/"
                 target="_blank"
+                rel="noopener noreferrer"
                 className="flex w-12 h-12 items-center justify-center"
               >
                 <IconBrandLinkedin />
@@ -137,6 +138,7 @@ const AboutText: React.FC<AboutTextProps> = ({
               <Link
                 href="https://github.com/jesus0091"
                 target="_blank"
+                rel="noopener noreferrer"
                 className="flex w-12 h-12 items-center justify-center"
               >
                 <IconBrandGithub />
@@ -144,6 +146,7 @@ const AboutText: React.FC<AboutTextProps> = ({
               <Link
                 href="https://www.behance.net/devjesushernandez"
                 target="_blank"
+                rel="noopener noreferrer"
                 className="flex w-12 h-12 items-center justify-center"
               >
                 <IconBrandBehance />
