@@ -10,7 +10,6 @@ gsap.registerPlugin(ScrollTrigger);
 const TRANSITIONS = [
   { trigger: "#projects", color: "#ebebeb" },
   { trigger: "#about", color: "#e4e4e4" },
-  { trigger: "#contact", color: "#000000" },
 ];
 
 export default function BackgroundTransition() {

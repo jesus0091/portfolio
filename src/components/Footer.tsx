@@ -184,7 +184,7 @@ export default function Footer({
     <footer
       ref={footerRef}
       id="contact"
-      className={`relative min-h-[100vh] overflow-hidden flex flex-col border-t bg-black border-black/10 ${className}`}
+      className={`relative min-h-[100vh] overflow-hidden flex flex-col border-t bg-[var(--background)] border-black/10 ${className}`}
     >
       <div className="relative min-h-[100dvh] md:min-h-0 flex flex-col justify-center flex-1 z-10">
         <div
@@ -206,7 +206,7 @@ export default function Footer({
           </p>
           <h3
             data-cta-title
-            className="text-3xl sm:text-4xl md:text-7xl font-extrabold tracking-tight text-white"
+            className="text-3xl sm:text-4xl md:text-7xl font-extrabold tracking-tight text-[var(--black)]"
           >
             Let&apos;s build something <br /> great together
           </h3>
@@ -215,7 +215,7 @@ export default function Footer({
             <Link
               href={`mailto:${email}`}
               data-cta
-              className="relative inline-flex items-center rounded-full gap-2 border border-white/20 px-6 py-3 text-base cursor-pointer font-medium text-white/95 hover:bg-white/10 transition"
+              className="relative inline-flex items-center rounded-full gap-2 border border-black/20 px-6 py-3 text-base cursor-pointer font-medium text-[var(--black)] hover:bg-black/5 transition"
               aria-label="Send me an email"
             >
               <IconMail size={18} />
@@ -226,7 +226,7 @@ export default function Footer({
       </div>
 
       {/* Cuerpo */}
-      <div className="px-4 sm:px-6 pb-10 border-t border-white/10 z-10">
+      <div className="px-4 sm:px-6 pb-10 border-t border-black/10 z-10">
         <div className="flex flex-col md:grid md:grid-cols-12 gap-8 py-8 max-w-6xl mx-auto">
           <div
             data-footer-col
@@ -234,24 +234,24 @@ export default function Footer({
           >
             <Link
               href="/"
-              className="flex flex-col items-center w-full md:items-start gap-2 font-bold text-xl text-white"
+              className="flex flex-col items-center w-full md:items-start gap-2 font-bold text-xl text-[var(--black)]"
               aria-label="Go to home"
             >
               <Image
                 src={"/images/facebrand.png"}
-                className="border border-white/20 rounded-lg bg-white/10 object-contain"
+                className="border border-black/10 rounded-lg bg-black/5 object-contain"
                 width={50}
                 height={50}
                 alt="Logo"
               />
               <span>Jesús Hernández</span>
             </Link>
-            <p className="text-sm md:text-base text-gray-400 leading-relaxed max-w-xs text-center md:text-left">
+            <p className="text-sm md:text-base text-[var(--muted)] leading-relaxed max-w-xs text-center md:text-left">
               Frontend Developer & UX/UI Designer. <br />I build cohesive,
               scalable and delightful digital products.
             </p>
           </div>
-          <div className="md:hidden block w-full border-t border-white/10 md:col-span-1 mx-auto" />
+          <div className="md:hidden block w-full border-t border-black/10 md:col-span-1 mx-auto" />
           <div
             data-footer-col
             className="flex flex-col md:flex-row gap-8 col-span-7"
@@ -265,7 +265,7 @@ export default function Footer({
                   <li key={l.href}>
                     <Link
                       href={l.href}
-                      className="text-base text-center text-white/70 hover:text-white transition"
+                      className="text-base text-center text-[var(--muted)] hover:text-[var(--black)] transition"
                     >
                       {l.label}
                     </Link>
@@ -288,7 +288,7 @@ export default function Footer({
                       target="_blank"
                       rel="noreferrer"
                       aria-label={s.label}
-                      className="inline-flex items-center gap-2 rounded-full border border-white/15 px-3 py-2 text-sm text-gray-200 hover:bg-white/10 transition"
+                      className="inline-flex items-center gap-2 rounded-full border border-black/15 px-3 py-2 text-sm text-[var(--black)] hover:bg-black/5 transition"
                     >
                       <span className="[&>svg]:h-5 [&>svg]:w-5">{s.icon}</span>
                       <span>{s.label}</span>
@@ -301,7 +301,7 @@ export default function Footer({
         </div>
         <div
           data-footer-col
-          className="flex flex-col-reverse pb-[10vh] md:pb-4 max-w-6xl mx-auto sm:flex-row items-center justify-between gap-3 border-t border-white/10 pt-4"
+          className="flex flex-col-reverse pb-[10vh] md:pb-4 max-w-6xl mx-auto sm:flex-row items-center justify-between gap-3 border-t border-black/10 pt-4"
         >
           <p className="text-sm md:text-base text-center text-gray-500">
             © {year} Jesús Hernández. All rights reserved.
