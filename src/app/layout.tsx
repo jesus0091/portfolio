@@ -76,8 +76,6 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
 };
 
 export default function RootLayout({
@@ -91,7 +89,11 @@ export default function RootLayout({
     name: "Jesus Hernandez",
     url: CANONICAL,
     jobTitle: "Front-End Developer & UX/UI Designer",
-    sameAs: [],
+    sameAs: [
+      "https://www.linkedin.com/in/jesushernandez91/",
+      "https://github.com/jesus0091",
+      "https://www.behance.net/devjesushernandez",
+    ],
   };
 
   const websiteJsonLd = {
