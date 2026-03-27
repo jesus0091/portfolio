@@ -9,7 +9,6 @@ gsap.registerPlugin(ScrollTrigger);
 
 const TRANSITIONS = [
   { trigger: "#projects", color: "#ebebeb" },
-  { trigger: '[data-section="quote"]', color: "#111111" },
   { trigger: "#about", color: "#e4e4e4" },
   { trigger: "#contact", color: "#000000" },
 ];
