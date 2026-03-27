@@ -84,23 +84,69 @@ Current links (`/about`, `/projects`) become anchor links (`/#about`, `/#project
 | `src/components/AboutMe/AboutMeHero.tsx` | Gets `id="about"`, height `h-[100dvh]` → `py-20 md:py-28` |
 | `src/components/HomePage.tsx` | Root section gets `id="hero"` |
 | `src/components/Footer.tsx` | Root footer gets `id="contact"` |
+| `src/components/BackgroundTransition.tsx` | New component — scroll-driven bg color transitions |
+| `src/components/Projects/ProjectCard.tsx` | Frosted glass styles (`bg-white/70 backdrop-blur-sm`) |
+| `src/components/AboutMe/AboutMeHero.tsx` | Add stat counters section + scale-in on section title |
+| `src/components/Projects/HeroProjects.tsx` | Scale-in entrance on section title |
+
+---
+
+## Apple-Inspired Animation Enhancements
+
+Four new animation techniques layered on top of the existing GSAP setup. No new dependencies — all implemented with GSAP ScrollTrigger.
+
+### 1. Scroll-driven background color transition
+A new `<BackgroundTransition>` component wraps the entire page. It listens to scroll progress and smoothly interpolates the `background-color` of `<html>` between section color stops:
+
+| Scroll zone | Background color |
+|---|---|
+| `#hero` | `#e4e4e4` (current) |
+| `#projects` | `#f0f0f0` (slightly lighter) |
+| `[quote]` | `#1a1a1a` (dark, matches the quote's dramatic feel) |
+| `#about` | `#e4e4e4` (back to light) |
+| `#contact` | `#000000` (footer is already black) |
+
+Implemented as a GSAP ScrollTrigger on each section boundary with `scrub: true` and `gsap.to(document.documentElement, { backgroundColor: ... })`.
+
+### 2. Scale-in section headers
+`HeroProjects` and `AboutMeHero` — both now compact h2 headers — get a scroll-driven scale entrance: text starts at `scale(1.12)` and `opacity(0)` and scrubs to `scale(1)` + `opacity(1)` as the section enters the viewport. Gives the Apple "cinematic reveal" feel on section titles.
+
+### 3. Stat counters in About
+Three animated counters added to the `AboutMeHero` section (below the title, above the skills carousel):
+
+| Stat | Value |
+|---|---|
+| Years of experience | 3+ |
+| Projects delivered | 8+ |
+| Design + Code | 1 profile |
+
+Numbers count up from 0 using GSAP `snap: 1` on scroll enter. Labels appear with a stagger fade.
+
+### 4. Frosted glass project cards
+`ProjectCard` component gets updated styles:
+- `bg-white` → `bg-white/70 backdrop-blur-sm`
+- Subtle border: `border border-white/50`
+- Hover: `bg-white/90` with `shadow-xl`
+
+This gives the cards the Apple-style translucent surface feel against the lighter background.
 
 ---
 
 ## What Stays Unchanged
 
-- All GSAP animations (ScrollTrigger, timelines, word reveals, parallax, Quote 3 scenes)
+- All existing GSAP animations (ScrollTrigger, timelines, word reveals, parallax, Quote 3 scenes)
 - All styled-components
 - All component internal logic
 - Tailwind styles
 - SEO metadata in `layout.tsx`
-- The `Skills` carousel in `AboutMeHero` (stays, now smaller section)
+- The `Skills` carousel in `AboutMeHero`
 
 ---
 
 ## Constraints
 
 - No new dependencies.
-- No design changes beyond height adjustments on the two repurposed heroes.
 - All existing animations must work without modification.
-- Mobile swipe navigation in `HomePage` remains (it will still navigate to anchor sections via scroll).
+- Background transition must not interfere with Footer's own black background.
+- Stat counters are decorative — no dynamic data fetching.
+- Mobile swipe navigation in `HomePage` is removed (no longer needed on a single page — anchor scroll replaces it).
