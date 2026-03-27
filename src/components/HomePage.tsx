@@ -179,7 +179,7 @@ export default function HomePage() {
               aria-label="Product Designer"
             >
               <span className="amp">&amp;</span>
-              <span className="word light">Web</span>
+              <span className="word light">Product</span>
               <span className="word strong relative">
                 Designer
                 <span className="rectangle-base">
