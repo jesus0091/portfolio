@@ -3,7 +3,6 @@
 import { useLayoutEffect, useRef } from "react";
 
 import ButtonOutlined from "../ButtonOutlined";
-import Navbar from "../Navbar";
 import { OrbitFusion } from "../OrbitFusion";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import gsap from "gsap";
@@ -19,30 +18,50 @@ export default function HeroProject() {
     const prefersReduced = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;
+
     const ctx = gsap.context(() => {
-      const baseEase = "power2.out";
-      gsap
-        .timeline({ defaults: { ease: baseEase } })
-        .from([".hero-eyebrow", ".hero-title", ".hero-cta"], {
-          y: 24,
-          opacity: 0,
-          duration: 0.6,
-          stagger: 0.12,
-        })
-        .from(
-          ".hero-orbit",
-          { scale: 0.92, opacity: 0, duration: 0.6 },
-          "<0.1"
+      if (!prefersReduced) {
+        // Scale-in on section title (Apple-style)
+        gsap.fromTo(
+          ".projects-title",
+          { scale: 1.12, autoAlpha: 0 },
+          {
+            scale: 1,
+            autoAlpha: 1,
+            duration: 1,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: root,
+              start: "top 75%",
+              once: true,
+            },
+          }
         );
 
-      if (!prefersReduced) {
+        gsap.fromTo(
+          ".projects-eyebrow",
+          { y: 16, autoAlpha: 0 },
+          {
+            y: 0,
+            autoAlpha: 1,
+            duration: 0.7,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: root,
+              start: "top 75%",
+              once: true,
+            },
+          }
+        );
+
+        // OrbitFusion parallax
         gsap.to(".hero-orbit", {
           yPercent: -12,
           rotate: 2,
           ease: "none",
           scrollTrigger: {
-            trigger: ".hero",
-            start: "top top",
+            trigger: root,
+            start: "top bottom",
             end: "bottom top",
             scrub: true,
           },
@@ -53,35 +72,26 @@ export default function HeroProject() {
     return () => ctx.revert();
   }, []);
 
-  // funcion para mandar mail a jesushernandez120491@gmail.com
-  const sendEmail = () => {
-    window.open("mailto:jesushernandez120491@gmail.com");
-  };
-
   return (
     <section
+      id="projects"
       ref={rootRef}
-      className="hero h-[100dvh] flex flex-col justify-center items-center relative overflow-clip"
+      className="relative py-20 md:py-28 flex flex-col justify-center items-center overflow-clip"
     >
-      <Navbar />
-      <div className="hero-orbit absolute will-change-transform">
+      <div className="hero-orbit absolute inset-0 will-change-transform opacity-60">
         <OrbitFusion />
       </div>
-      <div className="flex flex-col gap-6 px-4 items-center justify-center h-full z-10">
+      <div className="flex flex-col gap-6 px-4 items-center justify-center z-10">
         <div className="flex flex-col items-center gap-2">
-          <p className="hero-eyebrow text-lg md:text-xl tracking-wide text-orange-600">
+          <p className="projects-eyebrow text-lg md:text-xl tracking-wide text-orange-600">
             From Concept to Code
           </p>
-          <p className="hero-title text-3xl md:text-[90px] tracking-tight font-black leading-none text-[var(--black)] text-center">
+          <p className="projects-title text-3xl md:text-[90px] tracking-tight font-black leading-none text-[var(--black)] text-center will-change-transform">
             Building Digital <br /> Products & Experience
           </p>
         </div>
-
-        <div className="hero-cta">
-          <ButtonOutlined>Lets start a project together</ButtonOutlined>
-        </div>
+        <ButtonOutlined>Lets start a project together</ButtonOutlined>
       </div>
-      <div className="light-bottom-sentinel h-10 absolute bottom-0 w-full" />
     </section>
   );
 }

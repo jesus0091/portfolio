@@ -273,6 +273,7 @@ const Quote: React.FC = () => {
   return (
     <section
       ref={sectionRef}
+      data-section="quote"
       className="relative h-[100dvh] w-full overflow-clip"
     >
       <div

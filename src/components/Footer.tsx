@@ -30,8 +30,8 @@ export default function Footer({
   className = "",
   email = "hello @jesus",
   quickLinks = [
-    { label: "About Me", href: "/about" },
-    { label: "Projects", href: "/projects" },
+    { label: "About Me", href: "/#about" },
+    { label: "Projects", href: "/#projects" },
   ],
   social = [
     {
@@ -183,6 +183,7 @@ export default function Footer({
   return (
     <footer
       ref={footerRef}
+      id="contact"
       className={`relative min-h-[100vh] overflow-hidden flex flex-col border-t bg-black border-black/10 ${className}`}
     >
       <div className="relative min-h-[100dvh] md:min-h-0 flex flex-col justify-center flex-1 z-10">

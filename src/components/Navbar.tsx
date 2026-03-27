@@ -17,16 +17,13 @@ import {
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 
 const links = [
-  { href: "/about", label: "About Me" },
-  { href: "/projects", label: "Projects" },
+  { href: "/#about", label: "About Me", sectionId: "about" },
+  { href: "/#projects", label: "Projects", sectionId: "projects" },
 ];
 
 export default function Navbar() {
-  const pathname = usePathname();
-
   const headerRef = useRef<HTMLElement | null>(null);
   const rafRef = useRef<number | null>(null);
   const lastScrollYRef = useRef(0);
@@ -36,6 +33,7 @@ export default function Navbar() {
   const [elevated, setElevated] = useState(false);
   const [navH, setNavH] = useState(80);
   const [compact, setCompact] = useState(false);
+  const [activeSection, setActiveSection] = useState<string>("hero");
 
   // FABs aparecen al scrollear
   const [showFab, setShowFab] = useState(false);
@@ -150,7 +148,25 @@ export default function Navbar() {
     };
   }, [onScroll, measureNav]);
 
-  useEffect(() => setOpen(false), [pathname]);
+  useEffect(() => {
+    const sectionIds = ["hero", "projects", "about", "contact"];
+    const observers: IntersectionObserver[] = [];
+
+    sectionIds.forEach((id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const obs = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) setActiveSection(id);
+        },
+        { rootMargin: "-30% 0px -60% 0px", threshold: 0 }
+      );
+      obs.observe(el);
+      observers.push(obs);
+    });
+
+    return () => observers.forEach((o) => o.disconnect());
+  }, []);
 
   return (
     <Fragment>
@@ -182,12 +198,12 @@ export default function Navbar() {
             </Link>
           </div>
           <ul className="hidden items-center gap-6 md:flex justify-center">
-            {links.map(({ href, label }) => {
-              const selected = pathname === href;
+            {links.map((link) => {
+              const selected = activeSection === link.sectionId;
               return (
-                <li key={href}>
+                <li key={link.href}>
                   <Link
-                    href={href}
+                    href={link.href}
                     aria-current={selected ? "page" : undefined}
                     className={`px-2 text-lg flex flex-row gap-2 items-center transition-all relative ${
                       selected
@@ -198,7 +214,7 @@ export default function Navbar() {
                     {selected ? (
                       <div className="h-4 w-4 bg-current rounded-full" />
                     ) : null}
-                    {label}
+                    {link.label}
                   </Link>
                 </li>
               );
@@ -343,13 +359,14 @@ export default function Navbar() {
           <ul
             className="text-xl shadow-2xl flex flex-col rounded-2xl border border-black/10 bg-white/90"
           >
-            {links.map(({ href, label }) => (
-              <li key={href}>
+            {links.map((link) => (
+              <li key={link.href}>
                 <Link
-                  href={href}
+                  href={link.href}
+                  onClick={() => setOpen(false)}
                   className="flex justify-between rounded px-6 py-4 transition border-b w-full hover:bg-zinc-100 border-black/10"
                 >
-                  {label} <IconArrowUpRight />
+                  {link.label} <IconArrowUpRight />
                 </Link>
               </li>
             ))}

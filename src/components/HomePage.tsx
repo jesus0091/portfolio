@@ -9,14 +9,10 @@ import {
 
 import Cursor from "./Cursor";
 import Link from "next/link";
-import Navbar from "./Navbar";
 import gsap from "gsap";
 import styled from "styled-components";
-import { useRouter } from "next/navigation";
 
 export default function HomePage() {
-  const router = useRouter();
-
   const [hovered, setHovered] = useState<"frontend" | "designer">("frontend");
   const [cursorActive, setCursorActive] = useState(false);
   const [ready, setReady] = useState(false);
@@ -136,85 +132,19 @@ export default function HomePage() {
     return () => ctx.revert();
   }, []);
 
-  useEffect(() => {
-    const el = sectionRef.current;
-    if (!el || typeof window === "undefined") return;
-
-    const isCoarse = window.matchMedia("(pointer: coarse)").matches;
-    const isNarrow = window.innerWidth < 768;
-    if (!(isCoarse && isNarrow)) return;
-
-    let startX = 0;
-    let startY = 0;
-    let tracking = false;
-    let fired = false;
-
-    const MIN_DISTANCE = 64;
-    const MAX_VERTICAL_DELTA = 48;
-
-    const onTouchStart = (e: TouchEvent) => {
-      if (e.touches.length !== 1) return;
-      const t = e.touches[0];
-      startX = t.clientX;
-      startY = t.clientY;
-      tracking = true;
-      fired = false;
-    };
-
-    const onTouchMove = (e: TouchEvent) => {
-      if (!tracking || fired) return;
-      const t = e.touches[0];
-      const dx = t.clientX - startX;
-      const dy = t.clientY - startY;
-
-      if (Math.abs(dy) > MAX_VERTICAL_DELTA) {
-        tracking = false;
-        return;
-      }
-
-      if (Math.abs(dx) >= MIN_DISTANCE) {
-        fired = true;
-        tracking = false;
-        if (dx > 0) {
-          // → swipe derecha
-          router.push("/about");
-        } else {
-          // ← swipe izquierda
-          router.push("/projects");
-        }
-      }
-    };
-
-    const onTouchEnd = () => {
-      tracking = false;
-    };
-
-    el.addEventListener("touchstart", onTouchStart, { passive: true });
-    el.addEventListener("touchmove", onTouchMove, { passive: true });
-    el.addEventListener("touchend", onTouchEnd, { passive: true });
-    el.addEventListener("touchcancel", onTouchEnd, { passive: true });
-
-    return () => {
-      el.removeEventListener("touchstart", onTouchStart);
-      el.removeEventListener("touchmove", onTouchMove);
-      el.removeEventListener("touchend", onTouchEnd);
-      el.removeEventListener("touchcancel", onTouchEnd);
-    };
-  }, [router]);
 
   return (
     <Fragment>
       <Cursor active={cursorActive} />
       <section
         ref={sectionRef}
+        id="hero"
         className="pb-10 px-4 h-[100dvh] w-full
           flex flex-col justify-between items-center
           touch-pan-y select-none
           overflow-x-clip
         "
       >
-        <div className="hidden md:block"></div>
-        <Navbar />
         <div className="flex flex-col items-center py-[10vh] md:py-0 text-center w-full gap-2">
           <p ref={greetRef} className="text-lg md:text-2xl font-medium">
             👋, My name is Jesús Hernández
