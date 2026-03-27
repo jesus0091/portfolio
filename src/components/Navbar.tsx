@@ -163,8 +163,7 @@ export default function Navbar() {
           className={[
             "max-w-[1280px] mx-auto px-4 md:px-8",
             "flex items-center justify-between",
-            "transition-all duration-300",
-            compact ? "h-[56px]" : "h-[72px]",
+            "h-[72px]",
           ].join(" ")}
         >
           {/* Logo */}
