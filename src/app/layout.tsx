@@ -13,6 +13,7 @@ const inter = Inter({
 const CANONICAL = "https://jesushernandez.vercel.app";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(CANONICAL),
   title: {
     default: "Jesus Hernandez — Front-End Developer & UX/UI Designer",
     template: "%s | Jesus Hernandez",

@@ -16,49 +16,40 @@ const WhatsSetsMeApart: React.FC = () => {
     if (typeof window === "undefined") return;
     gsap.registerPlugin(ScrollTrigger);
 
-    const section = sectionRef.current!;
-    const title = titleRef.current!;
-    const subtitle = subtitleRef.current!;
-    const cards =
-      cardsWrapRef.current!.querySelectorAll<HTMLElement>("[data-card]");
+    const ctx = gsap.context(() => {
+      const section = sectionRef.current!;
+      const title = titleRef.current!;
+      const subtitle = subtitleRef.current!;
+      const cards =
+        cardsWrapRef.current!.querySelectorAll<HTMLElement>("[data-card]");
 
-    // Estados iniciales
-    gsap.set([title, subtitle], { autoAlpha: 0, y: 30 });
-    gsap.set(cards, { autoAlpha: 0, y: 40, scale: 0.95 });
+      gsap.set([title, subtitle], { autoAlpha: 0, y: 30 });
+      gsap.set(cards, { autoAlpha: 0, y: 40, scale: 0.95 });
 
-    // Animación al entrar la sección
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: section,
-        start: "top 80%",
-        toggleActions: "play none none reverse",
-      },
-    });
+      gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: "top 80%",
+          toggleActions: "play none none reverse",
+        },
+      })
+        .to(title, { autoAlpha: 1, y: 0, duration: 0.8, ease: "power3.out" })
+        .to(
+          subtitle,
+          { autoAlpha: 1, y: 0, duration: 0.8, ease: "power3.out" },
+          "-=0.4"
+        )
+        .to(cards, {
+          autoAlpha: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.8,
+          ease: "power2.out",
+          stagger: 0.15,
+        });
+    }, sectionRef);
 
-    tl.to(title, {
-      autoAlpha: 1,
-      y: 0,
-      duration: 0.8,
-      ease: "power3.out",
-    })
-      .to(
-        subtitle,
-        { autoAlpha: 1, y: 0, duration: 0.8, ease: "power3.out" },
-        "-=0.4"
-      )
-      .to(cards, {
-        autoAlpha: 1,
-        y: 0,
-        scale: 1,
-        duration: 0.8,
-        ease: "power2.out",
-        stagger: 0.15,
-      });
-
-    return () => {
-      tl.kill();
-      ScrollTrigger.getAll().forEach((st) => st.kill());
-    };
+    return () => ctx.revert();
   }, []);
 
   return (

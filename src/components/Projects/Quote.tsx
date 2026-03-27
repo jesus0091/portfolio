@@ -1,14 +1,8 @@
 "use client";
 
-import {
-  IconImageInPicture,
-  IconPhoto,
-  IconPictureInPicture,
-} from "@tabler/icons-react";
 import React, { useLayoutEffect, useRef } from "react";
 
 import AuroraGlow from "../AuroraGlow";
-import AuroraGlowYellow from "../AuroraGlowYellow";
 import MiniLayout from "./MiniLayout";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import gsap from "gsap";
