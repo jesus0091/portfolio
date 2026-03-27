@@ -109,6 +109,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      data-color-scheme="light"
       className={`${inter.variable} font-sans scrollbar-hide bg-background text-foreground`}
     >
       <head>
