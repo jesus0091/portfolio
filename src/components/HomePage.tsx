@@ -139,13 +139,13 @@ export default function HomePage() {
       <section
         ref={sectionRef}
         id="hero"
-        className="pb-10 px-4 h-[100dvh] w-full
-          flex flex-col justify-between items-center
+        className="relative px-4 h-[100dvh] w-full
+          flex flex-col justify-center items-center
           touch-pan-y select-none
           overflow-x-clip
         "
       >
-        <div className="flex flex-col items-center py-[10vh] md:py-0 text-center w-full gap-2">
+        <div className="flex flex-col items-center text-center w-full gap-2">
           <p ref={greetRef} className="text-lg md:text-2xl font-medium">
             👋, My name is Jesús Hernández
           </p>
@@ -198,7 +198,7 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div className="flex flex-col-reverse md:flex-col w-full justify-between items-center text-center gap-2 md:gap-3">
+        <div className="absolute bottom-10 left-0 right-0 flex flex-col-reverse md:flex-col w-full items-center text-center gap-2 md:gap-3">
           <p ref={footerCityRef} className="text-lg md:text-2xl font-medium ">
             Building digital products and experience
           </p>
