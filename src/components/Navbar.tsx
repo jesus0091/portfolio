@@ -175,10 +175,7 @@ export default function Navbar() {
             <Image
               src="/images/facebrand.png"
               alt="Logo"
-              className={[
-                "border border-black/10 rounded-xl bg-black/5 object-contain transition-all duration-300",
-                compact ? "w-8 h-8" : "w-10 h-10",
-              ].join(" ")}
+              className="border border-black/10 rounded-xl bg-black/5 object-contain w-10 h-10"
               width={40}
               height={40}
               priority
