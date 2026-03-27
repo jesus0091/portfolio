@@ -17,16 +17,13 @@ import {
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 
 const links = [
-  { href: "/about", label: "About Me" },
-  { href: "/projects", label: "Projects" },
+  { href: "/#about", label: "About Me", sectionId: "about" },
+  { href: "/#projects", label: "Projects", sectionId: "projects" },
 ];
 
 export default function Navbar() {
-  const pathname = usePathname();
-
   const headerRef = useRef<HTMLElement | null>(null);
   const rafRef = useRef<number | null>(null);
   const lastScrollYRef = useRef(0);
@@ -34,13 +31,10 @@ export default function Navbar() {
 
   const [open, setOpen] = useState(false);
   const [elevated, setElevated] = useState(false);
-  const [navH, setNavH] = useState(80);
-  const [compact, setCompact] = useState(false);
-
-  // FABs aparecen al scrollear
+  const [navH, setNavH] = useState(72);
+  const [activeSection, setActiveSection] = useState<string>("hero");
   const [showFab, setShowFab] = useState(false);
 
-  const COMPACT_DELTA = 5;
   const prevBodyPaddingRightRef = useRef<string>("");
   const prevHeaderPaddingRightRef = useRef<string>("");
 
@@ -96,13 +90,11 @@ export default function Navbar() {
   useEffect(() => {
     if (open) lockScroll();
     else unlockScroll();
-    return () => {
-      unlockScroll();
-    };
+    return () => { unlockScroll(); };
   }, [open, lockScroll, unlockScroll]);
 
   const measureNav = useCallback(() => {
-    const h = headerRef.current?.getBoundingClientRect().height ?? 80;
+    const h = headerRef.current?.getBoundingClientRect().height ?? 72;
     setNavH(Math.max(1, Math.round(h)));
   }, []);
 
@@ -110,188 +102,170 @@ export default function Navbar() {
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
     rafRef.current = requestAnimationFrame(() => {
       const y = window.scrollY;
-
       setElevated(y > 8);
-
-      // FABs visibles en mobile con scroll
       setShowFab(y > 12);
-
-      // Compactación por dirección de scroll
-      const last = lastScrollYRef.current;
-      if (y > last + COMPACT_DELTA) setCompact(true);
-      else if (y < last - COMPACT_DELTA) setCompact(false);
-      if (y < 4) setCompact(false);
-
       lastScrollYRef.current = y;
     });
   }, []);
 
-  useLayoutEffect(() => {
-    measureNav();
-  }, [measureNav]);
+  useLayoutEffect(() => { measureNav(); }, [measureNav]);
 
   useEffect(() => {
-    const handleResize = () => {
-      measureNav();
-    };
-
-    handleResize();
+    measureNav();
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", handleResize);
-
+    window.addEventListener("resize", measureNav);
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
     window.addEventListener("keydown", onKey);
-
     return () => {
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("resize", measureNav);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       window.removeEventListener("keydown", onKey);
     };
   }, [onScroll, measureNav]);
 
-  useEffect(() => setOpen(false), [pathname]);
+  useEffect(() => {
+    const sectionIds = ["hero", "projects", "about", "contact"];
+    const observers: IntersectionObserver[] = [];
+    sectionIds.forEach((id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const obs = new IntersectionObserver(
+        ([entry]) => { if (entry.isIntersecting) setActiveSection(id); },
+        { rootMargin: "-30% 0px -60% 0px", threshold: 0 }
+      );
+      obs.observe(el);
+      observers.push(obs);
+    });
+    return () => observers.forEach((o) => o.disconnect());
+  }, []);
 
   return (
     <Fragment>
+      {/* ── Header ── */}
       <header
         ref={headerRef}
         className={[
-          "w-full transition-colors duration-300 md:fixed md:top-0 h-[80px] md:left-0 md:right-0 z-50",
-          "bg-transparent text-black",
+          "w-full md:fixed md:top-0 md:left-0 md:right-0 z-50",
+          "transition-all duration-300",
           elevated
-            ? "bg-gradient-to-b from-[var(--background)]/20 to-transparent backdrop-blur-sm"
-            : "",
+            ? "bg-white/80 backdrop-blur-xl border-b border-black/[0.06] shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
+            : "bg-transparent",
         ].join(" ")}
       >
         <nav
           className={[
-            "grid grid-cols-2 md:grid-cols-3 transition-all px-2 md:px-6 mx-auto",
+            "max-w-[1280px] mx-auto px-4 md:px-8",
+            "flex items-center justify-between",
+            "h-[72px]",
           ].join(" ")}
         >
-          <div className="flex items-center justify-start">
-            <Link href="/" className="text-base font-bold tracking-tight">
-              <Image
-                src="/images/brand-light.png"
-                alt="Logo"
-                className="h-[60px] max-w-max md:h-auto object-contain"
-                width={108}
-                height={54}
-                priority
-              />
-            </Link>
-          </div>
-          <ul className="hidden items-center gap-6 md:flex justify-center">
-            {links.map(({ href, label }) => {
-              const selected = pathname === href;
+          {/* Logo */}
+          <Link
+            href="/"
+            className="flex items-center gap-2.5 font-semibold text-[var(--black)] shrink-0"
+          >
+            <Image
+              src="/images/facebrand.png"
+              alt="Logo"
+              className="border border-black/10 rounded-xl bg-black/5 object-contain w-10 h-10"
+              width={40}
+              height={40}
+              priority
+            />
+            <span className="hidden md:inline text-[15px] tracking-tight">
+              Jesús Hernández
+            </span>
+          </Link>
+
+          {/* Desktop nav links */}
+          <ul className="hidden md:flex items-center gap-1">
+            {links.map((link) => {
+              const selected = activeSection === link.sectionId;
               return (
-                <li key={href}>
+                <li key={link.href}>
                   <Link
-                    href={href}
+                    href={link.href}
                     aria-current={selected ? "page" : undefined}
-                    className={`px-2 text-lg flex flex-row gap-2 items-center transition-all relative ${
+                    className={[
+                      "relative px-4 py-2 rounded-full text-[15px] font-medium transition-all duration-200",
                       selected
-                        ? "font-semibold text-[var(--orange)] hover:text-orange-700"
-                        : "text-[var(--muted)] hover:text-[var(--black)]"
-                    }`}
+                        ? "text-[var(--black)] bg-black/[0.06]"
+                        : "text-[var(--muted)] hover:text-[var(--black)] hover:bg-black/[0.04]",
+                    ].join(" ")}
                   >
-                    {selected ? (
-                      <div className="h-4 w-4 bg-current rounded-full" />
-                    ) : null}
-                    {label}
+                    {selected && (
+                      <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[var(--orange)]" />
+                    )}
+                    {link.label}
                   </Link>
                 </li>
               );
             })}
           </ul>
-          <div className="hidden md:flex justify-end items-center gap-6 font-medium">
+
+          {/* Desktop CTA */}
+          <div className="hidden md:flex items-center">
             <Link
               href="mailto:jesushernandez120491@gmail.com"
-              className="px-4 py-2 text-lg rounded-full transition flex gap-2 items-center bg-[var(--black)] text-[var(--white)]"
+              className={[
+                "flex items-center gap-2 rounded-full font-medium transition-all duration-200",
+                "bg-[var(--black)] text-white hover:bg-zinc-800",
+                "px-5 py-2 text-[15px]",
+              ].join(" ")}
             >
-              <IconMail />
+              <IconMail size={16} />
               hello @jesus
             </Link>
           </div>
-          <div className="flex md:hidden justify-end items-center">
+
+          {/* Mobile hamburger (inline, top of page) */}
+          <div className="flex md:hidden items-center">
             <button
               onClick={() => setOpen((v) => !v)}
               aria-expanded={open}
               aria-label="Toggle menu"
               aria-controls="mobile-menu"
               className={[
-                "relative flex md:hidden items-center h-auto border-[0.5px] rounded-full max-w-max cursor-pointer",
-                "transition-all duration-200 ease-out active:scale-[0.98]",
-                compact ? "pl-1.5 pr-3" : "pl-2 pr-4",
+                "flex items-center gap-1.5 rounded-full border transition-all duration-200 active:scale-[0.97] cursor-pointer",
+                "pl-1.5 pr-3 h-10",
                 elevated
-                  ? [
-                      "bg-white/20 text-[var(--black)] supports-[backdrop-filter]:backdrop-blur-md",
-                      "shadow-[0_4px_16px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.18),inset_0_-6px_20px_rgba(0,0,0,0.10)]",
-                      "border-black/5",
-                    ].join(" ")
+                  ? "bg-white/60 border-black/10 backdrop-blur-sm shadow-sm"
                   : "border-transparent",
               ].join(" ")}
             >
-              {/* Grupo del ícono hamburguesa animado */}
-              <div
-                className={[
-                  "relative rounded outline-none grid place-items-center transition-all duration-200",
-                  compact ? "h-8 w-8" : "h-10 w-10",
-                  "text-[var(--black)]",
-                ].join(" ")}
-              >
-                {/* Barra superior */}
-                <span
-                  className={[
-                    "pointer-events-none absolute right-2 block h-[2.5px] rounded-full bg-current",
-                    "origin-center transform-gpu will-change-transform",
-                    "transition-[transform,width,background-color,top] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
-                    open
-                      ? "top-1/2 w-6 rotate-45"
-                      : compact
-                      ? "top-[calc(50%-4px)] w-5 rotate-0"
-                      : "top-[calc(50%-5px)] w-6 rotate-0",
-                  ].join(" ")}
-                />
-                {/* Barra inferior */}
-                <span
-                  className={[
-                    "pointer-events-none absolute right-2 block h-[2.5px] rounded-full bg-current",
-                    "origin-center transform-gpu will-change-transform",
-                    "transition-[transform,width,background-color,top] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
-                    open
-                      ? "top-1/2 w-6 -rotate-45"
-                      : compact
-                      ? "top-[calc(50%+4px)] w-4 rotate-0"
-                      : "top-[calc(50%+5px)] w-4 rotate-0",
-                  ].join(" ")}
-                />
+              <div className="relative h-8 w-8 grid place-items-center text-[var(--black)]">
+                <span className={[
+                  "pointer-events-none absolute right-2 block h-[2px] rounded-full bg-current will-change-transform",
+                  "transition-[transform,width,top] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
+                  open ? "top-1/2 w-5 rotate-45" : "top-[calc(50%-4px)] w-5 rotate-0",
+                ].join(" ")} />
+                <span className={[
+                  "pointer-events-none absolute right-2 block h-[2px] rounded-full bg-current will-change-transform",
+                  "transition-[transform,width,top] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
+                  open ? "top-1/2 w-5 -rotate-45" : "top-[calc(50%+4px)] w-4 rotate-0",
+                ].join(" ")} />
               </div>
-
-              {/* Texto */}
-              <p
-                className={[
-                  "relative text-[var(--black)] font-medium transition-all duration-200",
-                  compact ? "text-sm" : "text-lg",
-                ].join(" ")}
-              >
-                Menu
-              </p>
+              <span className="text-[var(--black)] font-medium text-base">Menu</span>
             </button>
           </div>
         </nav>
       </header>
+
+      {/* Mobile overlay */}
       <button
         type="button"
         aria-label="Close menu"
         onClick={() => setOpen(false)}
         className={[
-          "fixed inset-0 z-40 md:hidden transition-opacity duration-250",
+          "fixed inset-0 z-40 md:hidden transition-opacity duration-200",
           open
-            ? "opacity-100 pointer-events-auto bg-black/30 backdrop-blur-sm"
-            : "opacity-0 pointer-events-none bg-transparent",
+            ? "opacity-100 pointer-events-auto bg-black/20 backdrop-blur-sm"
+            : "opacity-0 pointer-events-none",
         ].join(" ")}
       />
+
+      {/* Mobile FAB — menu */}
       <button
         type="button"
         aria-label={open ? "Close menu" : "Open menu"}
@@ -300,16 +274,19 @@ export default function Navbar() {
           "md:hidden fixed z-[62]",
           "right-[calc(env(safe-area-inset-right,0px)+16px)]",
           "top-[calc(env(safe-area-inset-top,0px)+16px)]",
-          "h-10 px-3 flex flex-row rounded-full items-center gap-2",
-          "shadow-lg transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] transform-gpu",
+          "h-10 px-3 flex items-center gap-2 rounded-full",
+          "bg-[var(--black)] text-white shadow-lg",
+          "transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
           showFab && !open
             ? "opacity-100 translate-y-0 pointer-events-auto"
             : "opacity-0 -translate-y-2 pointer-events-none",
-          "bg-black text-white",
         ].join(" ")}
       >
-        {open ? <IconX size={20} /> : <IconMenu2 size={20} />} <span>Menu</span>
+        {open ? <IconX size={18} /> : <IconMenu2 size={18} />}
+        <span className="text-sm font-medium">Menu</span>
       </button>
+
+      {/* Mobile FAB — contact */}
       <Link
         href="mailto:jesushernandez120491@gmail.com"
         aria-label="Contact"
@@ -317,53 +294,53 @@ export default function Navbar() {
           "md:hidden fixed z-[60] flex items-center gap-2",
           "right-[calc(env(safe-area-inset-right,0px)+16px)]",
           "bottom-[calc(env(safe-area-inset-bottom,0px)+16px)]",
-          "transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] transform-gpu",
+          "rounded-full px-5 py-3 font-semibold text-sm tracking-tight",
+          "bg-[var(--black)] text-white shadow-lg",
+          "transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
           showFab && !open
             ? "opacity-100 translate-y-0 pointer-events-auto"
             : "opacity-0 translate-y-3 pointer-events-none",
-          "shadow-lg rounded-full px-5 py-3 font-semibold tracking-tight",
-          "bg-black text-white",
         ].join(" ")}
       >
-        <IconMail size={18} />
+        <IconMail size={16} />
         hello @jesus
       </Link>
-      {open ? (
+
+      {/* Mobile menu drawer */}
+      {open && (
         <div
           id="mobile-menu"
           role="dialog"
           aria-modal="true"
-          className={[
-            "fixed z-50 left-0 right-0 md:hidden px-3 py-1",
-            "transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] transform-gpu",
-            open ? "translate-y-0" : "-translate-y-2",
-          ].join(" ")}
-          style={{ top: `${navH}px` }}
+          className="fixed z-50 left-3 right-3 md:hidden"
+          style={{ top: `${navH + 8}px` }}
         >
-          <ul
-            className="text-xl shadow-2xl flex flex-col rounded-2xl border border-black/10 bg-white/90"
-          >
-            {links.map(({ href, label }) => (
-              <li key={href}>
+          <ul className="flex flex-col rounded-2xl border border-black/10 bg-white/95 backdrop-blur-xl shadow-xl overflow-hidden text-[17px]">
+            {links.map((link) => (
+              <li key={link.href}>
                 <Link
-                  href={href}
-                  className="flex justify-between rounded px-6 py-4 transition border-b w-full hover:bg-zinc-100 border-black/10"
+                  href={link.href}
+                  onClick={() => setOpen(false)}
+                  className="flex justify-between items-center px-6 py-4 border-b border-black/[0.07] hover:bg-black/[0.03] transition"
                 >
-                  {label} <IconArrowUpRight />
+                  {link.label}
+                  <IconArrowUpRight size={18} className="text-[var(--muted)]" />
                 </Link>
               </li>
             ))}
-            <li className="px-6 py-4">
+            <li className="p-3">
               <Link
                 href="/#contact"
-                className="block px-6 py-4 text-center w-full transition bg-black text-white"
+                onClick={() => setOpen(false)}
+                className="flex items-center justify-center gap-2 w-full rounded-xl py-3.5 bg-[var(--black)] text-white font-medium transition hover:bg-zinc-800"
               >
+                <IconMail size={16} />
                 hello @jesus
               </Link>
             </li>
           </ul>
         </div>
-      ) : null}
+      )}
     </Fragment>
   );
 }

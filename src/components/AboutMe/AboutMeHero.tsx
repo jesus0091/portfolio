@@ -4,16 +4,14 @@ import { Fragment, useLayoutEffect, useRef } from "react";
 
 import { AuroraGlow } from "../AuroraGlow";
 import ButtonOutlined from "../ButtonOutlined";
-import Navbar from "../Navbar";
-import SkillsCarousel from "./Skills";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import gsap from "gsap";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const AboutMeHero = () => {
   const rootRef = useRef<HTMLDivElement>(null);
-  const nameRef = useRef<HTMLParagraphElement>(null);
-  const titleRef = useRef<HTMLParagraphElement>(null);
-  const ctaRef = useRef<HTMLDivElement>(null);
-  const skillsRef = useRef<HTMLDivElement>(null);
+  const eyebrowRef = useRef<HTMLParagraphElement>(null);
 
   useLayoutEffect(() => {
     const root = rootRef.current;
@@ -24,29 +22,26 @@ const AboutMeHero = () => {
     ).matches;
 
     const ctx = gsap.context(() => {
-      const items = [nameRef.current, titleRef.current, ctaRef.current].filter(
-        Boolean
-      ) as Element[];
-
       if (prefersReduced) {
-        gsap.set([...items, skillsRef.current!], { clearProps: "all" });
+        gsap.set([eyebrowRef.current], { clearProps: "all" });
         return;
       }
 
-      const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
-
-      tl.from(items, {
-        y: 24,
-        autoAlpha: 0,
-        duration: 0.6,
-        stagger: 0.12,
-      }).from(
-        skillsRef.current!,
-        { y: 40, autoAlpha: 0, duration: 0.5 },
-        "+=0.2"
+      gsap.fromTo(
+        eyebrowRef.current,
+        { y: 16, autoAlpha: 0 },
+        {
+          y: 0,
+          autoAlpha: 1,
+          duration: 0.7,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: root,
+            start: "top 75%",
+            once: true,
+          },
+        }
       );
-
-      return () => tl.kill();
     }, root);
 
     return () => ctx.revert();
@@ -54,7 +49,11 @@ const AboutMeHero = () => {
 
   return (
     <Fragment>
-      <section className="h-[100dvh] relative flex flex-col items-center justify-between overflow-hidden">
+      <section
+        id="about"
+        ref={rootRef}
+        className="relative min-h-[90vh] py-20 md:py-28 flex flex-col items-center justify-between overflow-hidden gap-10"
+      >
         <div className="absolute inset-0 flex items-center z-0">
           <AuroraGlow
             blobSize={600}
@@ -62,33 +61,19 @@ const AboutMeHero = () => {
             colors={["#007bff1f", "#ff00bb1f", "#00ff951f"]}
           />
         </div>
-        <Navbar />
-        <div className="hidden md:flex w-full h-[80px]" />
-        <div
-          ref={rootRef}
-          className="flex flex-col z-10 items-center px-4 justify-center gap-6 w-full"
-        >
+
+        <div className="flex flex-col z-10 items-center justify-center gap-6 w-full max-w-[1280px] mx-auto px-4 md:px-8">
           <div className="flex flex-col items-center justify-center gap-2 w-full">
             <p
-              ref={nameRef}
+              ref={eyebrowRef}
               className="select-none text-lg md:text-xl tracking-wide leading-none font-normal block text-center text-[var(--orange)]"
             >
               Jesus Hernandez
             </p>
-            <p
-              ref={titleRef}
-              className="text-4xl md:text-[90px] font-black tracking-tight leading-none text-center text-[var(--black)] max-w-4xl"
-            >
-              The Creative Mind Behind the Code
-            </p>
           </div>
-          <div ref={ctaRef}>
-            <ButtonOutlined>Lets start a project together</ButtonOutlined>
-          </div>
+          <ButtonOutlined>Lets start a project together</ButtonOutlined>
         </div>
-        <div ref={skillsRef} className="w-full">
-          <SkillsCarousel />
-        </div>
+
       </section>
     </Fragment>
   );

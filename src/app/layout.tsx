@@ -99,16 +99,12 @@ export default function RootLayout({
     "@type": "WebSite",
     name: "Jesus Hernandez Portfolio",
     url: CANONICAL,
-    potentialAction: {
-      "@type": "SearchAction",
-      target: `${CANONICAL}/search?q={search_term_string}`,
-      "query-input": "required name=search_term_string",
-    },
   };
 
   return (
     <html
       lang="en"
+      data-color-scheme="light"
       className={`${inter.variable} font-sans scrollbar-hide bg-background text-foreground`}
     >
       <head>

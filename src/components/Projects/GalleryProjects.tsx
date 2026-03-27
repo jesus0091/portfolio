@@ -70,7 +70,7 @@ export default function GalleryProjects() {
   return (
     <div
       ref={rootRef}
-      className="overflow-hidden h-[70vh] -mt-[30vh] -mb-[40vh] md:-mt-[20vh] md:-mb-[50vh] flex flex-col justify-center items-center"
+      className="overflow-hidden h-[70vh] -mt-[18vh] flex flex-col justify-center items-center"
     >
       <div className="flex flex-row gap-1 md:gap-4">
         {gallery.map((item) => (
@@ -88,7 +88,7 @@ export default function GalleryProjects() {
         ))}
       </div>
       <div className="flex flex-col items-center mt-4">
-        <p className="text-center text-xl md:text-4xl font-medium">
+        <p className="text-center text-lg md:text-2xl font-medium">
           Join to my projects
         </p>
         <SignatureIcon className="h-25 md:h-40" />

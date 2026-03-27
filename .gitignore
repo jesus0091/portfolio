@@ -31,6 +31,9 @@ npm-cache/
 /src/app/test/
 /src/components/Button.tsx
 
+# superpowers brainstorm sessions
+.superpowers/
+
 # debug
 npm-debug.log*
 yarn-debug.log*

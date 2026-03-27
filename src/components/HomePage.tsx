@@ -7,16 +7,13 @@ import {
   IconBrandLinkedin,
 } from "@tabler/icons-react";
 
+import AuroraGlow from "./AuroraGlow";
 import Cursor from "./Cursor";
 import Link from "next/link";
-import Navbar from "./Navbar";
 import gsap from "gsap";
 import styled from "styled-components";
-import { useRouter } from "next/navigation";
 
 export default function HomePage() {
-  const router = useRouter();
-
   const [hovered, setHovered] = useState<"frontend" | "designer">("frontend");
   const [cursorActive, setCursorActive] = useState(false);
   const [ready, setReady] = useState(false);
@@ -35,7 +32,6 @@ export default function HomePage() {
   const frontendRowRef = useRef<HTMLDivElement | null>(null);
   const designerRowRef = useRef<HTMLDivElement | null>(null);
   const subtitleRef = useRef<HTMLParagraphElement | null>(null);
-  const footerCityRef = useRef<HTMLParagraphElement | null>(null);
   const footerSocialRef = useRef<HTMLDivElement | null>(null);
 
   const qsa = <T extends Element>(root: Element | null, sel: string): T[] =>
@@ -50,7 +46,7 @@ export default function HomePage() {
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     if (reduce) {
-      [greetRef, titleRef, subtitleRef, footerCityRef, footerSocialRef].forEach(
+      [greetRef, titleRef, subtitleRef, footerSocialRef].forEach(
         (r) =>
           r?.current &&
           gsap.set(r.current, { autoAlpha: 1, y: 0, clearProps: "all" })
@@ -79,7 +75,6 @@ export default function HomePage() {
       gsap.set(frontendBits, { autoAlpha: 0, y: 28 });
       gsap.set(designerBits, { autoAlpha: 0, y: 28 });
       gsap.set(subtitleRef.current, { autoAlpha: 0, y: 14 });
-      gsap.set(footerCityRef.current, { autoAlpha: 0, y: 10 });
       gsap.set(socialLinks, { autoAlpha: 0, y: 10, scale: 0.96 });
 
       const DUR = {
@@ -118,13 +113,6 @@ export default function HomePage() {
           "subtitle"
         )
 
-        .add("footer", ">0.10")
-        .to(
-          footerCityRef.current,
-          { autoAlpha: 1, y: 0, duration: DUR.foot },
-          "footer"
-        )
-
         .add("socials", ">0.10")
         .to(
           socialLinks,
@@ -136,86 +124,28 @@ export default function HomePage() {
     return () => ctx.revert();
   }, []);
 
-  useEffect(() => {
-    const el = sectionRef.current;
-    if (!el || typeof window === "undefined") return;
-
-    const isCoarse = window.matchMedia("(pointer: coarse)").matches;
-    const isNarrow = window.innerWidth < 768;
-    if (!(isCoarse && isNarrow)) return;
-
-    let startX = 0;
-    let startY = 0;
-    let tracking = false;
-    let fired = false;
-
-    const MIN_DISTANCE = 64;
-    const MAX_VERTICAL_DELTA = 48;
-
-    const onTouchStart = (e: TouchEvent) => {
-      if (e.touches.length !== 1) return;
-      const t = e.touches[0];
-      startX = t.clientX;
-      startY = t.clientY;
-      tracking = true;
-      fired = false;
-    };
-
-    const onTouchMove = (e: TouchEvent) => {
-      if (!tracking || fired) return;
-      const t = e.touches[0];
-      const dx = t.clientX - startX;
-      const dy = t.clientY - startY;
-
-      if (Math.abs(dy) > MAX_VERTICAL_DELTA) {
-        tracking = false;
-        return;
-      }
-
-      if (Math.abs(dx) >= MIN_DISTANCE) {
-        fired = true;
-        tracking = false;
-        if (dx > 0) {
-          // → swipe derecha
-          router.push("/about");
-        } else {
-          // ← swipe izquierda
-          router.push("/projects");
-        }
-      }
-    };
-
-    const onTouchEnd = () => {
-      tracking = false;
-    };
-
-    el.addEventListener("touchstart", onTouchStart, { passive: true });
-    el.addEventListener("touchmove", onTouchMove, { passive: true });
-    el.addEventListener("touchend", onTouchEnd, { passive: true });
-    el.addEventListener("touchcancel", onTouchEnd, { passive: true });
-
-    return () => {
-      el.removeEventListener("touchstart", onTouchStart);
-      el.removeEventListener("touchmove", onTouchMove);
-      el.removeEventListener("touchend", onTouchEnd);
-      el.removeEventListener("touchcancel", onTouchEnd);
-    };
-  }, [router]);
 
   return (
     <Fragment>
       <Cursor active={cursorActive} />
       <section
         ref={sectionRef}
-        className="pb-10 px-4 h-[100dvh] w-full
-          flex flex-col justify-between items-center
+        id="hero"
+        className="relative px-4 h-[100dvh] w-full
+          flex flex-col justify-center items-center
           touch-pan-y select-none
           overflow-x-clip
         "
       >
-        <div className="hidden md:block"></div>
-        <Navbar />
-        <div className="flex flex-col items-center py-[10vh] md:py-0 text-center w-full gap-2">
+        <div className="absolute inset-0 pointer-events-none z-0">
+          <AuroraGlow
+            blobSize={700}
+            speed={1.2}
+            opacity={0.55}
+            colors={["#a8c8ff", "#d4b8ff"]}
+          />
+        </div>
+        <div className="relative z-10 flex flex-col items-center text-center w-full gap-2">
           <p ref={greetRef} className="text-lg md:text-2xl font-medium">
             👋, My name is Jesús Hernández
           </p>
@@ -249,7 +179,7 @@ export default function HomePage() {
               aria-label="Product Designer"
             >
               <span className="amp">&amp;</span>
-              <span className="word light">Web</span>
+              <span className="word light">Product</span>
               <span className="word strong relative">
                 Designer
                 <span className="rectangle-base">
@@ -261,38 +191,32 @@ export default function HomePage() {
 
           <div
             ref={subtitleRef}
-            className="text-lg flex flex-row w-full justify-between px-10 max-w-xl lg:max-w-3xl mx-auto md:text-2xl font-medium mt-3 md:mt-4"
+            className="text-lg flex justify-center md:text-2xl font-medium mt-3 md:mt-4"
           >
             <p>Based in Argentina</p>
-            <p>Freelance</p>
           </div>
-        </div>
 
-        <div className="flex flex-col-reverse md:flex-col w-full justify-between items-center text-center gap-2 md:gap-3">
-          <p ref={footerCityRef} className="text-lg md:text-2xl font-medium ">
-            Building digital products and experience
-          </p>
-          <div ref={footerSocialRef} className="flex flex-row gap-1">
+          <div ref={footerSocialRef} className="flex flex-row gap-1 mt-4">
             <Link
               href="https://www.linkedin.com/in/jesushernandez91/"
               target="_blank"
-              className="flex w-12 h-12 items-center justify-center"
+              className="flex w-10 h-10 items-center justify-center rounded-full hover:bg-black/5 transition text-[var(--muted)] hover:text-[var(--black)]"
             >
-              <IconBrandLinkedin />
+              <IconBrandLinkedin size={20} />
             </Link>
             <Link
               href="https://github.com/jesus0091"
               target="_blank"
-              className="flex w-12 h-12 items-center justify-center"
+              className="flex w-10 h-10 items-center justify-center rounded-full hover:bg-black/5 transition text-[var(--muted)] hover:text-[var(--black)]"
             >
-              <IconBrandGithub />
+              <IconBrandGithub size={20} />
             </Link>
             <Link
               href="https://www.behance.net/devjesushernandez"
               target="_blank"
-              className="flex w-12 h-12 items-center justify-center"
+              className="flex w-10 h-10 items-center justify-center rounded-full hover:bg-black/5 transition text-[var(--muted)] hover:text-[var(--black)]"
             >
-              <IconBrandBehance />
+              <IconBrandBehance size={20} />
             </Link>
           </div>
         </div>
