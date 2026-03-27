@@ -31,7 +31,6 @@ export default function HomePage() {
   const frontendRowRef = useRef<HTMLDivElement | null>(null);
   const designerRowRef = useRef<HTMLDivElement | null>(null);
   const subtitleRef = useRef<HTMLParagraphElement | null>(null);
-  const footerCityRef = useRef<HTMLParagraphElement | null>(null);
   const footerSocialRef = useRef<HTMLDivElement | null>(null);
 
   const qsa = <T extends Element>(root: Element | null, sel: string): T[] =>
@@ -46,7 +45,7 @@ export default function HomePage() {
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     if (reduce) {
-      [greetRef, titleRef, subtitleRef, footerCityRef, footerSocialRef].forEach(
+      [greetRef, titleRef, subtitleRef, footerSocialRef].forEach(
         (r) =>
           r?.current &&
           gsap.set(r.current, { autoAlpha: 1, y: 0, clearProps: "all" })
@@ -75,7 +74,6 @@ export default function HomePage() {
       gsap.set(frontendBits, { autoAlpha: 0, y: 28 });
       gsap.set(designerBits, { autoAlpha: 0, y: 28 });
       gsap.set(subtitleRef.current, { autoAlpha: 0, y: 14 });
-      gsap.set(footerCityRef.current, { autoAlpha: 0, y: 10 });
       gsap.set(socialLinks, { autoAlpha: 0, y: 10, scale: 0.96 });
 
       const DUR = {
@@ -112,13 +110,6 @@ export default function HomePage() {
           subtitleRef.current,
           { autoAlpha: 1, y: 0, duration: DUR.sub },
           "subtitle"
-        )
-
-        .add("footer", ">0.10")
-        .to(
-          footerCityRef.current,
-          { autoAlpha: 1, y: 0, duration: DUR.foot },
-          "footer"
         )
 
         .add("socials", ">0.10")
@@ -196,33 +187,28 @@ export default function HomePage() {
             <p>Based in Argentina</p>
             <p>Freelance</p>
           </div>
-        </div>
 
-        <div className="absolute bottom-10 left-0 right-0 flex flex-col-reverse md:flex-col w-full items-center text-center gap-2 md:gap-3">
-          <p ref={footerCityRef} className="text-lg md:text-2xl font-medium ">
-            Building digital products and experience
-          </p>
-          <div ref={footerSocialRef} className="flex flex-row gap-1">
+          <div ref={footerSocialRef} className="flex flex-row gap-1 mt-4">
             <Link
               href="https://www.linkedin.com/in/jesushernandez91/"
               target="_blank"
-              className="flex w-12 h-12 items-center justify-center"
+              className="flex w-10 h-10 items-center justify-center rounded-full hover:bg-black/5 transition text-[var(--muted)] hover:text-[var(--black)]"
             >
-              <IconBrandLinkedin />
+              <IconBrandLinkedin size={20} />
             </Link>
             <Link
               href="https://github.com/jesus0091"
               target="_blank"
-              className="flex w-12 h-12 items-center justify-center"
+              className="flex w-10 h-10 items-center justify-center rounded-full hover:bg-black/5 transition text-[var(--muted)] hover:text-[var(--black)]"
             >
-              <IconBrandGithub />
+              <IconBrandGithub size={20} />
             </Link>
             <Link
               href="https://www.behance.net/devjesushernandez"
               target="_blank"
-              className="flex w-12 h-12 items-center justify-center"
+              className="flex w-10 h-10 items-center justify-center rounded-full hover:bg-black/5 transition text-[var(--muted)] hover:text-[var(--black)]"
             >
-              <IconBrandBehance />
+              <IconBrandBehance size={20} />
             </Link>
           </div>
         </div>
