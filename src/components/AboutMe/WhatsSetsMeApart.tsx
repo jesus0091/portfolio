@@ -57,7 +57,7 @@ const WhatsSetsMeApart: React.FC = () => {
       ref={sectionRef}
       className="min-h-[100vh] py-[10vh] flex items-center w-full px-6 md:px-10"
     >
-      <div className="mx-auto max-w-6xl flex flex-col gap-8 w-full">
+      <div className="mx-auto max-w-[1280px] flex flex-col gap-8 w-full">
         <div className="flex flex-col gap-3">
           <h2
             ref={titleRef}
@@ -102,7 +102,7 @@ const WhatsSetsMeApart: React.FC = () => {
               <IconHierarchy2 className="text-[var(--black)] w-10 h-10" />
             </div>
             <div>
-              <h3 className="text-2xl font-semibold text-orange-600 mb-2">
+              <h3 className="text-2xl font-semibold text-[var(--orange)] mb-2">
                 Pragmatic UX
               </h3>
               <p className="leading-relaxed text-lg md:text-xl font-medium">
@@ -119,7 +119,7 @@ const WhatsSetsMeApart: React.FC = () => {
               <IconTypography className="text-[var(--black)] w-10 h-10" />
             </div>
             <div>
-              <h3 className="text-2xl font-semibold text-orange-600 mb-2">
+              <h3 className="text-2xl font-semibold text-[var(--orange)] mb-2">
                 Visual Sensibility
               </h3>
               <p className="leading-relaxed text-lg md:text-xl font-medium">

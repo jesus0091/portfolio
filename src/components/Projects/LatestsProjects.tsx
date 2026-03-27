@@ -234,7 +234,7 @@ export default function LatestProjects() {
   return (
     <section
       id="projects"
-      className="relative w-full overflow-clip py-50 scrollbar-hide px-8"
+      className="relative w-full overflow-clip py-24 md:py-32 scrollbar-hide px-4 md:px-8"
     >
       <div
         className="absolute inset-0"
@@ -256,7 +256,7 @@ export default function LatestProjects() {
         }}
       />
 
-      <div className="mx-auto max-w-6xl flex flex-col gap-6 z-10">
+      <div className="mx-auto max-w-[1280px] flex flex-col gap-6 z-10">
         <header className="mb-6 flex flex-col gap-2">
           <h2 className="text-4xl md:text-7xl text-[var(--black)] font-black tracking-tight">
             Latest Projects

@@ -139,7 +139,6 @@ const AboutMeSkills: React.FC = () => {
 
     return () => {
       tl.kill();
-      ScrollTrigger.getAll().forEach((st) => st.kill());
     };
   }, []);
 
@@ -171,7 +170,7 @@ const AboutMeSkills: React.FC = () => {
         }}
       />
 
-      <div className="mx-auto max-w-6xl flex flex-col gap-4 px-4">
+      <div className="mx-auto max-w-[1280px] flex flex-col gap-4 px-4 md:px-8">
         <h2
           ref={titleRef}
           id="skills-title"

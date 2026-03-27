@@ -119,9 +119,9 @@ const AboutText: React.FC<AboutTextProps> = ({
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-[100dvh] flex px-10 flex-col items-center justify-center"
+      className="relative min-h-[100dvh] flex px-4 md:px-8 flex-col items-center justify-center"
     >
-      <section className="relative flex flex-col md:flex-row-reverse max-w-6xl gap-10 mx-auto">
+      <section className="relative flex flex-col md:flex-row-reverse max-w-[1280px] gap-10 mx-auto">
         <div className="flex-1 flex h-full w-full items-center justify-center">
           <div
             ref={boxRef}
