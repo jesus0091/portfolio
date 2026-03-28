@@ -25,17 +25,6 @@ const CODE_FONTS = [
   "system-ui, -apple-system, sans-serif",
 ];
 
-const DESIGN_FONTS = [
-  "cursive",
-  "Georgia, 'Times New Roman', serif",
-  "fantasy",
-  "cursive",
-  "'Palatino Linotype', Palatino, serif",
-  "Georgia, serif",
-  "cursive",
-  "Georgia, serif",
-  "system-ui, -apple-system, sans-serif",
-];
 
 const isDiv = (el: HTMLDivElement | null): el is HTMLDivElement => el !== null;
 
@@ -62,6 +51,7 @@ const WSMAQuote: React.FC = () => {
 
   const codeLineRef = useRef<HTMLSpanElement>(null);
   const designLineRef = useRef<HTMLSpanElement>(null);
+  const bothLineRef = useRef<HTMLSpanElement>(null);
 
   const isMobile = useIsMobile(768);
 
@@ -95,14 +85,14 @@ const WSMAQuote: React.FC = () => {
       gsap.set(o3LineRightRef.current, { scaleX: 1, transformOrigin: "right center" });
       if (greatRef.current) greatRef.current.style.color = "#000000";
       if (codeLineRef.current) codeLineRef.current.style.fontFamily = "system-ui, -apple-system, sans-serif";
-      if (designLineRef.current) designLineRef.current.style.fontFamily = "system-ui, -apple-system, sans-serif";
+      if (bothLineRef.current) gsap.set(bothLineRef.current, { clipPath: "none" });
       return;
     }
 
     const ctx = gsap.context(() => {
       gsap.set(leftRef.current, { autoAlpha: 0, y: 30 });
       if (codeLineRef.current) codeLineRef.current.style.fontFamily = CODE_FONTS[0];
-      if (designLineRef.current) designLineRef.current.style.fontFamily = DESIGN_FONTS[0];
+      if (bothLineRef.current) gsap.set(bothLineRef.current, { clipPath: "inset(0 100% 0 0)" });
 
       gsap.set(o1Ref.current, { opacity: 1, zIndex: 10 });
       gsap.set(o2Ref.current, { opacity: 0, zIndex: 20 });
@@ -144,8 +134,19 @@ const WSMAQuote: React.FC = () => {
 
       /* Font scramble: I code. → monospace → Inter */
       if (codeLineRef.current) scrambleFonts(tl, codeLineRef.current, CODE_FONTS, "0.2");
-      /* Font scramble: I design. → serif/cursive → Inter */
-      if (designLineRef.current) scrambleFonts(tl, designLineRef.current, DESIGN_FONTS, "0.7");
+
+      /* "I design." — color flow: negro → naranja → violeta → azul → negro */
+      if (designLineRef.current) {
+        tl.to(designLineRef.current, { color: "#f97316", duration: 0.25, ease: "power2.out" }, 0.7)
+          .to(designLineRef.current, { color: "#a855f7", duration: 0.3 })
+          .to(designLineRef.current, { color: "#3b82f6", duration: 0.3 })
+          .to(designLineRef.current, { color: "#000000", duration: 0.5, ease: "power2.in" });
+      }
+
+      /* "I do both." — reveal de izquierda a derecha (líneas que se completan) */
+      if (bothLineRef.current) {
+        tl.to(bothLineRef.current, { clipPath: "inset(0 0% 0 0)", duration: 1.1, ease: "power2.inOut" }, 1.7);
+      }
 
       /* ESCENA 1 */
       tl.addLabel("o1Enter", 0.2)
@@ -216,7 +217,7 @@ const WSMAQuote: React.FC = () => {
             <div className="flex flex-col gap-0">
               <span ref={codeLineRef} style={{ fontSize: "clamp(38px,4.5vw,90px)", fontWeight: 800, color: "#000000", lineHeight: 1, letterSpacing: "-0.03em" }}>I code.</span>
               <span ref={designLineRef} style={{ fontSize: "clamp(38px,4.5vw,90px)", fontWeight: 800, color: "#000000", lineHeight: 1, letterSpacing: "-0.03em" }}>I design.</span>
-              <span style={{ fontSize: "clamp(38px,4.5vw,90px)", fontWeight: 800, color: "transparent", lineHeight: 1, letterSpacing: "-0.03em", WebkitTextStroke: "1.5px #000000" }}>I do both.</span>
+              <span ref={bothLineRef} style={{ fontSize: "clamp(38px,4.5vw,90px)", fontWeight: 800, color: "transparent", lineHeight: 1, letterSpacing: "-0.03em", WebkitTextStroke: "1.5px #000000" }}>I do both.</span>
             </div>
           </div>
 
