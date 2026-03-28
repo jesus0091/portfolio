@@ -13,6 +13,27 @@ import Link from "next/link";
 import gsap from "gsap";
 import styled from "styled-components";
 
+/** Divide un string en spans inline-block, cada uno envuelto en overflow:hidden */
+function splitToChars(el: HTMLElement): HTMLElement[] {
+  const text = el.textContent ?? "";
+  el.textContent = "";
+
+  const chars: HTMLElement[] = [];
+  for (const char of text) {
+    const wrapper = document.createElement("span");
+    wrapper.style.cssText = "display:inline-block;overflow:hidden;vertical-align:bottom;";
+
+    const inner = document.createElement("span");
+    inner.style.cssText = "display:inline-block;";
+    inner.textContent = char === " " ? "\u00A0" : char;
+
+    wrapper.appendChild(inner);
+    el.appendChild(wrapper);
+    chars.push(inner);
+  }
+  return chars;
+}
+
 export default function HomePage() {
   const [hovered, setHovered] = useState<"frontend" | "designer">("frontend");
   const [cursorActive, setCursorActive] = useState(false);
@@ -31,11 +52,14 @@ export default function HomePage() {
   const titleRef = useRef<HTMLDivElement | null>(null);
   const frontendRowRef = useRef<HTMLDivElement | null>(null);
   const designerRowRef = useRef<HTMLDivElement | null>(null);
-  const subtitleRef = useRef<HTMLParagraphElement | null>(null);
+  const subtitleRef = useRef<HTMLDivElement | null>(null);
   const footerSocialRef = useRef<HTMLDivElement | null>(null);
 
-  const qsa = <T extends Element>(root: Element | null, sel: string): T[] =>
-    root ? Array.from(root.querySelectorAll<T>(sel)) : [];
+  // Refs para los spans de texto que serán split
+  const frontendStrongRef = useRef<HTMLSpanElement | null>(null);
+  const frontendLightRef = useRef<HTMLSpanElement | null>(null);
+  const designerLightRef = useRef<HTMLSpanElement | null>(null);
+  const designerStrongRef = useRef<HTMLSpanElement | null>(null);
 
   useLayoutEffect(() => {
     const section = sectionRef.current;
@@ -51,73 +75,85 @@ export default function HomePage() {
           r?.current &&
           gsap.set(r.current, { autoAlpha: 1, y: 0, clearProps: "all" })
       );
-      // Elementos de filas
-      const frontendBits = qsa<Element>(
-        frontendRowRef.current,
-        ".angle, .word"
+      const angleEls = Array.from(
+        frontendRowRef.current?.querySelectorAll<Element>(".angle") ?? []
       );
-      const designerBits = qsa<Element>(designerRowRef.current, ".amp, .word");
-      gsap.set(frontendBits, { autoAlpha: 1, y: 0, clearProps: "all" });
-      gsap.set(designerBits, { autoAlpha: 1, y: 0, clearProps: "all" });
+      const ampEls = Array.from(
+        designerRowRef.current?.querySelectorAll<Element>(".amp") ?? []
+      );
+      gsap.set([...angleEls, ...ampEls], { autoAlpha: 1, y: 0, clearProps: "all" });
       return;
     }
 
     const ctx = gsap.context(() => {
-      const frontendBits = qsa<Element>(
-        frontendRowRef.current,
-        ".angle, .word"
-      );
-      const designerBits = qsa<Element>(designerRowRef.current, ".amp, .word");
-      const socialLinks = qsa<Element>(footerSocialRef.current, "a");
+      // Split los spans de palabra en chars
+      const line1Chars: HTMLElement[] = [];
+      const line2Chars: HTMLElement[] = [];
 
+      if (frontendStrongRef.current)
+        line1Chars.push(...splitToChars(frontendStrongRef.current));
+      if (frontendLightRef.current)
+        line1Chars.push(...splitToChars(frontendLightRef.current));
+
+      if (designerLightRef.current)
+        line2Chars.push(...splitToChars(designerLightRef.current));
+      if (designerStrongRef.current)
+        line2Chars.push(...splitToChars(designerStrongRef.current));
+
+      // Elementos decorativos (angle brackets, amp)
+      const angleEls = Array.from(
+        frontendRowRef.current?.querySelectorAll<HTMLElement>(".angle") ?? []
+      );
+      const ampEl = designerRowRef.current?.querySelector<HTMLElement>(".amp") ?? null;
+      const socialLinks = Array.from(
+        footerSocialRef.current?.querySelectorAll<HTMLElement>("a") ?? []
+      );
+
+      // Estado inicial
       gsap.set(greetRef.current, { autoAlpha: 0, y: 16 });
       gsap.set(titleRef.current, { autoAlpha: 1 });
-      gsap.set(frontendBits, { autoAlpha: 0, y: 28 });
-      gsap.set(designerBits, { autoAlpha: 0, y: 28 });
-      gsap.set(subtitleRef.current, { autoAlpha: 0, y: 14 });
+      gsap.set(line1Chars, { yPercent: 110 });
+      gsap.set(line2Chars, { yPercent: 110 });
+      gsap.set(angleEls, { autoAlpha: 0, y: 20 });
+      gsap.set(ampEl, { autoAlpha: 0, y: 20 });
+      gsap.set(subtitleRef.current, { autoAlpha: 0, y: 16 });
       gsap.set(socialLinks, { autoAlpha: 0, y: 10, scale: 0.96 });
-
-      const DUR = {
-        greet: 0.25,
-        rows: 0.25,
-        sub: 0.25,
-        foot: 0.25,
-        soc: 0.25,
-      };
 
       const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
 
-      tl.add("intro")
+      // Saludo
+      tl.to(greetRef.current, { autoAlpha: 1, y: 0, duration: 0.4 })
+
+        // Ángulos < />
+        .to(angleEls, { autoAlpha: 1, y: 0, duration: 0.4, stagger: 0.06 }, ">-0.1")
+
+        // Línea 1: chars con clip-path reveal desde abajo
         .to(
-          greetRef.current,
-          { autoAlpha: 1, y: 0, duration: DUR.greet },
-          "intro"
+          line1Chars,
+          { yPercent: 0, duration: 0.7, stagger: 0.02, ease: "power3.out" },
+          "<0.1"
         )
 
-        .add("rows", ">0.10")
+        // Línea 2: empieza cuando línea 1 está ~50% avanzada
         .to(
-          frontendBits,
-          { autoAlpha: 1, y: 0, duration: DUR.rows, stagger: 0.03 },
-          "rows"
+          ampEl,
+          { autoAlpha: 1, y: 0, duration: 0.4, ease: "power3.out" },
+          "<" + (line1Chars.length * 0.02 * 0.5).toFixed(3)
         )
         .to(
-          designerBits,
-          { autoAlpha: 1, y: 0, duration: DUR.rows, stagger: 0.03 },
-          "rows+=0.20"
-        )
-
-        .add("subtitle", ">0.05")
-        .to(
-          subtitleRef.current,
-          { autoAlpha: 1, y: 0, duration: DUR.sub },
-          "subtitle"
+          line2Chars,
+          { yPercent: 0, duration: 0.7, stagger: 0.02, ease: "power3.out" },
+          "<0.05"
         )
 
-        .add("socials", ">0.10")
+        // Subtítulo
+        .to(subtitleRef.current, { autoAlpha: 1, y: 0, duration: 0.5, ease: "power3.out" }, ">-0.1")
+
+        // Social links
         .to(
           socialLinks,
-          { autoAlpha: 1, y: 0, scale: 1, duration: DUR.soc, stagger: 0.02 },
-          "socials"
+          { autoAlpha: 1, y: 0, scale: 1, duration: 0.4, stagger: 0.06, ease: "power3.out" },
+          ">0.05"
         );
     }, section);
 
@@ -166,8 +202,8 @@ export default function HomePage() {
               aria-label="Frontend Developer"
             >
               <span className="angle left">&lt;</span>
-              <span className="word strong">FrontEnd</span>
-              <span className="word light">Developer</span>
+              <span ref={frontendStrongRef} className="word strong">FrontEnd</span>
+              <span ref={frontendLightRef} className="word light">Developer</span>
               <span className="angle right">/&gt;</span>
             </FrontendRow>
 
@@ -179,8 +215,8 @@ export default function HomePage() {
               aria-label="Product Designer"
             >
               <span className="amp">&amp;</span>
-              <span className="word light">Product</span>
-              <span className="word strong relative">
+              <span ref={designerLightRef} className="word light">Product</span>
+              <span ref={designerStrongRef} className="word strong relative">
                 Designer
                 <span className="rectangle-base">
                   <span className="rectangle"></span>

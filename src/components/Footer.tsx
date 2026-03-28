@@ -53,6 +53,7 @@ export default function Footer({
 }: FooterProps) {
   const [year, setYear] = useState<number>(new Date().getFullYear());
   const footerRef = useRef<HTMLElement | null>(null);
+  const ctaBtnRef = useRef<HTMLAnchorElement | null>(null);
 
   useEffect(() => setYear(new Date().getFullYear()), []);
 
@@ -178,6 +179,38 @@ export default function Footer({
 
     return () => ctx.revert();
   }, []);
+  useEffect(() => {
+    const btn = ctaBtnRef.current;
+    if (!btn) return;
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+
+    const magnetRadius = 120;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = btn.getBoundingClientRect();
+      const btnCenterX = rect.left + rect.width / 2;
+      const btnCenterY = rect.top + rect.height / 2;
+      const distX = e.clientX - btnCenterX;
+      const distY = e.clientY - btnCenterY;
+      const dist = Math.sqrt(distX * distX + distY * distY);
+
+      if (dist < magnetRadius) {
+        const strength = (magnetRadius - dist) / magnetRadius;
+        gsap.to(btn, {
+          x: distX * strength * 0.4,
+          y: distY * strength * 0.4,
+          duration: 0.3,
+          ease: "power2.out",
+        });
+      } else {
+        gsap.to(btn, { x: 0, y: 0, duration: 0.5, ease: "elastic.out(1, 0.5)" });
+      }
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
+
   const isMobile = useIsMobile(768);
 
   return (
@@ -214,9 +247,10 @@ export default function Footer({
             </h3>
             <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
               <Link
+                ref={ctaBtnRef}
                 href={`mailto:${email}`}
                 data-cta
-                className="relative inline-flex items-center rounded-full gap-2 border border-black/20 px-6 py-3 text-base cursor-pointer font-medium text-[var(--black)] hover:bg-black/5 transition"
+                className="relative inline-flex items-center rounded-full gap-2 border border-black/20 px-6 py-3 text-base cursor-pointer font-medium text-[var(--black)] hover:bg-black/5 transition active:scale-[0.96]"
                 aria-label="Send me an email"
               >
                 <IconMail size={18} />

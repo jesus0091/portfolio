@@ -38,53 +38,98 @@ const AboutMeSkills: React.FC = () => {
   const sectionRef = useRef<HTMLElement | null>(null);
   const headerRef = useRef<HTMLDivElement | null>(null);
   const rowsRef = useRef<HTMLDivElement | null>(null);
+  const wipeRef = useRef<HTMLDivElement | null>(null);
 
   useLayoutEffect(() => {
     if (typeof window === "undefined") return;
     gsap.registerPlugin(ScrollTrigger);
 
-    const section = sectionRef.current!;
-    const header = headerRef.current!;
-    const rows = rowsRef.current!.querySelectorAll<HTMLElement>("[data-row]");
-    const chips = rowsRef.current!.querySelectorAll<HTMLElement>("[data-chip]");
+    const reduce =
+      window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
 
-    gsap.set(header, { autoAlpha: 0, y: 24 });
-    gsap.set(rows, { autoAlpha: 0, y: 16 });
-    gsap.set(chips, { autoAlpha: 0, y: 10 });
+    const ctx = gsap.context(() => {
+      const section = sectionRef.current!;
+      const header = headerRef.current!;
+      const wipe = wipeRef.current!;
+      const rows = rowsRef.current!.querySelectorAll<HTMLElement>("[data-row]");
+      const chips = rowsRef.current!.querySelectorAll<HTMLElement>("[data-chip]");
 
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: section,
-        start: "top 85%",
-        once: true,
-      },
-    });
+      if (reduce) {
+        gsap.set([header, rows, chips], { autoAlpha: 1, y: 0 });
+        gsap.set(wipe, { scaleX: 0 });
+        return;
+      }
 
-    tl.to(header, { autoAlpha: 1, y: 0, duration: 0.6, ease: "power3.out" })
-      .to(rows, {
-        autoAlpha: 1,
-        y: 0,
-        duration: 0.5,
-        ease: "power2.out",
-        stagger: 0.1,
-      }, "-=0.2")
-      .to(chips, {
-        autoAlpha: 1,
-        y: 0,
-        duration: 0.4,
-        ease: "power2.out",
-        stagger: 0.02,
-      }, "-=0.3");
+      gsap.set(header, { autoAlpha: 0, y: 24 });
+      gsap.set(rows, { autoAlpha: 0, y: 16 });
+      gsap.set(chips, { autoAlpha: 0, y: 10 });
+      // Wipe empieza cubriendo todo
+      gsap.set(wipe, { scaleX: 1, transformOrigin: "left center" });
 
-    return () => { tl.kill(); };
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: "top 85%",
+          once: true,
+        },
+      });
+
+      // Wipe sale por la derecha
+      tl.to(
+        wipe,
+        {
+          scaleX: 0,
+          transformOrigin: "right center",
+          duration: 0.7,
+          ease: "power3.inOut",
+        },
+        0.1
+      );
+
+      // Header aparece mientras el wipe se va
+      tl.to(header, { autoAlpha: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.4);
+
+      // Rows y chips después del wipe
+      tl.to(
+        rows,
+        {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.5,
+          ease: "power2.out",
+          stagger: 0.1,
+        },
+        0.6
+      );
+      tl.to(
+        chips,
+        {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.4,
+          ease: "power2.out",
+          stagger: 0.02,
+        },
+        0.75
+      );
+    }, sectionRef);
+
+    return () => ctx.revert();
   }, []);
 
   return (
     <section
       id="skills"
       ref={sectionRef}
-      className="py-20 md:py-28 px-4 md:px-8 max-w-[1280px] mx-auto w-full"
+      className="relative overflow-hidden py-20 md:py-28 px-4 md:px-8 max-w-[1280px] mx-auto w-full"
     >
+      {/* Wipe overlay */}
+      <div
+        ref={wipeRef}
+        className="absolute inset-0 z-10 pointer-events-none"
+        style={{ background: "#ff6600" }}
+      />
+
       <div ref={headerRef} className="mb-10">
         <p className="text-xl font-semibold text-[var(--orange)] tracking-wide mb-2">
           Skills

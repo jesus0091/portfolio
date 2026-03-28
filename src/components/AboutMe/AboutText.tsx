@@ -29,6 +29,7 @@ const AboutText: React.FC<AboutTextProps> = ({
   const paraRef = useRef<HTMLParagraphElement | null>(null);
   const titleRef = useRef<HTMLHeadingElement | null>(null);
   const boxRef = useRef<HTMLDivElement | null>(null);
+  const wipeRef = useRef<HTMLDivElement | null>(null);
 
   const text =
     "I'm a Frontend Developer and UX/UI Designer based in Buenos Aires, Argentina. I combine design and development in a single profile, which means I can take a product from concept to polished interface without losing coherence along the way. I care deeply about the details: the right spacing, the right interaction, the right words. That's how I build digital products that feel as good as they work.";
@@ -46,28 +47,32 @@ const AboutText: React.FC<AboutTextProps> = ({
       const para = paraRef.current!;
       const title = titleRef.current!;
       const box = boxRef.current!;
+      const wipe = wipeRef.current!;
       const words = Array.from(
         para.querySelectorAll<HTMLElement>("[data-word]")
       );
 
+      if (reduce) {
+        gsap.set([title, box, words], { opacity: 1, y: 0 });
+        gsap.set(wipe, { scaleX: 0 });
+        return;
+      }
+
       // Estado inicial
-      gsap.set(title, {
-        opacity: reduce ? 1 : 0,
-        y: reduce ? 0 : 40,
-      });
+      gsap.set(title, { opacity: 0, y: 40 });
       gsap.set(words, {
-        opacity: reduce ? 1 : 0,
-        y: reduce ? 0 : wordOffsetY,
+        opacity: 0,
+        y: wordOffsetY,
         display: "inline-block",
         willChange: "transform,opacity",
       });
       gsap.set(box, {
-        opacity: reduce ? 1 : 0,
-        y: reduce ? 0 : 60, // recuadro entra desde abajo
+        opacity: 0,
+        y: 60,
         willChange: "transform,opacity",
       });
-
-      if (reduce) return;
+      // El wipe empieza cubriendo todo el contenido derecho
+      gsap.set(wipe, { scaleX: 1, transformOrigin: "left center" });
 
       const tl = gsap.timeline({
         defaults: { ease: "power3.out" },
@@ -78,25 +83,25 @@ const AboutText: React.FC<AboutTextProps> = ({
         },
       });
 
-      // Recuadro primero
-      tl.to(box, {
-        opacity: 1,
-        y: 0,
-        duration: 0.6,
-      });
+      // Recuadro entra desde abajo
+      tl.to(box, { opacity: 1, y: 0, duration: 0.6 }, 0);
 
-      // Luego el título
+      // Wipe sale por la derecha (transformOrigin: right)
       tl.to(
-        title,
+        wipe,
         {
-          opacity: 1,
-          y: 0,
-          duration: 0.6,
+          scaleX: 0,
+          transformOrigin: "right center",
+          duration: 0.7,
+          ease: "power3.inOut",
         },
-        "-=0.3"
+        0.1
       );
 
-      // Luego el párrafo palabra por palabra
+      // Título aparece cuando el wipe está ~50% completado
+      tl.to(title, { opacity: 1, y: 0, duration: 0.6 }, 0.4);
+
+      // Palabras después del wipe
       tl.to(
         words,
         {
@@ -105,7 +110,7 @@ const AboutText: React.FC<AboutTextProps> = ({
           duration: wordDuration,
           stagger: wordStagger,
         },
-        "-=0.2"
+        0.55
       );
     }, sectionRef);
 
@@ -155,18 +160,24 @@ const AboutText: React.FC<AboutTextProps> = ({
           </div>
         </div>
 
-        <div className="flex-1 flex flex-col gap-6 py-3">
-          <div className="flex flex-col">
+        <div className="relative overflow-hidden flex-1 flex flex-col gap-6 py-3">
+          {/* Wipe overlay */}
+          <div
+            ref={wipeRef}
+            className="absolute inset-0 z-10 pointer-events-none"
+            style={{ background: "#ff6600" }}
+          />
 
-          <p className="text-xl font-semibold text-[var(--orange)] tracking-wide mb-2">
-            About Me
-          </p>
-          <h2
-            ref={titleRef}
-            className="select-none text-3xl md:text-6xl leading-tighter font-semibold text-[var(--black)]"
-          >
-            The Creative Mind Behind the Code
-          </h2>
+          <div className="flex flex-col">
+            <p className="text-xl font-semibold text-[var(--orange)] tracking-wide mb-2">
+              About Me
+            </p>
+            <h2
+              ref={titleRef}
+              className="select-none text-3xl md:text-6xl leading-tighter font-semibold text-[var(--black)]"
+            >
+              The Creative Mind Behind the Code
+            </h2>
           </div>
           <p
             ref={paraRef}

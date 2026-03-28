@@ -1,9 +1,10 @@
 "use client";
 
 import { IconBrandBehance, IconBrandGithub } from "@tabler/icons-react";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 import ProjectCard from "./ProjectCard";
+import gsap from "gsap";
 
 type Mode = "solo" | "collab";
 type Category = "frontend" | "design";
@@ -11,7 +12,7 @@ type Category = "frontend" | "design";
 export type LinkOut = {
   type: "behance" | "github" | "website";
   href: string;
-  icon?: React.ReactElement; // <--- mejor ReactElement en vez de ReactNode
+  icon?: React.ReactElement;
 };
 
 export type Project = {
@@ -117,7 +118,7 @@ const PROJECTS: Project[] = [
     productName: "IACON",
     role: "UX/UI Designer",
     summary:
-      "Redesign of IACON's corporate landing page in Figma, along with new visual assets and branding elements to strengthen the company’s digital identity.",
+      "Redesign of IACON's corporate landing page in Figma, along with new visual assets and branding elements to strengthen the company's digital identity.",
     stack: ["Figma", "Figma Design", "FigJam", "Design System", "Branding"],
     cover: "/images/iacon.png",
     category: "design",
@@ -199,7 +200,7 @@ function FilterChip<T extends string>({
       type="button"
       aria-pressed={active}
       onClick={() => onChange(payload)}
-      className={`inline-flex cursor-pointer rounded-full items-center gap-2 px-4 py-1 md:py-2 text-sm md:text-base font-medium transition ${
+      className={`inline-flex cursor-pointer rounded-full items-center gap-2 px-4 py-1 md:py-2 text-sm md:text-base font-medium transition active:scale-[0.96] transition-transform duration-100 ${
         active
           ? "text-[var(--white)] bg-[var(--black)] hover:bg-[var(--gray)]"
           : "text-[var(--white)] bg-[var(--black)]/30 hover:bg-[var(--gray)]/50"
@@ -214,6 +215,8 @@ export default function LatestProjects() {
   const [category, setCategory] = useState<Category | "all">("all");
   const [mode, setMode] = useState<Mode | "all">("all");
   const [query] = useState("");
+  const gridRef = useRef<HTMLDivElement | null>(null);
+  const isFirstRender = useRef(true);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -231,12 +234,73 @@ export default function LatestProjects() {
     });
   }, [category, mode, query]);
 
+  // Animación de entrada inicial
+  useLayoutEffect(() => {
+    if (!gridRef.current) return;
+    const reduce =
+      window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+    if (reduce) return;
+
+    const ctx = gsap.context(() => {
+      const cards = gridRef.current!.querySelectorAll<HTMLElement>("[data-card]");
+      gsap.set(cards, { opacity: 0, y: 20, scale: 0.97 });
+      gsap.to(cards, {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 0.4,
+        stagger: 0.04,
+        ease: "power2.out",
+        delay: 0.1,
+      });
+    }, gridRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  // Animación al cambiar filtro
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    if (!gridRef.current) return;
+    const reduce =
+      window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+    if (reduce) return;
+
+    const cards = gridRef.current.querySelectorAll<HTMLElement>("[data-card]");
+
+    // Exit: ocultar las cards que actualmente están visibles
+    gsap.to(cards, {
+      opacity: 0,
+      scale: 0.96,
+      duration: 0.15,
+      ease: "power2.in",
+      onComplete: () => {
+        // Enter: las cards del nuevo filtro ya están en el DOM (React re-renderizó)
+        const newCards = gridRef.current?.querySelectorAll<HTMLElement>("[data-card]");
+        if (!newCards) return;
+        gsap.fromTo(
+          newCards,
+          { opacity: 0, scale: 0.95 },
+          {
+            opacity: 1,
+            scale: 1,
+            duration: 0.25,
+            stagger: 0.03,
+            ease: "power2.out",
+          }
+        );
+      },
+    });
+  }, [category, mode]);
+
   return (
     <section
       id="projects"
       className="relative w-full overflow-clip py-24 md:py-32 scrollbar-hide"
     >
-
       <div className="mx-auto max-w-[1280px] w-full px-4 md:px-8 flex flex-col gap-6 z-10">
         <header className="mb-6 flex flex-col gap-2">
           <p className="text-lg font-semibold text-[var(--orange)] tracking-widest">
@@ -298,9 +362,16 @@ export default function LatestProjects() {
         </div>
 
         {/* Grid */}
-        <div className="grid gap-6 z-10 grid-cols-[repeat(auto-fit,minmax(240px,1fr))] md:grid-cols-2">
+        <div
+          ref={gridRef}
+          className="grid gap-6 z-10 grid-cols-[repeat(auto-fit,minmax(240px,1fr))] md:grid-cols-2"
+        >
           {filtered.length > 0 ? (
-            filtered.map((p) => <ProjectCard key={p.id} project={p} />)
+            filtered.map((p) => (
+              <div key={p.id} data-card>
+                <ProjectCard project={p} />
+              </div>
+            ))
           ) : (
             <div className="col-span-full rounded-2xl h-[50vh] backdrop-blur-sm flex items-center justify-center text-xl border border-dashed p-10 text-center text-neutral-600">
               No projects match your filters. Try adjusting the search or chips.

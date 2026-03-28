@@ -188,16 +188,19 @@ export default function Navbar() {
                     href={link.href}
                     aria-current={selected ? "page" : undefined}
                     className={[
-                      "relative px-4 py-2 rounded-full text-[15px] font-medium transition-all duration-200",
+                      "group relative px-4 py-2 rounded-full text-[15px] font-medium transition-all duration-200",
                       selected
                         ? "text-[var(--black)] bg-black/[0.06]"
                         : "text-[var(--muted)] hover:text-[var(--black)] hover:bg-black/[0.04]",
                     ].join(" ")}
                   >
-                    {selected && (
-                      <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[var(--orange)]" />
-                    )}
                     {link.label}
+                    <span
+                      className={[
+                        "absolute bottom-0 left-0 h-[2px] bg-[var(--orange)] w-full origin-center transition-transform duration-150 ease-out",
+                        selected ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100",
+                      ].join(" ")}
+                    />
                   </Link>
                 </li>
               );

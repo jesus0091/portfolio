@@ -54,7 +54,65 @@ export default function GalleryProjects() {
       tl.to(cards, { y: (i) => curveY(i, AMPLITUDE), duration: 1 }, 1);
     }, root);
 
-    return () => ctx.revert();
+    const isDesktop = window.matchMedia(
+      "(hover: hover) and (pointer: fine)"
+    ).matches;
+
+    const cleanups: (() => void)[] = [];
+
+    if (isDesktop) {
+      cards.forEach((card) => {
+        const xTo = gsap.quickTo(card, "rotateY", {
+          duration: 0.4,
+          ease: "power3.out",
+        });
+        const yTo = gsap.quickTo(card, "rotateX", {
+          duration: 0.4,
+          ease: "power3.out",
+        });
+
+        const onMouseMove = (e: MouseEvent) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+          const rotateY = ((x - centerX) / centerX) * 8;
+          const rotateX = -((y - centerY) / centerY) * 6;
+          xTo(rotateY);
+          yTo(rotateX);
+        };
+
+        const onMouseEnter = () => {
+          gsap.to(card, { scale: 1.02, duration: 0.3, ease: "power3.out" });
+        };
+
+        const onMouseLeave = () => {
+          gsap.to(card, {
+            rotateX: 0,
+            rotateY: 0,
+            scale: 1,
+            duration: 0.6,
+            ease: "power3.out",
+          });
+        };
+
+        card.addEventListener("mousemove", onMouseMove);
+        card.addEventListener("mouseenter", onMouseEnter);
+        card.addEventListener("mouseleave", onMouseLeave);
+
+        cleanups.push(() => {
+          card.removeEventListener("mousemove", onMouseMove);
+          card.removeEventListener("mouseenter", onMouseEnter);
+          card.removeEventListener("mouseleave", onMouseLeave);
+        });
+      });
+    }
+
+    return () => {
+      ctx.revert();
+      cleanups.forEach((fn) => fn());
+    };
   }, []);
 
   const gallery = [
@@ -77,6 +135,7 @@ export default function GalleryProjects() {
           <div
             key={item.id}
             className="g-item w-[15vw] relative min-w-[110px] rounded-md md:rounded-xl overflow-clip md:min-w-[260px] flex items-start aspect-[9/11] shadow-2xs bg-gray-500 mb-4"
+            style={{ transformStyle: "preserve-3d", willChange: "transform" }}
           >
             <Image
               src={item.urlImage}
