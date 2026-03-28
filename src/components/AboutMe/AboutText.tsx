@@ -31,7 +31,7 @@ const AboutText: React.FC<AboutTextProps> = ({
   const boxRef = useRef<HTMLDivElement | null>(null);
 
   const text =
-    "I'm a Frontend Developer and UX/UI Designer based in Buenos Aires, Argentina with over 3 years of experience. I combine design and development in a single profile, which allows me to create interfaces that are coherent, functional and visually engaging. From visual conception to technical implementation, I work with an integral perspective to deliver consistent user experiences and scalable digital products.";
+    "I'm a Frontend Developer and UX/UI Designer based in Buenos Aires, Argentina. I combine design and development in a single profile — which means I can take a product from concept to polished interface without losing coherence along the way. I care deeply about the details: the right spacing, the right interaction, the right words. That's how I build digital products that feel as good as they work.";
 
   useLayoutEffect(() => {
     if (typeof window === "undefined") return;
