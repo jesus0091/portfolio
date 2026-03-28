@@ -101,8 +101,8 @@ const AboutMeSkills: React.FC = () => {
             data-row
             className="flex flex-col md:flex-row md:items-start gap-4 md:gap-8 py-6 border-b border-[var(--black)]/10 last:border-b-0"
           >
-            <div className="md:min-w-[140px] pt-0.5">
-              <span className="text-base font-semibold tracking-widest uppercase text-[var(--black)]">
+            <div className="md:min-w-[200px] pt-0.5">
+              <span className="text-xl font-semibold text-[var(--black)]">
                 {label}
               </span>
             </div>

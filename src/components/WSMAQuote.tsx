@@ -4,6 +4,7 @@ import React, { useLayoutEffect, useRef } from "react";
 
 import AuroraGlow from "./AuroraGlow";
 import MiniLayout from "./Projects/MiniLayout";
+import { IconLayoutColumns, IconCompass, IconPencil } from "@tabler/icons-react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import gsap from "gsap";
 import { useIsMobile } from "@/app/utils/useIsMobile";
@@ -119,15 +120,17 @@ const WSMAQuote: React.FC = () => {
       if (greatRef.current) greatRef.current.style.color = "#000000";
 
       const tl = gsap.timeline({
-        paused: true,
         defaults: { ease: "power2.out" },
       });
 
       ScrollTrigger.create({
         trigger: section,
-        start: "top 70%",
-        once: true,
-        onEnter: () => tl.play(),
+        start: "top top",
+        end: "+=3000",
+        pin: true,
+        anticipatePin: 1,
+        scrub: 1,
+        animation: tl,
       });
 
       tl.to(leftRef.current, { autoAlpha: 1, y: 0, duration: 0.5 }, 0);
@@ -215,26 +218,34 @@ const WSMAQuote: React.FC = () => {
               What sets me apart
             </p>
             <div className="flex flex-col gap-0">
-              <span ref={codeLineRef} style={{ fontSize: "clamp(38px,4.5vw,90px)", fontWeight: 800, color: "#000000", lineHeight: 1, letterSpacing: "-0.03em" }}>I code.</span>
-              <span ref={designLineRef} style={{ fontSize: "clamp(38px,4.5vw,90px)", fontWeight: 800, color: "#000000", lineHeight: 1, letterSpacing: "-0.03em" }}>I design.</span>
-              <span ref={bothLineRef} style={{ fontSize: "clamp(38px,4.5vw,90px)", fontWeight: 800, color: "transparent", lineHeight: 1, letterSpacing: "-0.03em", WebkitTextStroke: "1.5px #000000" }}>I do both.</span>
+              <span ref={codeLineRef} style={{ fontSize: "clamp(38px,4.5vw,90px)", fontWeight: 600, color: "#000000", lineHeight: 1, letterSpacing: "-0.03em" }}>I code.</span>
+              <span ref={designLineRef} style={{ fontSize: "clamp(38px,4.5vw,90px)", fontWeight: 600, color: "#000000", lineHeight: 1, letterSpacing: "-0.03em" }}>I design.</span>
+              <span ref={bothLineRef} style={{ fontSize: "clamp(38px,4.5vw,90px)", fontWeight: 600, color: "transparent", lineHeight: 1, letterSpacing: "-0.03em", WebkitTextStroke: "1.5px #000000" }}>I do both.</span>
             </div>
           </div>
 
           {/* Feature list justo debajo */}
           <div style={{ borderTop: "1px solid #c5c5c5" }}>
+            <svg width={0} height={0} style={{ position: "absolute" }}>
+              <defs>
+                <linearGradient id="iconOrangeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#ff6600" />
+                  <stop offset="100%" stopColor="#ffaa00" />
+                </linearGradient>
+              </defs>
+            </svg>
             {[
-              { emoji: "⌨️", title: "Code + Design", desc: "One profile. Both worlds." },
-              { emoji: "🧭", title: "Pragmatic UX", desc: "Clarity at every step." },
-              { emoji: "✏️", title: "Visual Sensibility", desc: "Illustration roots." },
-            ].map(({ emoji, title, desc }, i, arr) => (
+              { icon: <IconLayoutColumns size={30} stroke={1.5} style={{ stroke: "url(#iconOrangeGrad)" }} />, title: "Code + Design", desc: "Frontend dev with a design eye." },
+              { icon: <IconCompass size={30} stroke={1.5} style={{ stroke: "url(#iconOrangeGrad)" }} />, title: "Pragmatic UX", desc: "User flows that actually make sense." },
+              { icon: <IconPencil size={30} stroke={1.5} style={{ stroke: "url(#iconOrangeGrad)" }} />, title: "UI Craft", desc: "Pixel-precise interfaces, no handoff needed." },
+            ].map(({ icon, title, desc }, i, arr) => (
               <div
                 key={title}
                 className="flex items-center gap-3 py-3"
                 style={{ borderBottom: i < arr.length - 1 ? "1px solid #e5e5e5" : "none" }}
               >
-                <div style={{ width: 60, height: 60, borderRadius: 10, background: "#f5f5f5", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>
-                  {emoji}
+                <div style={{ width: 60, height: 60, borderRadius: 10, background: "#f5f5f5", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  {icon}
                 </div>
                 <div>
                   <div style={{ fontSize: 22, fontWeight: 600, color: "#000000" }}>{title}</div>
@@ -252,11 +263,11 @@ const WSMAQuote: React.FC = () => {
             style={{ border: "1px solid #cbcbcb", height: "75%" }}
           >
 
-            {/* Escena 1 — fondo blanco */}
+            {/* Escena 1 */}
             <div
               ref={o1Ref}
               className="absolute inset-0 flex flex-col items-center justify-end px-6 gap-6 text-center py-[8vh]"
-              style={{ background: "#e4e4e4" }}
+              style={{ background: "#ffffff" }}
             >
               <p ref={p1Ref} className="text-3xl md:text-5xl font-medium tracking-tight z-10" style={{ color: "#000000" }}>
                 <span className="relative inline-block">
@@ -275,7 +286,7 @@ const WSMAQuote: React.FC = () => {
             <div
               ref={o2Ref}
               className="absolute inset-0 flex flex-col items-center justify-end px-6 gap-6 text-center py-[8vh]"
-              style={{ background: "#e4e4e4" }}
+              style={{ background: "#ffffff" }}
             >
               <div ref={o2AuroraRef} className="absolute inset-0 -z-10 flex items-center justify-center">
                 <AuroraGlow
@@ -300,13 +311,13 @@ const WSMAQuote: React.FC = () => {
             <div
               ref={o3Ref}
               className="absolute inset-0 flex items-center justify-center px-6 text-center"
-              style={{ background: "#e4e4e4" }}
+              style={{ background: "#ffffff" }}
             >
               <div
                 ref={cleanPanelRef}
                 aria-hidden
                 className="pointer-events-none absolute inset-0 z-40"
-                style={{ background: "#e4e4e4" }}
+                style={{ background: "#ffffff" }}
               />
               <div className="relative z-50 flex items-center w-full gap-3 md:gap-5">
                 <div
