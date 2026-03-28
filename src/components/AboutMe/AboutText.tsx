@@ -170,7 +170,7 @@ const AboutText: React.FC<AboutTextProps> = ({
           </div>
           <p
             ref={paraRef}
-            className="flex flex-wrap gap-y-1 gap-x-1.5 md:gap-2 text-lg md:text-2xl font-medium md:tracking-tight"
+            className="flex flex-wrap gap-y-1 gap-x-1.5 md:gap-2 text-lg font-medium"
           >
             {words.map((w, i) => (
               <span key={i} data-word>
