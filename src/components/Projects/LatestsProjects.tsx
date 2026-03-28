@@ -245,7 +245,7 @@ export default function LatestProjects() {
           <h2 className="text-4xl md:text-6xl max-w-xl text-[var(--black)] font-semibold tracking-tight">
             Building Digital Products & Experience
           </h2>
-          <p className="text-lg font-medium max-w-lg">
+          <p className="text-xl font-medium max-w-lg">
             Highlights of collaborative and solo projects that shaped my
             expertise.
           </p>
