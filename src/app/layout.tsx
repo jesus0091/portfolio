@@ -15,7 +15,7 @@ const CANONICAL = "https://jesushernandez.vercel.app";
 export const metadata: Metadata = {
   metadataBase: new URL(CANONICAL),
   title: {
-    default: "Jesus Hernandez — Front-End Developer & UX/UI Designer",
+    default: "Jesus Hernandez | Front-End Developer & UX/UI Designer",
     template: "%s | Jesus Hernandez",
   },
   description:
@@ -49,7 +49,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     siteName: "Jesus Hernandez Portfolio",
     url: CANONICAL,
-    title: "Jesus Hernandez — Front-End Developer & UX/UI Designer",
+    title: "Jesus Hernandez | Front-End Developer & UX/UI Designer",
     description:
       "Explore the portfolio of Jesus Hernandez: front-end engineering, UX/UI design, and crafted digital experiences.",
     images: [
@@ -57,13 +57,13 @@ export const metadata: Metadata = {
         url: "/images/share.png",
         width: 1200,
         height: 630,
-        alt: "Portfolio — Jesus Hernandez — Front-End Developer & UX/UI Designer",
+        alt: "Portfolio | Jesus Hernandez | Front-End Developer & UX/UI Designer",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Jesus Hernandez — Front-End Developer & UX/UI Designer",
+    title: "Jesus Hernandez | Front-End Developer & UX/UI Designer",
     description:
       "Front-end development and UX/UI design portfolio by Jesus Hernandez.",
     images: ["/images/share.png"],
