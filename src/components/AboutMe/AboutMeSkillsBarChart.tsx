@@ -2,6 +2,7 @@
 
 import React, { useLayoutEffect, useRef } from "react";
 
+import { IconSparkles } from "@tabler/icons-react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import gsap from "gsap";
 
@@ -36,9 +37,11 @@ const CATEGORIES = [
 
 const AboutMeSkills: React.FC = () => {
   const sectionRef = useRef<HTMLElement | null>(null);
-  const headerRef = useRef<HTMLDivElement | null>(null);
+  const labelRef = useRef<HTMLParagraphElement | null>(null);
+  const titleRef = useRef<HTMLHeadingElement | null>(null);
+  const dividerRef = useRef<HTMLDivElement | null>(null);
   const rowsRef = useRef<HTMLDivElement | null>(null);
-  const wipeRef = useRef<HTMLDivElement | null>(null);
+  const contentRef = useRef<HTMLDivElement | null>(null);
 
   useLayoutEffect(() => {
     if (typeof window === "undefined") return;
@@ -49,69 +52,56 @@ const AboutMeSkills: React.FC = () => {
 
     const ctx = gsap.context(() => {
       const section = sectionRef.current!;
-      const header = headerRef.current!;
-      const wipe = wipeRef.current!;
+      const label = labelRef.current!;
+      const title = titleRef.current!;
+      const divider = dividerRef.current!;
       const rows = rowsRef.current!.querySelectorAll<HTMLElement>("[data-row]");
+      const rowLabels = rowsRef.current!.querySelectorAll<HTMLElement>("[data-row-label]");
       const chips = rowsRef.current!.querySelectorAll<HTMLElement>("[data-chip]");
+      const content = contentRef.current!;
 
       if (reduce) {
-        gsap.set([header, rows, chips], { autoAlpha: 1, y: 0 });
-        gsap.set(wipe, { scaleX: 0 });
+        gsap.set([label, title, divider, rows, rowLabels, chips, content], { autoAlpha: 1, y: 0, scaleX: 1 });
         return;
       }
 
-      gsap.set(header, { autoAlpha: 0, y: 24 });
-      gsap.set(rows, { autoAlpha: 0, y: 16 });
-      gsap.set(chips, { autoAlpha: 0, y: 10 });
-      // Wipe empieza cubriendo todo
-      gsap.set(wipe, { scaleX: 1, transformOrigin: "left center" });
+      // Estados iniciales
+      gsap.set(label, { autoAlpha: 0, y: 16 });
+      gsap.set(title, { autoAlpha: 0, y: 32 });
+      gsap.set(divider, { scaleX: 0, transformOrigin: "left center" });
+      gsap.set(rows, { autoAlpha: 0, y: 20 });
+      gsap.set(rowLabels, { autoAlpha: 0, x: -16 });
+      gsap.set(chips, { autoAlpha: 0, y: 8, scale: 0.92 });
 
-      const tl = gsap.timeline({
+      // Entrada scrub
+      gsap.timeline({
+        defaults: { ease: "none" },
         scrollTrigger: {
           trigger: section,
-          start: "top 85%",
-          once: true,
+          start: "top 90%",
+          end: "top 0%",
+          scrub: 1,
         },
-      });
+      })
+        .to(label,     { autoAlpha: 1, y: 0, duration: 0.1 }, 0)
+        .to(title,     { autoAlpha: 1, y: 0, duration: 0.15 }, 0.08)
+        .to(divider,   { scaleX: 1, duration: 0.15 }, 0.18)
+        .to(rows,      { autoAlpha: 1, y: 0, duration: 0.12, stagger: 0.07 }, 0.25)
+        .to(rowLabels, { autoAlpha: 1, x: 0, duration: 0.1, stagger: 0.07 }, 0.28)
+        .to(chips,     { autoAlpha: 1, y: 0, scale: 1, duration: 0.08, stagger: 0.008 }, 0.35);
 
-      // Wipe sale por la derecha
-      tl.to(
-        wipe,
-        {
-          scaleX: 0,
-          transformOrigin: "right center",
-          duration: 0.7,
-          ease: "power3.inOut",
+      // Salida scrub
+      gsap.set(content, { willChange: "transform,opacity" });
+      gsap.timeline({
+        defaults: { ease: "none" },
+        scrollTrigger: {
+          trigger: section,
+          start: "top 0%",
+          end: "top -15%",
+          scrub: 1,
         },
-        0.1
-      );
-
-      // Header aparece mientras el wipe se va
-      tl.to(header, { autoAlpha: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.4);
-
-      // Rows y chips después del wipe
-      tl.to(
-        rows,
-        {
-          autoAlpha: 1,
-          y: 0,
-          duration: 0.5,
-          ease: "power2.out",
-          stagger: 0.1,
-        },
-        0.6
-      );
-      tl.to(
-        chips,
-        {
-          autoAlpha: 1,
-          y: 0,
-          duration: 0.4,
-          ease: "power2.out",
-          stagger: 0.02,
-        },
-        0.75
-      );
+      })
+        .to(content, { autoAlpha: 0, scale: 0.92, y: -20, duration: 1 });
     }, sectionRef);
 
     return () => ctx.revert();
@@ -121,49 +111,72 @@ const AboutMeSkills: React.FC = () => {
     <section
       id="skills"
       ref={sectionRef}
-      className="relative overflow-hidden py-20 md:py-28 px-4 md:px-8 max-w-[1280px] mx-auto w-full"
+      className="relative py-20 md:py-28 px-4 md:px-8 max-w-[1280px] mx-auto w-full"
     >
-      {/* Wipe overlay */}
-      <div
-        ref={wipeRef}
-        className="absolute inset-0 z-10 pointer-events-none"
-        style={{ background: "#ff6600" }}
-      />
+      <div ref={contentRef}>
+        <div className="mb-10">
+          <p ref={labelRef} className="text-xl font-semibold text-[var(--orange)] tracking-wide mb-2">
+            Skills
+          </p>
+          <h2 ref={titleRef} className="text-3xl md:text-6xl font-semibold text-[var(--black)] leading-tighter tracking-tight">
+            What I bring to the table.
+          </h2>
+        </div>
 
-      <div ref={headerRef} className="mb-10">
-        <p className="text-xl font-semibold text-[var(--orange)] tracking-wide mb-2">
-          Skills
-        </p>
-        <h2 className="text-3xl md:text-6xl font-semibold text-[var(--black)] leading-tighter tracking-tight">
-          What I bring to the table.
-        </h2>
-      </div>
-
-      <div ref={rowsRef} className="border-t border-[var(--black)]/10">
-        {CATEGORIES.map(({ key, label, skills }) => (
-          <div
-            key={key}
-            data-row
-            className="flex flex-col md:flex-row md:items-start gap-4 md:gap-8 py-6 border-b border-[var(--black)]/10 last:border-b-0"
-          >
-            <div className="md:min-w-[200px] pt-0.5">
-              <span className="text-xl font-semibold text-[var(--black)]">
-                {label}
-              </span>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {skills.map((name) => (
-                <span
-                  key={`${key}-${name}`}
-                  data-chip
-                  className="select-none rounded-full bg-[var(--black)]/5 text-[var(--black)] px-4 py-1.5 text-base font-medium"
-                >
-                  {name}
+        <div ref={rowsRef} className="border-t border-[var(--black)]/10">
+          <div ref={dividerRef} className="hidden" />
+          {CATEGORIES.map(({ key, label, skills }) => (
+            <div
+              key={key}
+              data-row
+              className="flex flex-col md:flex-row md:items-start gap-4 md:gap-8 py-6 border-b border-[var(--black)]/10 last:border-b-0"
+            >
+              <div className="md:min-w-[200px] pt-0.5">
+                <span data-row-label className="text-xl font-semibold text-[var(--black)]">
+                  {label}
                 </span>
-              ))}
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {skills.map((name) => (
+                  <span
+                    key={`${key}-${name}`}
+                    data-chip
+                    className="select-none rounded-full bg-[var(--black)]/5 text-[var(--black)] px-4 py-1.5 text-base font-medium"
+                  >
+                    {name}
+                  </span>
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
+
+        <style>{`
+          @keyframes skills-text-sweep {
+            0%, 77%   { background-position: 100% 0; }
+            91%       { background-position: 0% 0; }
+            94%, 100% { background-position: 100% 0; }
+          }
+          .skills-learning-text {
+            background: linear-gradient(
+              90deg,
+              rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.55) 38%,
+              #ff6600 48%, #ffaa00 52%,
+              rgba(0,0,0,0.55) 62%, rgba(0,0,0,0.55) 100%
+            );
+            background-size: 400% 100%;
+            background-repeat: no-repeat;
+            background-position: 100% 0;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: skills-text-sweep 10s ease-in-out infinite;
+          }
+        `}</style>
+        <p className="mt-8 flex items-center gap-2 text-xl font-medium text-[var(--black)]/55">
+          <IconSparkles size={16} className="shrink-0 text-[var(--black)]/25" />
+          <span className="skills-learning-text">always learning, always growing.</span>
+        </p>
       </div>
     </section>
   );
