@@ -31,6 +31,7 @@ export default function Navbar() {
 
   const [open, setOpen] = useState(false);
   const [elevated, setElevated] = useState(false);
+  const [scrollingUp, setScrollingUp] = useState(false);
   const [navH, setNavH] = useState(72);
   const [activeSection, setActiveSection] = useState<string>("hero");
   const [showFab, setShowFab] = useState(false);
@@ -148,9 +149,7 @@ export default function Navbar() {
         className={[
           "w-full md:fixed md:top-0 md:left-0 md:right-0 z-50",
           "transition-all duration-300",
-          elevated
-            ? "bg-white/80 backdrop-blur-xl border-b border-black/[0.06] shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
-            : "bg-transparent",
+          "bg-transparent",
         ].join(" ")}
       >
         <nav
@@ -160,7 +159,8 @@ export default function Navbar() {
             "h-[72px]",
           ].join(" ")}
         >
-          {/* Logo */}
+          {/* Logo + nav links grouped together */}
+          <div className="flex items-center gap-4">
           <Link
             href="/"
             className="flex items-center gap-2.5 font-semibold text-[var(--black)] shrink-0"
@@ -206,6 +206,7 @@ export default function Navbar() {
               );
             })}
           </ul>
+          </div>
 
           {/* Desktop CTA */}
           <div className="hidden md:flex items-center">
@@ -233,7 +234,7 @@ export default function Navbar() {
                 "flex items-center gap-1.5 rounded-full border transition-all duration-200 active:scale-[0.97] cursor-pointer",
                 "pl-1.5 pr-3 h-10",
                 elevated
-                  ? "bg-white/60 border-black/10 backdrop-blur-sm shadow-sm"
+                  ? "bg-[var(--background)]/60 border-black/10 backdrop-blur-sm shadow-sm"
                   : "border-transparent",
               ].join(" ")}
             >

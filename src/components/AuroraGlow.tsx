@@ -81,9 +81,7 @@ const Blob = styled.span<{
     transparent 60%
   );
 
-  /* Blending para un look aurora/vidrio */
-  mix-blend-mode: screen;
-  filter: blur(40px);
+  filter: blur(60px);
 
   animation: ${({ $anim }) =>
       $anim === "f1" ? float1 : $anim === "f2" ? float2 : float3}

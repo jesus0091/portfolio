@@ -36,8 +36,9 @@ export default function ProjectCard({ project }: { project: Project }) {
 
   return (
     <article
-      className="p-card will-change-transform rounded-2xl flex flex-col overflow-hidden md:h-[550px] bg-white/70 backdrop-blur-sm border border-white/50 transition shadow-[0px_0px_50px_rgba(0,0,0,0.08)] hover:shadow-[0px_10px_50px_rgba(0,0,0,0.15)] hover:bg-white/90 hover:-translate-y-1 cursor-pointer"
+      className="p-card will-change-transform rounded-2xl flex flex-col overflow-hidden md:h-[550px] bg-white/70 backdrop-blur-sm border border-white/50 transition hover:bg-white/90 hover:-translate-y-1"
       data-id={p.id}
+      data-cursor="project"
     >
       <div className="relative aspect-[16/9] max-h-[250px] min-w-full w-full bg-zinc-100 overflow-hidden">
         <Image

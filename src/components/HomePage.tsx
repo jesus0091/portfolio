@@ -8,7 +8,6 @@ import {
 } from "@tabler/icons-react";
 
 import AuroraGlow from "./AuroraGlow";
-import Cursor from "./Cursor";
 import Link from "next/link";
 import gsap from "gsap";
 import styled from "styled-components";
@@ -21,7 +20,7 @@ function splitToChars(el: HTMLElement): HTMLElement[] {
   const chars: HTMLElement[] = [];
   for (const char of text) {
     const wrapper = document.createElement("span");
-    wrapper.style.cssText = "display:inline-block;overflow:hidden;vertical-align:bottom;";
+    wrapper.style.cssText = "display:inline-block;overflow:hidden;vertical-align:bottom;padding:0.15em 0.05em;margin:-0.15em -0.05em;";
 
     const inner = document.createElement("span");
     inner.style.cssText = "display:inline-block;";
@@ -36,7 +35,6 @@ function splitToChars(el: HTMLElement): HTMLElement[] {
 
 export default function HomePage() {
   const [hovered, setHovered] = useState<"frontend" | "designer">("frontend");
-  const [cursorActive, setCursorActive] = useState(false);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -163,7 +161,6 @@ export default function HomePage() {
 
   return (
     <Fragment>
-      <Cursor active={cursorActive} />
       <section
         ref={sectionRef}
         id="hero"
@@ -188,11 +185,7 @@ export default function HomePage() {
 
           <StyledTitle
             ref={titleRef}
-            onMouseEnter={() => setCursorActive(true)}
-            onMouseLeave={() => {
-              setCursorActive(false);
-              setHovered("frontend");
-            }}
+            onMouseLeave={() => setHovered("frontend")}
           >
             <FrontendRow
               ref={frontendRowRef}

@@ -32,81 +32,67 @@ const AboutText: React.FC<AboutTextProps> = ({
   const boxRef = useRef<HTMLDivElement | null>(null);
   const rightColRef = useRef<HTMLDivElement | null>(null);
   const gridRef = useRef<HTMLDivElement | null>(null);
-  const text =
-    "I'm a Frontend Developer and UX/UI Designer based in Buenos Aires, Argentina. I combine design and development in a single profile, which means I can take a product from concept to polished interface without losing coherence along the way. I care deeply about the details: the right spacing, the right interaction, the right words. That's how I build digital products that feel as good as they work.";
+  const segments: { text: string; bold?: boolean }[] = [
+    { text: "I'm a " },
+    { text: "Frontend Developer", bold: true },
+    { text: " and " },
+    { text: "UX/UI Designer", bold: true },
+    { text: " based in " },
+    { text: "Buenos Aires, Argentina.", bold: true },
+    { text: " I combine " },
+    { text: "design and development", bold: true },
+    { text: " in a single profile, which means I can take a product from " },
+    { text: "concept to polished interface", bold: true },
+    { text: " without losing coherence along the way. I care deeply about the " },
+    { text: "details:", bold: true },
+    { text: " the right " },
+    { text: "spacing,", bold: true },
+    { text: " the right " },
+    { text: "interaction,", bold: true },
+    { text: " the right words. That's how I build " },
+    { text: "digital products", bold: true },
+    { text: " that feel as good as they work." },
+  ];
 
   useLayoutEffect(() => {
     if (typeof window === "undefined") return;
 
+    gsap.registerPlugin(ScrollTrigger);
+
     const reduce =
       window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
-
-    gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
       const section = sectionRef.current!;
       const para = paraRef.current!;
       const title = titleRef.current!;
       const box = boxRef.current!;
-      const words = Array.from(
-        para.querySelectorAll<HTMLElement>("[data-word]")
-      );
+      const words = Array.from(para.querySelectorAll<HTMLElement>("[data-word]"));
 
       if (reduce) {
-        gsap.set([title, box, words], { opacity: 1, x: 0, y: 0 });
+        gsap.set([title, box, words], { opacity: 1, x: 0, y: 0, clipPath: "none", scale: 1, rotateX: 0, yPercent: 0 });
         return;
       }
 
-      // Estado inicial — imagen desde izquierda, texto desde derecha
-      gsap.set(box, { opacity: 0, x: -50, willChange: "transform,opacity" });
-      gsap.set(title, { opacity: 0, y: 30 });
-      gsap.set(words, {
-        opacity: 0,
-        y: wordOffsetY,
-        display: "inline-block",
-        willChange: "transform,opacity",
-      });
+      gsap.set(box,   { clipPath: "inset(100% 0 0 0)", willChange: "transform,opacity" });
+      gsap.set(title, { opacity: 0, y: 40, scale: 0.96 });
+      gsap.set(words, { opacity: 0, yPercent: 120, rotateX: -35, display: "inline-block", willChange: "transform,opacity" });
 
-      const tl = gsap.timeline({
-        defaults: { ease: "none" },
-        scrollTrigger: {
-          trigger: section,
-          start: "top 90%",
-          end: "top 20%",
-          scrub: 1,
-        },
-      });
-
-      // Imagen desliza desde la izquierda
-      tl.to(box, { opacity: 1, x: 0, duration: 0.4 }, 0);
-      // Título entra
-      tl.to(title, { opacity: 1, y: 0, duration: 0.3 }, 0.1);
-      // Palabras en stagger
-      tl.to(
-        words,
-        { opacity: 1, y: 0, duration: 0.15, stagger: wordStagger * 0.5 },
-        0.25
-      );
-
-      // Salida: scale out cuando el tope sube
-      const grid = gridRef.current!;
-      gsap.set(grid, { willChange: "transform,opacity" });
       gsap.timeline({
-        defaults: { ease: "none" },
+        defaults: { ease: "power3.out" },
         scrollTrigger: {
           trigger: section,
-          start: "top -10%",
-          end: "top 5%",
-          scrub: 1,
+          start: "top 80%",
+          once: true,
         },
       })
-        .to(grid, { opacity: 0, scale: 0.92, y: -20, duration: 1 });
+        .to(box,   { clipPath: "inset(0% 0 0 0)", duration: 0.9, ease: "power4.out" }, 0)
+        .to(title, { opacity: 1, y: 0, scale: 1, duration: 0.7, ease: "back.out(1.4)" }, 0.2)
+        .to(words, { opacity: 1, yPercent: 0, rotateX: 0, duration: wordDuration, stagger: wordStagger, ease: "power2.out" }, 0.4);
     }, sectionRef);
 
     return () => ctx.revert();
   }, [pinDistance, wordStagger, wordDuration, wordOffsetY]);
-
-  const words = text.split(" ");
 
   return (
     <section
@@ -172,11 +158,17 @@ const AboutText: React.FC<AboutTextProps> = ({
             ref={paraRef}
             className="flex flex-wrap gap-y-1 gap-x-1.5 md:gap-1.5 text-xl font-medium"
           >
-            {words.map((w, i) => (
-              <span key={i} data-word>
-                {w}
-              </span>
-            ))}
+            {segments.map((seg, si) =>
+              seg.text.trim().split(" ").map((w, wi) => (
+                <span
+                  key={`${si}-${wi}`}
+                  data-word
+                  className={seg.bold ? "text-[var(--black)]" : ""}
+                >
+                  {w}
+                </span>
+              ))
+            )}
           </p>
           <style>{`
             @keyframes btn-border-shine {

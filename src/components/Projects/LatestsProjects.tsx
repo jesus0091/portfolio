@@ -1,9 +1,11 @@
 "use client";
 
-import { IconBrandBehance, IconBrandGithub } from "@tabler/icons-react";
-import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { IconBrandBehance, IconBrandGithub, IconArrowLeft, IconArrowRight } from "@tabler/icons-react";
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import useEmblaCarousel from "embla-carousel-react";
 
 import ProjectCard from "./ProjectCard";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import gsap from "gsap";
 
 type Mode = "solo" | "collab";
@@ -36,13 +38,7 @@ const PROJECTS: Project[] = [
     role: "FrontEnd Developer",
     summary:
       "Development of a SaaS platform focused on employee engagement. Contributed to building workflows, new features, integrations and reusable components.",
-    stack: [
-      "ReactJS",
-      "NextJS",
-      "TypeScript",
-      "TailwindCSS",
-      "StyledComponents",
-    ],
+    stack: ["ReactJS", "NextJS", "TypeScript", "TailwindCSS", "StyledComponents"],
     cover: "/images/mtc-dev.png",
     category: "frontend",
     mode: "collab",
@@ -55,14 +51,7 @@ const PROJECTS: Project[] = [
     role: "UX/UI Designer",
     summary:
       "UX/UI design for a SaaS platform that enhances employee engagement. Involved in workflows, wireframes, prototypes and design system.",
-    stack: [
-      "Figma",
-      "Figma Design",
-      "UX Research",
-      "Design System",
-      "Prototyping",
-      "UI Design",
-    ],
+    stack: ["Figma", "Figma Design", "UX Research", "Design System", "Prototyping", "UI Design"],
     cover: "/images/mtc-design.png",
     category: "design",
     mode: "collab",
@@ -75,15 +64,7 @@ const PROJECTS: Project[] = [
     role: "Designer & Developer",
     summary:
       "Complete design and development of Ristario website. From concept to production, including UX/UI design, branding, and full-stack implementation.",
-    stack: [
-      "Figma",
-      "ReactJS",
-      "NextJS",
-      "TypeScript",
-      "TailwindCSS",
-      "Design System",
-      "Branding",
-    ],
+    stack: ["Figma", "ReactJS", "NextJS", "TypeScript", "TailwindCSS", "Design System", "Branding"],
     cover: "/images/linkedin.png",
     category: "frontend",
     mode: "solo",
@@ -99,14 +80,7 @@ const PROJECTS: Project[] = [
     role: "UX/UI Designer",
     summary:
       "Complete UX/UI design for Fundación Pataro website. Focused on accessibility, user experience and visual identity to communicate the foundation's mission effectively.",
-    stack: [
-      "Figma",
-      "Figma Design",
-      "UX Research",
-      "Accessibility",
-      "Prototyping",
-      "Branding",
-    ],
+    stack: ["Figma", "Figma Design", "UX Research", "Accessibility", "Prototyping", "Branding"],
     cover: "/images/Banner-10.png",
     category: "design",
     mode: "solo",
@@ -132,15 +106,7 @@ const PROJECTS: Project[] = [
     role: "UX/UI Designer",
     summary:
       "Integrative UX/UI project for an iOS app designed for psychologists. Developed from scratch with the full Design Thinking process, research and testing.",
-    stack: [
-      "Figma",
-      "Figma Design",
-      "Design System",
-      "iOS",
-      "Prototyping",
-      "UX Research",
-      "Design Thinking",
-    ],
+    stack: ["Figma", "Figma Design", "Design System", "iOS", "Prototyping", "UX Research", "Design Thinking"],
     cover: "/images/therapia.png",
     category: "design",
     mode: "solo",
@@ -166,14 +132,7 @@ const PROJECTS: Project[] = [
     role: "UX/UI Designer",
     summary:
       "Task management web application for call centers. Users can schedule, manage and track client calls. Flows, wireframes and visual prototype.",
-    stack: [
-      "Figma",
-      "Figma Design",
-      "Design System",
-      "Prototyping",
-      "UX Research",
-      "UI Design",
-    ],
+    stack: ["Figma", "Figma Design", "Design System", "Prototyping", "UX Research", "UI Design"],
     cover: "/images/omnipad.png",
     category: "design",
     mode: "solo",
@@ -181,203 +140,157 @@ const PROJECTS: Project[] = [
   },
 ];
 
-type ChipProps<T extends string> = {
-  current: T | "all";
-  onChange: (v: T | "all") => void;
-  label: string;
-  payload: T | "all";
-};
-
-function FilterChip<T extends string>({
-  current,
-  onChange,
-  label,
-  payload,
-}: ChipProps<T>) {
-  const active = current === payload;
-  return (
-    <button
-      type="button"
-      aria-pressed={active}
-      onClick={() => onChange(payload)}
-      className={`inline-flex cursor-pointer rounded-full items-center gap-2 px-4 py-1 md:py-2 text-sm md:text-base font-medium transition active:scale-[0.96] transition-transform duration-100 ${
-        active
-          ? "text-[var(--white)] bg-[var(--black)] hover:bg-[var(--gray)]"
-          : "text-[var(--white)] bg-[var(--black)]/30 hover:bg-[var(--gray)]/50"
-      }`}
-    >
-      <span>{label}</span>
-    </button>
-  );
-}
-
 export default function LatestProjects() {
-  const [category, setCategory] = useState<Category | "all">("all");
-  const [mode, setMode] = useState<Mode | "all">("all");
-  const [query] = useState("");
-  const gridRef = useRef<HTMLDivElement | null>(null);
-  const isFirstRender = useRef(true);
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const headerRef = useRef<HTMLDivElement | null>(null);
+  const anchorRef = useRef<HTMLDivElement | null>(null);
+  const [trackOffset, setTrackOffset] = useState(0);
 
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    return PROJECTS.filter((p) => {
-      const passCategory = category === "all" || p.category === category;
-      const passMode = mode === "all" || p.mode === mode;
-      const passQuery =
-        q === ""
-          ? true
-          : [p.title, p.productName, p.role, p.summary, ...p.stack]
-              .join(" ")
-              .toLowerCase()
-              .includes(q);
-      return passCategory && passMode && passQuery;
-    });
-  }, [category, mode, query]);
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    align: "start",
+    dragFree: false,
+    loop: false,
+    slidesToScroll: 1,
+  });
 
-  // Animación de entrada inicial
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [canPrev, setCanPrev] = useState(false);
+  const [canNext, setCanNext] = useState(true);
+
+  const prev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
+  const next = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
+
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    setActiveIndex(emblaApi.selectedScrollSnap());
+    setCanPrev(emblaApi.canScrollPrev());
+    setCanNext(emblaApi.canScrollNext());
+  }, [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    onSelect();
+    emblaApi.on("select", onSelect);
+    emblaApi.on("reInit", onSelect);
+    return () => {
+      emblaApi.off("select", onSelect);
+      emblaApi.off("reInit", onSelect);
+    };
+  }, [emblaApi, onSelect]);
+
+  // Measure container left edge for full-bleed carousel alignment
+  useEffect(() => {
+    const measure = () => {
+      if (anchorRef.current) {
+        setTrackOffset(anchorRef.current.getBoundingClientRect().left);
+      }
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, []);
+
+  // Entry animation
   useLayoutEffect(() => {
-    if (!gridRef.current) return;
-    const reduce =
-      window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+    if (!sectionRef.current) return;
+    const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
     if (reduce) return;
 
+    gsap.registerPlugin(ScrollTrigger);
+
     const ctx = gsap.context(() => {
-      const cards = gridRef.current!.querySelectorAll<HTMLElement>("[data-card]");
-      gsap.set(cards, { opacity: 0, y: 20, scale: 0.97 });
-      gsap.to(cards, {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        duration: 0.4,
-        stagger: 0.04,
-        ease: "power2.out",
-        delay: 0.1,
+      const label = headerRef.current?.querySelector<HTMLElement>("p");
+      const title = headerRef.current?.querySelector<HTMLElement>("h2");
+      const subtitle = headerRef.current?.querySelector<HTMLElement>("p:last-child");
+
+      if (label) gsap.set(label, { autoAlpha: 0, x: -20, skewX: -3 });
+      if (title) gsap.set(title, { autoAlpha: 0, y: 50, scale: 0.94 });
+      if (subtitle) gsap.set(subtitle, { autoAlpha: 0, y: 16 });
+
+      const tl = gsap.timeline({
+        defaults: { ease: "power3.out" },
+        scrollTrigger: { trigger: sectionRef.current, start: "top 80%", once: true },
       });
-    }, gridRef);
+
+      if (label) tl.to(label, { autoAlpha: 1, x: 0, skewX: 0, duration: 0.5 }, 0);
+      if (title) tl.to(title, { autoAlpha: 1, y: 0, scale: 1, duration: 0.7, ease: "back.out(1.2)" }, 0.1);
+      if (subtitle) tl.to(subtitle, { autoAlpha: 1, y: 0, duration: 0.5 }, 0.25);
+    }, sectionRef);
 
     return () => ctx.revert();
   }, []);
 
-  // Animación al cambiar filtro
-  useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
-    if (!gridRef.current) return;
-    const reduce =
-      window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
-    if (reduce) return;
-
-    const cards = gridRef.current.querySelectorAll<HTMLElement>("[data-card]");
-
-    // Exit: ocultar las cards que actualmente están visibles
-    gsap.to(cards, {
-      opacity: 0,
-      scale: 0.96,
-      duration: 0.15,
-      ease: "power2.in",
-      onComplete: () => {
-        // Enter: las cards del nuevo filtro ya están en el DOM (React re-renderizó)
-        const newCards = gridRef.current?.querySelectorAll<HTMLElement>("[data-card]");
-        if (!newCards) return;
-        gsap.fromTo(
-          newCards,
-          { opacity: 0, scale: 0.95 },
-          {
-            opacity: 1,
-            scale: 1,
-            duration: 0.25,
-            stagger: 0.03,
-            ease: "power2.out",
-          }
-        );
-      },
-    });
-  }, [category, mode]);
-
   return (
     <section
+      ref={sectionRef}
       id="projects"
-      className="relative w-full overflow-clip py-24 md:py-32 scrollbar-hide"
+      className="relative w-full py-24 md:py-32"
     >
-      <div className="mx-auto max-w-[1280px] w-full px-4 md:px-8 flex flex-col gap-6 z-10">
-        <header className="mb-6 flex flex-col gap-2">
-          <p className="text-lg font-semibold text-[var(--orange)] tracking-widest">
-          Latest Projects
-          </p>
-          <h2 className="text-4xl md:text-6xl max-w-xl text-[var(--black)] font-semibold tracking-tight">
-            Building Digital Products & Experience
-          </h2>
-          <p className="text-xl font-medium max-w-lg">
-            Highlights of collaborative and solo projects that shaped my
-            expertise.
-          </p>
-        </header>
+      {/* Header inside container */}
+      <div className="mx-auto max-w-[1280px] w-full px-4 md:px-8">
+        <div ref={headerRef} className="flex items-end justify-between gap-4 mb-8">
+          <div className="flex flex-col gap-2">
+            {/* Anchor to measure left offset for full-bleed carousel */}
+            <div ref={anchorRef} className="absolute" aria-hidden />
+            <p className="text-xl font-semibold text-[var(--orange)] tracking-wide">
+              Latest Projects
+            </p>
+            <h2 className="text-4xl md:text-6xl max-w-xl text-[var(--black)] font-semibold tracking-tight">
+              Building Digital Products & Experience
+            </h2>
+            <p className="text-xl font-medium max-w-lg">
+              Highlights of collaborative and solo projects that shaped my expertise.
+            </p>
+          </div>
 
-        {/* Chips */}
-        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between z-10">
-          <div className="flex flex-col gap-2 md:flex-row md:items-center md:gap-6">
-            <div className="flex flex-wrap gap-1 md:gap-2">
-              <FilterChip<Category>
-                current={category}
-                onChange={setCategory}
-                label="All"
-                payload="all"
-              />
-              <FilterChip<Category>
-                current={category}
-                onChange={setCategory}
-                label="Frontend"
-                payload="frontend"
-              />
-              <FilterChip<Category>
-                current={category}
-                onChange={setCategory}
-                label="Design"
-                payload="design"
-              />
-            </div>
-            <div className="flex flex-wrap gap-1 md:gap-2">
-              <FilterChip<Mode>
-                current={mode}
-                onChange={setMode}
-                label="All modes"
-                payload="all"
-              />
-              <FilterChip<Mode>
-                current={mode}
-                onChange={setMode}
-                label="Collaborative"
-                payload="collab"
-              />
-              <FilterChip<Mode>
-                current={mode}
-                onChange={setMode}
-                label="Solo"
-                payload="solo"
-              />
-            </div>
+          <div className="hidden md:flex items-center gap-2 shrink-0 pb-1">
+            <button
+              onClick={prev}
+              disabled={!canPrev}
+              aria-label="Previous project"
+              className="h-10 w-10 rounded-full border border-black/15 bg-white flex items-center justify-center transition hover:bg-black hover:text-white hover:border-black disabled:opacity-30 disabled:pointer-events-none"
+            >
+              <IconArrowLeft size={18} />
+            </button>
+            <button
+              onClick={next}
+              disabled={!canNext}
+              aria-label="Next project"
+              className="h-10 w-10 rounded-full border border-black/15 bg-white flex items-center justify-center transition hover:bg-black hover:text-white hover:border-black disabled:opacity-30 disabled:pointer-events-none"
+            >
+              <IconArrowRight size={18} />
+            </button>
           </div>
         </div>
+      </div>
 
-        {/* Grid */}
-        <div
-          ref={gridRef}
-          className="grid gap-6 z-10 grid-cols-[repeat(auto-fit,minmax(240px,1fr))] md:grid-cols-2"
-        >
-          {filtered.length > 0 ? (
-            filtered.map((p) => (
-              <div key={p.id} data-card>
-                <ProjectCard project={p} />
-              </div>
-            ))
-          ) : (
-            <div className="col-span-full rounded-2xl h-[50vh] backdrop-blur-sm flex items-center justify-center text-xl border border-dashed p-10 text-center text-neutral-600">
-              No projects match your filters. Try adjusting the search or chips.
+      {/* Carousel — full bleed */}
+      <div ref={emblaRef} className="overflow-hidden">
+        <div className="flex gap-5" style={{ paddingLeft: trackOffset }}>
+          {PROJECTS.map((p) => (
+            <div
+              key={p.id}
+              className="shrink-0 w-[88vw] md:w-[520px] lg:w-[560px]"
+            >
+              <ProjectCard project={p} />
             </div>
-          )}
+          ))}
         </div>
+      </div>
+
+      {/* Footer — texto + CTA */}
+      <div className="mx-auto max-w-[1280px] w-full px-4 md:px-8 mt-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <p className="text-lg md:text-xl font-medium text-[var(--muted)] max-w-md">
+          Each project is a story, from brief to launch, design to code.{" "}
+          <span className="text-[var(--black)]">See the full picture.</span>
+        </p>
+        <a
+          href="/works"
+          className="inline-flex items-center gap-2 self-start md:self-auto rounded-full px-6 py-3 bg-[var(--black)] text-white font-medium text-base transition hover:bg-zinc-800 shrink-0"
+        >
+          View all works
+          <IconArrowRight size={16} />
+        </a>
       </div>
     </section>
   );
