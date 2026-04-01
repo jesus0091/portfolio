@@ -1,22 +1,10 @@
 "use client";
 
-import {
-  Fragment,
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
-import {
-  IconArrowUpRight,
-  IconMail,
-  IconMenu2,
-  IconX,
-} from "@tabler/icons-react";
-
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
+import { IconMail } from "@tabler/icons-react";
 import Image from "next/image";
 import Link from "next/link";
+import gsap from "gsap";
 
 const links = [
   { href: "/#about", label: "About Me", sectionId: "about" },
@@ -26,18 +14,13 @@ const links = [
 export default function Navbar() {
   const headerRef = useRef<HTMLElement | null>(null);
   const rafRef = useRef<number | null>(null);
-  const lastScrollYRef = useRef(0);
   const scrollYRef = useRef(0);
+  const overlayRef = useRef<HTMLDivElement | null>(null);
+  const prevBodyPaddingRightRef = useRef<string>("");
 
   const [open, setOpen] = useState(false);
   const [elevated, setElevated] = useState(false);
-  const [scrollingUp, setScrollingUp] = useState(false);
-  const [navH, setNavH] = useState(72);
   const [activeSection, setActiveSection] = useState<string>("hero");
-  const [showFab, setShowFab] = useState(false);
-
-  const prevBodyPaddingRightRef = useRef<string>("");
-  const prevHeaderPaddingRightRef = useRef<string>("");
 
   const getScrollbarW = () =>
     typeof window === "undefined"
@@ -50,80 +33,62 @@ export default function Navbar() {
     const sbw = getScrollbarW();
     scrollYRef.current = window.scrollY || 0;
     prevBodyPaddingRightRef.current = body.style.paddingRight;
-    prevHeaderPaddingRightRef.current = headerRef.current
-      ? headerRef.current.style.paddingRight
-      : "";
-
-    if (sbw > 0) {
-      body.style.paddingRight = `${sbw}px`;
-      if (headerRef.current) headerRef.current.style.paddingRight = `${sbw}px`;
-    }
-
+    if (sbw > 0) body.style.paddingRight = `${sbw}px`;
     body.style.position = "fixed";
     body.style.top = `-${scrollYRef.current}px`;
     body.style.left = "0";
     body.style.right = "0";
     body.style.width = "100%";
     body.style.overflow = "hidden";
-    (document.documentElement as HTMLElement).style.overscrollBehavior = "none";
   }, []);
 
   const unlockScroll = useCallback(() => {
     if (typeof window === "undefined") return;
     const body = document.body;
-
     body.style.position = "";
     body.style.top = "";
     body.style.left = "";
     body.style.right = "";
     body.style.width = "";
     body.style.overflow = "";
-    (document.documentElement as HTMLElement).style.overscrollBehavior = "";
-
     body.style.paddingRight = prevBodyPaddingRightRef.current || "";
-    if (headerRef.current)
-      headerRef.current.style.paddingRight =
-        prevHeaderPaddingRightRef.current || "";
-
     window.scrollTo(0, scrollYRef.current || 0);
   }, []);
 
   useEffect(() => {
-    if (open) lockScroll();
-    else unlockScroll();
+    if (open) {
+      lockScroll();
+      const items = overlayRef.current?.querySelectorAll<HTMLElement>(".menu-item");
+      if (items?.length) {
+        gsap.fromTo(
+          Array.from(items),
+          { y: 50, opacity: 0 },
+          { y: 0, opacity: 1, stagger: 0.07, duration: 0.55, ease: "power3.out", delay: 0.3 }
+        );
+      }
+    } else {
+      unlockScroll();
+    }
     return () => { unlockScroll(); };
   }, [open, lockScroll, unlockScroll]);
-
-  const measureNav = useCallback(() => {
-    const h = headerRef.current?.getBoundingClientRect().height ?? 72;
-    setNavH(Math.max(1, Math.round(h)));
-  }, []);
 
   const onScroll = useCallback(() => {
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
     rafRef.current = requestAnimationFrame(() => {
-      const y = window.scrollY;
-      setElevated(y > 8);
-      setShowFab(y > 12);
-      lastScrollYRef.current = y;
+      setElevated(window.scrollY > 8);
     });
   }, []);
 
-  useLayoutEffect(() => { measureNav(); }, [measureNav]);
-
   useEffect(() => {
-    measureNav();
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", measureNav);
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
     window.addEventListener("keydown", onKey);
     return () => {
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", measureNav);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       window.removeEventListener("keydown", onKey);
     };
-  }, [onScroll, measureNav]);
+  }, [onScroll]);
 
   useEffect(() => {
     const sectionIds = ["hero", "projects", "about", "contact"];
@@ -143,208 +108,172 @@ export default function Navbar() {
 
   return (
     <Fragment>
-      {/* ── Header ── */}
+      {/* ── Desktop header ── */}
       <header
         ref={headerRef}
         className={[
-          "w-full md:fixed md:top-0 md:left-0 md:right-0 z-50",
-          "transition-all duration-300",
-          "bg-transparent",
+          "w-full hidden md:block fixed top-0 left-0 right-0 z-50",
+          "transition-all duration-300 ease-out",
+          elevated
+            ? "bg-white/80 backdrop-blur-md border-b border-black/[0.08] shadow-sm"
+            : "bg-transparent",
         ].join(" ")}
       >
-        <nav
-          className={[
-            "max-w-[1280px] mx-auto px-4 md:px-8",
-            "flex items-center justify-between",
-            "h-[72px]",
-          ].join(" ")}
-        >
-          {/* Logo + nav links grouped together */}
+        <nav className="max-w-[1280px] mx-auto px-8 flex items-center justify-between h-[72px]">
           <div className="flex items-center gap-4">
-          <Link
-            href="/"
-            className="flex items-center gap-2.5 font-semibold text-[var(--black)] shrink-0"
-          >
-            <Image
-              src="/images/facebrand.png"
-              alt="Logo"
-              className="border border-black/10 rounded-lg bg-black/5 object-contain w-10 h-10"
-              width={40}
-              height={40}
-              priority
-            />
-            <span className="hidden md:inline text-lg font-semibold tracking-tight">
-              Jesús Hernández
-            </span>
-          </Link>
-
-          {/* Desktop nav links */}
-          <ul className="hidden md:flex items-center gap-1">
-            {links.map((link) => {
-              const selected = activeSection === link.sectionId;
-              return (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    aria-current={selected ? "page" : undefined}
-                    className={[
-                      "group relative px-4 py-2 rounded-full text-[15px] font-medium transition-all duration-200",
-                      selected
-                        ? "text-[var(--black)] bg-black/[0.06]"
-                        : "text-[var(--muted)] hover:text-[var(--black)] hover:bg-black/[0.04]",
-                    ].join(" ")}
-                  >
-                    {link.label}
-                    <span
-                      className={[
-                        "absolute bottom-0 left-0 h-[2px] bg-[var(--orange)] w-full origin-center transition-transform duration-150 ease-out",
-                        selected ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100",
-                      ].join(" ")}
-                    />
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-          </div>
-
-          {/* Desktop CTA */}
-          <div className="hidden md:flex items-center">
             <Link
-              href="mailto:jesushernandez120491@gmail.com"
-              className={[
-                "flex items-center gap-2 rounded-full font-medium transition-all duration-200",
-                "bg-[var(--black)] text-white hover:bg-zinc-800",
-                "px-5 py-2 text-[15px]",
-              ].join(" ")}
+              href="/"
+              className="flex items-center gap-2.5 font-semibold text-[var(--black)] shrink-0"
             >
-              <IconMail size={16} />
-              hello @jesus
+              <Image
+                src="/images/facebrand.png"
+                alt="Logo"
+                className="border border-black/10 rounded-lg bg-black/5 object-contain w-10 h-10"
+                width={40}
+                height={40}
+                priority
+              />
+              <span className="text-lg font-semibold tracking-tight">
+                Jesús Hernández
+              </span>
             </Link>
+
+            <ul className="flex items-center gap-1">
+              {links.map((link) => {
+                const selected = activeSection === link.sectionId;
+                return (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      aria-current={selected ? "page" : undefined}
+                      className={[
+                        "px-4 py-2 rounded-full text-[15px] font-medium transition-all duration-200",
+                        selected
+                          ? "text-[var(--black)] bg-black/[0.08]"
+                          : "text-[var(--muted)] hover:text-[var(--black)] hover:bg-black/[0.05]",
+                      ].join(" ")}
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
           </div>
 
-          {/* Mobile hamburger (inline, top of page) */}
-          <div className="flex md:hidden items-center">
-            <button
-              onClick={() => setOpen((v) => !v)}
-              aria-expanded={open}
-              aria-label="Toggle menu"
-              aria-controls="mobile-menu"
-              className={[
-                "flex items-center gap-1.5 rounded-full border transition-all duration-200 active:scale-[0.97] cursor-pointer",
-                "pl-1.5 pr-3 h-10",
-                elevated
-                  ? "bg-[var(--background)]/60 border-black/10 backdrop-blur-sm shadow-sm"
-                  : "border-transparent",
-              ].join(" ")}
-            >
-              <div className="relative h-8 w-8 grid place-items-center text-[var(--black)]">
-                <span className={[
-                  "pointer-events-none absolute right-2 block h-[2px] rounded-full bg-current will-change-transform",
-                  "transition-[transform,width,top] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
-                  open ? "top-1/2 w-5 rotate-45" : "top-[calc(50%-4px)] w-5 rotate-0",
-                ].join(" ")} />
-                <span className={[
-                  "pointer-events-none absolute right-2 block h-[2px] rounded-full bg-current will-change-transform",
-                  "transition-[transform,width,top] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
-                  open ? "top-1/2 w-5 -rotate-45" : "top-[calc(50%+4px)] w-4 rotate-0",
-                ].join(" ")} />
-              </div>
-              <span className="text-[var(--black)] font-medium text-base">Menu</span>
-            </button>
-          </div>
+          <Link
+            href="mailto:jesushernandez120491@gmail.com"
+            className="flex items-center gap-2 rounded-full font-medium transition-all duration-200 bg-[var(--black)] text-white hover:bg-zinc-800 px-5 py-2 text-[15px]"
+          >
+            <IconMail size={16} />
+            hello @jesus
+          </Link>
         </nav>
       </header>
 
-      {/* Mobile overlay */}
-      <button
-        type="button"
-        aria-label="Close menu"
-        onClick={() => setOpen(false)}
-        className={[
-          "fixed inset-0 z-40 md:hidden transition-opacity duration-200",
-          open
-            ? "opacity-100 pointer-events-auto bg-black/20 backdrop-blur-sm"
-            : "opacity-0 pointer-events-none",
-        ].join(" ")}
-      />
+      {/* ── Mobile static header (visible at top) ── */}
+      <header className="w-full md:hidden flex items-center justify-between px-4 h-[64px] relative z-10">
+        <Link
+          href="/"
+          className="flex items-center gap-2.5 font-semibold text-[var(--black)] shrink-0"
+        >
+          <Image
+            src="/images/facebrand.png"
+            alt="Logo"
+            className="border border-black/10 rounded-lg bg-black/5 object-contain w-9 h-9"
+            width={36}
+            height={36}
+            priority
+          />
+          <span className="text-base font-semibold tracking-tight">
+            Jesús Hernández
+          </span>
+        </Link>
+      </header>
 
-      {/* Mobile FAB — menu */}
+      {/* ── Mobile hamburger button (fixed, always visible) ── */}
       <button
         type="button"
-        aria-label={open ? "Close menu" : "Open menu"}
+        aria-label={open ? "Cerrar menú" : "Abrir menú"}
+        aria-expanded={open}
+        aria-controls="mobile-fullscreen-menu"
         onClick={() => setOpen((v) => !v)}
-        className={[
-          "md:hidden fixed z-[62]",
-          "right-[calc(env(safe-area-inset-right,0px)+16px)]",
-          "top-[calc(env(safe-area-inset-top,0px)+16px)]",
-          "h-10 px-3 flex items-center gap-2 rounded-full",
-          "bg-[var(--black)] text-white shadow-lg",
-          "transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
-          showFab && !open
-            ? "opacity-100 translate-y-0 pointer-events-auto"
-            : "opacity-0 -translate-y-2 pointer-events-none",
-        ].join(" ")}
+        className="md:hidden fixed z-[70] flex items-center justify-center w-11 h-11 rounded-full transition-colors duration-300"
+        style={{
+          top: "calc(env(safe-area-inset-top, 0px) + 12px)",
+          right: "calc(env(safe-area-inset-right, 0px) + 16px)",
+          background: open ? "rgba(255,255,255,0.15)" : "var(--black)",
+          color: "white",
+        }}
       >
-        {open ? <IconX size={18} /> : <IconMenu2 size={18} />}
-        <span className="text-sm font-medium">Menu</span>
+        <span className="sr-only">{open ? "Cerrar" : "Menú"}</span>
+        <div className="relative w-5 h-4 flex items-center justify-center">
+          <span
+            className="absolute block h-[2px] w-5 bg-current rounded-full transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
+            style={{ transform: open ? "rotate(45deg) translateY(0)" : "translateY(-6px)" }}
+          />
+          <span
+            className="absolute block h-[2px] bg-current rounded-full transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
+            style={{
+              width: open ? "0" : "20px",
+              opacity: open ? 0 : 1,
+            }}
+          />
+          <span
+            className="absolute block h-[2px] w-5 bg-current rounded-full transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
+            style={{ transform: open ? "rotate(-45deg) translateY(0)" : "translateY(6px)" }}
+          />
+        </div>
       </button>
 
-      {/* Mobile FAB — contact */}
-      <Link
-        href="mailto:jesushernandez120491@gmail.com"
-        aria-label="Contact"
-        className={[
-          "md:hidden fixed z-[60] flex items-center gap-2",
-          "right-[calc(env(safe-area-inset-right,0px)+16px)]",
-          "bottom-[calc(env(safe-area-inset-bottom,0px)+16px)]",
-          "rounded-full px-5 py-3 font-semibold text-sm tracking-tight",
-          "bg-[var(--black)] text-white shadow-lg",
-          "transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
-          showFab && !open
-            ? "opacity-100 translate-y-0 pointer-events-auto"
-            : "opacity-0 translate-y-3 pointer-events-none",
-        ].join(" ")}
+      {/* ── Mobile full-screen overlay ── */}
+      <div
+        id="mobile-fullscreen-menu"
+        ref={overlayRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Menú de navegación"
+        className="md:hidden fixed inset-0 z-[60] bg-[var(--black)] flex flex-col justify-center px-8 pb-16"
+        style={{
+          clipPath: open
+            ? "circle(150vmax at calc(100% - 36px) 36px)"
+            : "circle(0% at calc(100% - 36px) 36px)",
+          transition: "clip-path 0.65s cubic-bezier(0.16, 1, 0.3, 1)",
+          pointerEvents: open ? "auto" : "none",
+        }}
       >
-        <IconMail size={16} />
-        hello @jesus
-      </Link>
-
-      {/* Mobile menu drawer */}
-      {open && (
-        <div
-          id="mobile-menu"
-          role="dialog"
-          aria-modal="true"
-          className="fixed z-50 left-3 right-3 md:hidden"
-          style={{ top: `${navH + 8}px` }}
-        >
-          <ul className="flex flex-col rounded-2xl border border-black/10 bg-white/95 backdrop-blur-xl shadow-xl overflow-hidden text-[17px]">
-            {links.map((link) => (
-              <li key={link.href}>
+        <nav>
+          <ul className="flex flex-col gap-1 mb-12">
+            {links.map((link, i) => (
+              <li key={link.href} className="menu-item overflow-hidden">
                 <Link
                   href={link.href}
                   onClick={() => setOpen(false)}
-                  className="flex justify-between items-center px-6 py-4 border-b border-black/[0.07] hover:bg-black/[0.03] transition"
+                  className="group flex items-baseline gap-4 py-3"
                 >
-                  {link.label}
-                  <IconArrowUpRight size={18} className="text-[var(--muted)]" />
+                  <span className="text-white/30 text-xs font-mono tabular-nums w-5 shrink-0">
+                    0{i + 1}
+                  </span>
+                  <span className="text-white text-[clamp(2.5rem,10vw,3.5rem)] font-bold tracking-tight leading-none transition-opacity duration-200 group-hover:opacity-60">
+                    {link.label}
+                  </span>
                 </Link>
               </li>
             ))}
-            <li className="p-3">
-              <Link
-                href="/#contact"
-                onClick={() => setOpen(false)}
-                className="flex items-center justify-center gap-2 w-full rounded-xl py-3.5 bg-[var(--black)] text-white font-medium transition hover:bg-zinc-800"
-              >
-                <IconMail size={16} />
-                hello @jesus
-              </Link>
-            </li>
           </ul>
-        </div>
-      )}
+
+          <div className="menu-item border-t border-white/10 pt-8">
+            <Link
+              href="mailto:jesushernandez120491@gmail.com"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-3 text-white/50 text-base font-medium hover:text-white transition-colors duration-200"
+            >
+              <IconMail size={18} />
+              jesushernandez120491@gmail.com
+            </Link>
+          </div>
+        </nav>
+      </div>
     </Fragment>
   );
 }
