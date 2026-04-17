@@ -220,28 +220,29 @@ export default function Footer({
       className={`relative overflow-hidden flex flex-col bg-[var(--background)] ${className}`}
     >
       {/* CTA como card */}
-      <div className="max-w-[1280px] mx-auto w-full px-4 md:px-8 pt-16 pb-8">
-        <div className="relative bg-white overflow-hidden rounded-3xl border border-black/10 z-10">
-          <div
-            className="absolute inset-0 flex items-center justify-center"
-            data-aurora
-          >
-            <AuroraGlow
-              blobSize={isMobile ? 400 : 600}
-              speed={4}
-              colors={["#1723c537", "#aa1f1f2f", "#7c3aed2f"]}
-            />
-          </div>
+      <div className="max-w-[1280px] mx-auto w-full px-6 md:px-8 pt-16 pb-8">
+        <div className="relative overflow-hidden rounded-3xl z-10" style={{ background: "linear-gradient(135deg, #1e293b 0%, #0f172a 40%, #1e293b 60%, #f97316 100%)" }}>
+          {/* Noise overlay */}
+          <svg className="absolute inset-0 w-full h-full z-[1] pointer-events-none opacity-[0.12]" aria-hidden="true">
+            <filter id="cta-noise">
+              <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
+              <feColorMatrix type="saturate" values="0" />
+            </filter>
+            <rect width="100%" height="100%" filter="url(#cta-noise)" />
+          </svg>
+          {/* Glow accent */}
+          <div className="absolute -top-1/3 -right-1/4 w-[600px] h-[600px] rounded-full z-[2] pointer-events-none" style={{ background: "radial-gradient(circle, #f9731640 0%, transparent 70%)" }} />
+          <div className="absolute -bottom-1/3 -left-1/4 w-[500px] h-[500px] rounded-full z-[2] pointer-events-none" style={{ background: "radial-gradient(circle, #2563eb30 0%, transparent 70%)" }} />
           <div className="relative z-10 py-20 flex flex-col items-center gap-4 text-center">
             <p
               data-cta-label
-              className="text-sm tracking-widest uppercase text-orange-500 font-semibold"
+              className="text-sm tracking-widest text-orange-400 font-semibold"
             >
               From Concept to Code
             </p>
             <h3
               data-cta-title
-              className="text-3xl sm:text-4xl md:text-7xl font-semibold tracking-tight text-[var(--black)]"
+              className="text-3xl sm:text-4xl md:text-7xl font-semibold tracking-tight text-white"
             >
               Let&apos;s build something <br /> great together
             </h3>
@@ -250,7 +251,7 @@ export default function Footer({
                 ref={ctaBtnRef}
                 href={`mailto:${email}`}
                 data-cta
-                className="relative inline-flex items-center rounded-full gap-2 border border-black/20 px-6 py-3 text-base cursor-pointer font-medium text-[var(--black)] hover:bg-black/5 transition active:scale-[0.96]"
+                className="relative inline-flex items-center rounded-full gap-2 border border-white/20 px-6 py-3 text-base cursor-pointer font-medium text-white hover:bg-white/10 transition active:scale-[0.96]"
                 aria-label="Send me an email"
               >
                 <IconMail size={18} />
@@ -263,7 +264,7 @@ export default function Footer({
 
       {/* Cuerpo */}
       <div className="pb-10 z-10">
-        <div className="flex flex-col md:grid md:grid-cols-12 gap-8 py-8 max-w-[1280px] mx-auto px-4 md:px-8">
+        <div className="flex flex-col md:grid md:grid-cols-12 gap-8 py-8 max-w-[1280px] mx-auto px-6 md:px-8">
           <div
             data-footer-col
             className="w-full md:col-span-5 flex flex-col items-center md:items-start"
@@ -282,7 +283,7 @@ export default function Footer({
               />
               <span>Jesús Hernández</span>
             </Link>
-            <p className="text-sm md:text-base text-[var(--muted)] leading-relaxed max-w-xs text-center md:text-left">
+            <p className="text-sm md:text-base text-gray-700 leading-relaxed max-w-xs text-center md:text-left">
               Frontend Developer & UX/UI Designer. <br />I build cohesive,
               scalable and delightful digital products.
             </p>
@@ -293,7 +294,7 @@ export default function Footer({
             className="flex flex-col md:flex-row gap-8 col-span-7"
           >
             <nav className="space-y-3 flex-1 flex flex-col items-center md:items-start">
-              <h4 className="text-base font-semibold tracking-wide text-gray-500">
+              <h4 className="text-base font-semibold tracking-wide text-gray-700">
                 Quick Links
               </h4>
               <ul className="space-y-2 flex flex-col items-center md:items-start">
@@ -301,7 +302,7 @@ export default function Footer({
                   <li key={l.href}>
                     <Link
                       href={l.href}
-                      className="text-base text-center text-[var(--muted)] hover:text-[var(--black)] transition"
+                      className="text-base text-center text-gray-700 hover:text-[var(--black)] transition"
                     >
                       {l.label}
                     </Link>
@@ -313,10 +314,10 @@ export default function Footer({
               data-footer-col
               className="space-y-3 flex-1 flex flex-col items-center md:items-start"
             >
-              <h4 className="text-base font-semibold tracking-wide text-gray-500">
+              <h4 className="text-base font-semibold tracking-wide text-gray-700">
                 Connect
               </h4>
-              <ul className="flex flex-wrap gap-3">
+              <ul className="flex flex-wrap justify-center md:justify-start gap-3">
                 {social.map((s) => (
                   <li key={s.label}>
                     <Link
@@ -337,12 +338,12 @@ export default function Footer({
         </div>
         <div
           data-footer-col
-          className="flex flex-col-reverse pb-[10vh] md:pb-4 max-w-[1280px] mx-auto px-4 md:px-8 sm:flex-row items-center justify-between gap-3 border-t border-black/10 pt-4"
+          className="flex flex-col-reverse pb-6 md:pb-4 max-w-[1280px] mx-auto px-6 md:px-8 sm:flex-row items-center justify-between gap-3 border-t border-black/10 pt-4"
         >
-          <p className="text-sm md:text-base text-center text-gray-500">
+          <p className="text-sm md:text-base text-center text-gray-700">
             © {year} Jesús Hernández. All rights reserved.
           </p>
-          <p className="md:whitespace-nowrap text-sm md:text-base text-center text-gray-500">
+          <p className="md:whitespace-nowrap text-sm md:text-base text-center text-gray-700">
             Built with: <br className="inline md:hidden" /> ReactJS · Next.JS ·
             TypeScript · TailwindCSS
           </p>

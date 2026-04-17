@@ -164,8 +164,9 @@ export default function HomePage() {
       <section
         ref={sectionRef}
         id="hero"
-        className="relative px-4 h-[100dvh] w-full
+        className="relative px-4 h-[85dvh] md:h-[100dvh] w-full
           flex flex-col justify-center items-center
+          pt-16 md:pt-0
           touch-pan-y select-none
           overflow-x-clip
         "
@@ -175,7 +176,7 @@ export default function HomePage() {
             blobSize={700}
             speed={1.2}
             opacity={0.55}
-            colors={["#a8c8ff", "#d4b8ff"]}
+            colors={["#fde68a", "#fed7aa"]}
           />
         </div>
         <div className="relative z-10 flex flex-col items-center text-center w-full gap-2">
@@ -183,6 +184,62 @@ export default function HomePage() {
             👋, My name is Jesús Hernández
           </p>
 
+          {/* Mobile marquee — two lines scrolling in opposite directions */}
+          <div className="md:hidden w-screen overflow-hidden -mx-4 flex flex-col gap-2">
+            <div className="hero-marquee-left flex whitespace-nowrap">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <span
+                  key={i}
+                  className="shrink-0 flex items-baseline gap-3 pr-3"
+                  style={{ fontSize: "clamp(44px, 14vw, 68px)", lineHeight: 1.1, letterSpacing: "-0.03em" }}
+                  aria-hidden={i > 0}
+                >
+                  <span className="font-black hero-gradient-text">FrontEnd</span>
+                  <span className="font-light text-[var(--black)]">Developer</span>
+                  <span className="text-black/15 font-light select-none">·</span>
+                </span>
+              ))}
+            </div>
+            <div className="hero-marquee-right flex whitespace-nowrap">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <span
+                  key={i}
+                  className="shrink-0 flex items-baseline gap-3 pr-3"
+                  style={{ fontSize: "clamp(44px, 14vw, 68px)", lineHeight: 1.1, letterSpacing: "-0.03em" }}
+                  aria-hidden={i > 0}
+                >
+                  <span className="font-light text-[var(--black)]">Product</span>
+                  <span className="font-black hero-gradient-text">Designer</span>
+                  <span className="text-black/15 font-light select-none">·</span>
+                </span>
+              ))}
+            </div>
+            <style>{`
+              @keyframes hero-scroll-left {
+                0% { transform: translateX(0); }
+                100% { transform: translateX(calc(-100% / 3)); }
+              }
+              @keyframes hero-scroll-right {
+                0% { transform: translateX(calc(-100% / 3)); }
+                100% { transform: translateX(0); }
+              }
+              .hero-marquee-left {
+                animation: hero-scroll-left 20s linear infinite;
+              }
+              .hero-marquee-right {
+                animation: hero-scroll-right 20s linear infinite;
+              }
+              .hero-gradient-text {
+                background: linear-gradient(135deg, #f97316 0%, #1e293b 50%, #F55A3D 100%);
+                -webkit-background-clip: text;
+                background-clip: text;
+                -webkit-text-fill-color: transparent;
+              }
+            `}</style>
+          </div>
+
+          {/* Desktop interactive title */}
+          <div className="hidden md:block">
           <StyledTitle
             ref={titleRef}
             onMouseLeave={() => setHovered("frontend")}
@@ -217,6 +274,7 @@ export default function HomePage() {
               </span>
             </DesignerRow>
           </StyledTitle>
+          </div>
 
           <div
             ref={subtitleRef}
@@ -267,7 +325,7 @@ const StyledTitle = styled.h1`
   flex-direction: column;
   align-items: center;
   gap: 0;
-  font-size: clamp(34px, 8vw, 120px);
+  font-size: clamp(28px, 8vw, 120px);
   line-height: 1;
   white-space: nowrap;
   letter-spacing: -0.02em;

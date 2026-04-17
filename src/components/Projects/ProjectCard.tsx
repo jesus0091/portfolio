@@ -36,7 +36,7 @@ export default function ProjectCard({ project }: { project: Project }) {
 
   return (
     <article
-      className="p-card will-change-transform rounded-2xl flex flex-col overflow-hidden md:h-[550px] bg-white/70 backdrop-blur-sm border border-white/50 transition hover:bg-white/90 hover:-translate-y-1"
+      className="p-card will-change-transform rounded-2xl flex flex-col overflow-hidden h-[520px] md:h-[550px] bg-white/70 backdrop-blur-sm border border-white/50 transition hover:bg-white/90 hover:-translate-y-1"
       data-id={p.id}
       data-cursor="project"
     >

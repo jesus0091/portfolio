@@ -4,9 +4,11 @@ import { IconBrandBehance, IconBrandGithub, IconArrowLeft, IconArrowRight } from
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 
+import Link from "next/link";
 import ProjectCard from "./ProjectCard";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import gsap from "gsap";
+import { useIsMobile } from "@/app/utils/useIsMobile";
 
 type Mode = "solo" | "collab";
 type Category = "frontend" | "design";
@@ -145,6 +147,7 @@ export default function LatestProjects() {
   const headerRef = useRef<HTMLDivElement | null>(null);
   const anchorRef = useRef<HTMLDivElement | null>(null);
   const [trackOffset, setTrackOffset] = useState(0);
+  const isMobile = useIsMobile(768);
 
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "start",
@@ -153,7 +156,7 @@ export default function LatestProjects() {
     slidesToScroll: 1,
   });
 
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [, setActiveIndex] = useState(0);
   const [canPrev, setCanPrev] = useState(false);
   const [canNext, setCanNext] = useState(true);
 
@@ -227,50 +230,41 @@ export default function LatestProjects() {
       className="relative w-full py-24 md:py-32"
     >
       {/* Header inside container */}
-      <div className="mx-auto max-w-[1280px] w-full px-4 md:px-8">
+      <div className="mx-auto max-w-[1280px] w-full px-6 md:px-8">
         <div ref={headerRef} className="flex items-end justify-between gap-4 mb-8">
           <div className="flex flex-col gap-2">
             {/* Anchor to measure left offset for full-bleed carousel */}
             <div ref={anchorRef} className="absolute" aria-hidden />
-            <p className="text-xl font-semibold text-[var(--orange)] tracking-wide">
+            <p className="text-base md:text-xl font-semibold text-[var(--orange)] tracking-wide">
               Latest Projects
             </p>
-            <h2 className="text-4xl md:text-6xl max-w-xl text-[var(--black)] font-semibold tracking-tight">
-              Building Digital Products & Experience
-            </h2>
-            <p className="text-xl font-medium max-w-lg">
+            <Link href="/works" className="block max-w-xl">
+              <h2 className="text-3xl md:text-6xl text-[var(--black)] font-semibold tracking-tight transition hover:text-[var(--orange)]">
+                Building Digital Products & Experience
+              </h2>
+            </Link>
+            <p className="text-base md:text-xl font-medium max-w-lg">
               Highlights of collaborative and solo projects that shaped my expertise.
             </p>
           </div>
 
-          <div className="hidden md:flex items-center gap-2 shrink-0 pb-1">
-            <button
-              onClick={prev}
-              disabled={!canPrev}
-              aria-label="Previous project"
-              className="h-10 w-10 rounded-full border border-black/15 bg-white flex items-center justify-center transition hover:bg-black hover:text-white hover:border-black disabled:opacity-30 disabled:pointer-events-none"
-            >
-              <IconArrowLeft size={18} />
-            </button>
-            <button
-              onClick={next}
-              disabled={!canNext}
-              aria-label="Next project"
-              className="h-10 w-10 rounded-full border border-black/15 bg-white flex items-center justify-center transition hover:bg-black hover:text-white hover:border-black disabled:opacity-30 disabled:pointer-events-none"
-            >
-              <IconArrowRight size={18} />
-            </button>
-          </div>
+          <Link
+            href="/works"
+            className="hidden md:inline-flex items-center gap-2 shrink-0 rounded-full px-6 py-3 bg-[var(--black)] text-white font-medium text-base transition hover:bg-zinc-800"
+          >
+            View all works
+            <IconArrowRight size={16} />
+          </Link>
         </div>
       </div>
 
       {/* Carousel — full bleed */}
-      <div ref={emblaRef} className="overflow-hidden">
-        <div className="flex gap-5" style={{ paddingLeft: trackOffset }}>
+      <div ref={emblaRef} className="overflow-hidden px-6 md:px-0">
+        <div className="flex gap-5" style={{ paddingLeft: isMobile ? undefined : trackOffset }}>
           {PROJECTS.map((p) => (
             <div
               key={p.id}
-              className="shrink-0 w-[88vw] md:w-[520px] lg:w-[560px]"
+              className="shrink-0 w-[calc(100vw-64px)] md:w-[520px] lg:w-[560px]"
             >
               <ProjectCard project={p} />
             </div>
@@ -279,18 +273,36 @@ export default function LatestProjects() {
       </div>
 
       {/* Footer — texto + CTA */}
-      <div className="mx-auto max-w-[1280px] w-full px-4 md:px-8 mt-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <p className="text-lg md:text-xl font-medium text-[var(--muted)] max-w-md">
+      <div className="mx-auto max-w-[1280px] w-full px-6 md:px-8 mt-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <p className="text-base md:text-xl font-medium text-[var(--muted)] max-w-md">
           Each project is a story, from brief to launch, design to code.{" "}
           <span className="text-[var(--black)]">See the full picture.</span>
         </p>
-        <a
-          href="/works"
-          className="inline-flex items-center gap-2 self-start md:self-auto rounded-full px-6 py-3 bg-[var(--black)] text-white font-medium text-base transition hover:bg-zinc-800 shrink-0"
-        >
-          View all works
-          <IconArrowRight size={16} />
-        </a>
+        <div className="flex items-center gap-3 shrink-0">
+          <Link
+            href="/works"
+            className="md:hidden inline-flex items-center gap-2 rounded-full px-5 py-2.5 bg-[var(--black)] text-white font-medium text-sm transition hover:bg-zinc-800"
+          >
+            View all works
+            <IconArrowRight size={16} />
+          </Link>
+          <button
+            onClick={prev}
+            disabled={!canPrev}
+            aria-label="Previous project"
+            className="h-10 w-10 cursor-pointer rounded-full border border-black/15 bg-white flex items-center justify-center transition-all duration-200 hover:bg-black hover:text-white hover:border-black hover:scale-110 active:scale-95 disabled:opacity-30 disabled:pointer-events-none"
+          >
+            <IconArrowLeft size={18} />
+          </button>
+          <button
+            onClick={next}
+            disabled={!canNext}
+            aria-label="Next project"
+            className="h-10 w-10 cursor-pointer rounded-full border border-black/15 bg-white flex items-center justify-center transition-all duration-200 hover:bg-black hover:text-white hover:border-black hover:scale-110 active:scale-95 disabled:opacity-30 disabled:pointer-events-none"
+          >
+            <IconArrowRight size={18} />
+          </button>
+        </div>
       </div>
     </section>
   );

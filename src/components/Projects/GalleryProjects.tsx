@@ -27,36 +27,40 @@ export default function GalleryProjects() {
       return (amp * (x * x)) / (center * center || 1);
     };
 
+    const isDesktop = window.matchMedia(
+      "(hover: hover) and (pointer: fine)"
+    ).matches;
+    const isMobile = window.innerWidth < 768;
+
     const ctx = gsap.context(() => {
       cards.forEach((el, i) => {
         gsap.set(el, {
           opacity: 0,
-          y: -curveY(i, AMPLITUDE) + 100,
+          y: isMobile ? 40 : -curveY(i, AMPLITUDE) + 100,
         });
       });
       gsap.to(cards, {
         opacity: 1,
+        y: 0,
         duration: 1.2,
         delay: 2,
         stagger: 0.15,
         ease: "power3.out",
       });
-      const tl = gsap.timeline({
-        defaults: { ease: "none" },
-        scrollTrigger: {
-          trigger: root,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: true,
-        },
-      });
-      tl.to(cards, { y: 0, duration: 1 }, 0);
-      tl.to(cards, { y: (i) => curveY(i, AMPLITUDE), duration: 1 }, 1);
+      if (!isMobile) {
+        const tl = gsap.timeline({
+          defaults: { ease: "none" },
+          scrollTrigger: {
+            trigger: root,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: true,
+          },
+        });
+        tl.to(cards, { y: 0, duration: 1 }, 0);
+        tl.to(cards, { y: (i) => curveY(i, AMPLITUDE), duration: 1 }, 1);
+      }
     }, root);
-
-    const isDesktop = window.matchMedia(
-      "(hover: hover) and (pointer: fine)"
-    ).matches;
 
     const cleanups: (() => void)[] = [];
 
@@ -134,8 +138,7 @@ export default function GalleryProjects() {
         {gallery.map((item) => (
           <div
             key={item.id}
-            className="g-item w-[15vw] relative min-w-[110px] rounded-md md:rounded-xl overflow-clip md:min-w-[260px] flex items-start aspect-[9/11] shadow-2xs bg-gray-500 mb-4"
-            style={{ transformStyle: "preserve-3d", willChange: "transform" }}
+            className="g-item w-[15vw] relative min-w-[110px] rounded-md md:rounded-xl overflow-clip md:min-w-[260px] flex items-start aspect-[9/11] shadow-2xs bg-gray-500 mb-4 md:[transform-style:preserve-3d] md:[will-change:transform]"
           >
             <Image
               src={item.urlImage}

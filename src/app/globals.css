@@ -12,7 +12,7 @@
   --muted: #595959;
   --border: #e5e5e5;
   --primary: #2563eb;
-  --secondary: #9333ea;
+  --secondary: #1e293b;
   --gray: #b9c1d2;
   --grid-rgba: rgba(65, 34, 0, 0.09);
   --button: #00000060;
@@ -87,7 +87,7 @@ hr,
 }
 
 .wsma-phrase {
-  background: linear-gradient(120deg, #ff6600, #f97316, #a855f7, #ec4899, #3b82f6, #06b6d4, #10b981, #ff6600);
+  background: linear-gradient(120deg, #ff6600, #f97316, #1e293b, #334155, #475569, #f97316, #ff6600, #ff6600);
   background-size: 400% 400%;
   -webkit-background-clip: text;
   background-clip: text;

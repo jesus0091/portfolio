@@ -300,15 +300,20 @@ const AboutMeSkills: React.FC = () => {
         }
         .chip-row:hover .skill-chip.chip-dev    { background-color: #d0dbe6; color: #2e4a62; }
         .chip-row:hover .skill-chip.chip-design { background-color: #e8d9cf; color: #5e3018; }
-        .chip-row:hover .skill-chip.chip-soft   { background-color: #dbd5e6; color: #3d2858; }
+        .chip-row:hover .skill-chip.chip-soft   { background-color: #d1d5db; color: #1f2937; }
+        @media (max-width: 767px) {
+          .skill-chip.chip-dev    { background-color: #d0dbe6 !important; color: #2e4a62 !important; }
+          .skill-chip.chip-design { background-color: #e8d9cf !important; color: #5e3018 !important; }
+          .skill-chip.chip-soft   { background-color: #d1d5db !important; color: #1f2937 !important; }
+        }
       `}</style>
 
       <div
         ref={contentRef}
-        className="relative z-10 flex flex-col py-20 md:py-28 px-4 md:px-8 max-w-[1280px] mx-auto w-full"
+        className="relative z-10 flex flex-col py-20 md:py-28 px-6 md:px-8 max-w-[1280px] mx-auto w-full"
       >
         <div className="mb-10">
-          <p ref={labelRef} className="text-xl font-semibold text-[var(--orange)] tracking-wide mb-2">
+          <p ref={labelRef} className="text-base md:text-xl font-semibold text-[var(--orange)] tracking-wide mb-2">
             Skills
           </p>
           <h2 ref={titleRef} className="text-3xl md:text-6xl font-semibold text-[var(--black)] leading-tighter tracking-tight">
@@ -325,7 +330,7 @@ const AboutMeSkills: React.FC = () => {
               className="chip-row flex flex-col md:flex-row md:items-start gap-4 md:gap-8 py-6 border-b-2 border-black/20 last:border-b-0"
             >
               <div className="md:min-w-[200px] pt-0.5">
-                <span data-row-label className="text-xl font-semibold text-[var(--black)]">
+                <span data-row-label className="text-lg md:text-xl font-semibold text-[var(--black)]">
                   {label}
                 </span>
               </div>
@@ -334,7 +339,7 @@ const AboutMeSkills: React.FC = () => {
                   <span
                     key={`${key}-${name}`}
                     data-chip
-                    className={`skill-chip chip-${key} select-none rounded-full px-4 py-1.5 text-base font-medium`}
+                    className={`skill-chip chip-${key} select-none rounded-full px-3 py-1 text-sm md:px-4 md:py-1.5 md:text-base font-medium`}
                   >
                     {name}
                   </span>

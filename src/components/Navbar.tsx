@@ -7,8 +7,8 @@ import Link from "next/link";
 import gsap from "gsap";
 
 const links = [
-  { href: "/#about", label: "About Me", sectionId: "about" },
-  { href: "/#projects", label: "Projects", sectionId: "projects" },
+  { href: "/#about", label: "About Me", sectionId: "about" as const },
+  { href: "/works", label: "Projects", sectionId: undefined },
 ];
 
 export default function Navbar() {
@@ -172,7 +172,7 @@ export default function Navbar() {
       </header>
 
       {/* ── Mobile static header (visible at top) ── */}
-      <header className="w-full md:hidden flex items-center justify-between px-4 h-[64px] relative z-10">
+      <header className="w-full md:hidden flex items-center justify-between px-6 h-[64px] absolute top-0 left-0 right-0 z-10">
         <Link
           href="/"
           className="flex items-center gap-2.5 font-semibold text-[var(--black)] shrink-0"

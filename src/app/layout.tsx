@@ -69,7 +69,10 @@ export const metadata: Metadata = {
     images: ["/images/share.png"],
   },
   icons: {
-    icon: [{ url: "/icon.png", type: "image/png" }],
+    icon: [
+      { url: "/icon.png", type: "image/png" },
+      { url: "/images/facebrand.png", type: "image/png", sizes: "184x184" },
+    ],
     apple: "/icon.png",
   },
 };

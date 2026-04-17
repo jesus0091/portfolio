@@ -99,7 +99,7 @@ const AboutText: React.FC<AboutTextProps> = ({
       ref={sectionRef}
       className="relative py-20 md:py-28 flex  gap-16 flex-col items-center justify-center"
     >
-      <div ref={gridRef} className="relative grid grid-cols-1 md:grid-cols-2 max-w-[1280px] w-full px-4 md:px-8 gap-10 mx-auto">
+      <div ref={gridRef} className="relative grid grid-cols-1 md:grid-cols-2 max-w-[1280px] w-full px-6 md:px-8 gap-4 md:gap-10 mx-auto">
         <div className="flex-1 flex h-full w-full items-center justify-center">
           <div
             ref={boxRef}
@@ -144,7 +144,7 @@ const AboutText: React.FC<AboutTextProps> = ({
         <div ref={rightColRef} className="relative flex-1 flex flex-col gap-6 py-4">
 
           <div className="flex flex-col">
-            <p className="text-xl font-semibold text-[var(--orange)] tracking-wide mb-2">
+            <p className="text-base md:text-xl font-semibold text-[var(--orange)] tracking-wide mb-2">
               About Me
             </p>
             <h2
@@ -156,7 +156,7 @@ const AboutText: React.FC<AboutTextProps> = ({
           </div>
           <p
             ref={paraRef}
-            className="flex flex-wrap gap-y-1 gap-x-1.5 md:gap-1.5 text-xl font-medium"
+            className="flex flex-wrap gap-y-1 gap-x-1.5 md:gap-1.5 text-base md:text-xl font-medium"
           >
             {segments.map((seg, si) =>
               seg.text.trim().split(" ").map((w, wi) => (
