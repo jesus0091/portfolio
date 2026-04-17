@@ -260,7 +260,7 @@ export default function LatestProjects() {
 
       {/* Carousel — full bleed */}
       <div ref={emblaRef} className="overflow-hidden px-6 md:px-0">
-        <div className="flex gap-5" style={{ paddingLeft: isMobile ? undefined : trackOffset }}>
+        <div className="flex gap-5" style={{ paddingLeft: isMobile ? undefined : trackOffset, paddingRight: isMobile ? undefined : trackOffset }}>
           {PROJECTS.map((p) => (
             <div
               key={p.id}
