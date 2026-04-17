@@ -151,6 +151,7 @@ export default function LatestProjects() {
 
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "start",
+    containScroll: "trimSnaps",
     dragFree: false,
     loop: false,
     slidesToScroll: 1,
@@ -260,11 +261,12 @@ export default function LatestProjects() {
 
       {/* Carousel — full bleed */}
       <div ref={emblaRef} className="overflow-hidden px-6 md:px-0">
-        <div className="flex gap-5" style={{ paddingLeft: isMobile ? undefined : trackOffset, paddingRight: isMobile ? undefined : trackOffset }}>
-          {PROJECTS.map((p) => (
+        <div className="flex gap-5" style={{ paddingLeft: isMobile ? undefined : trackOffset }}>
+          {PROJECTS.map((p, i) => (
             <div
               key={p.id}
               className="shrink-0 w-[calc(100vw-64px)] md:w-[520px] lg:w-[560px]"
+              style={!isMobile && i === PROJECTS.length - 1 ? { marginRight: trackOffset } : undefined}
             >
               <ProjectCard project={p} />
             </div>
