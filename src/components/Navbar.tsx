@@ -7,7 +7,6 @@ import Link from "next/link";
 import gsap from "gsap";
 
 const links = [
-  { href: "/#about", label: "About Me", sectionId: "about" as const },
   { href: "/works", label: "Projects", sectionId: undefined },
 ];
 

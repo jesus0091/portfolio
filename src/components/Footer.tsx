@@ -30,8 +30,7 @@ export default function Footer({
   className = "",
   email = "hello @jesus",
   quickLinks = [
-    { label: "About Me", href: "/#about" },
-    { label: "Projects", href: "/#projects" },
+    { label: "Projects", href: "/works" },
   ],
   social = [
     {
@@ -236,7 +235,7 @@ export default function Footer({
           <div className="relative z-10 py-20 flex flex-col items-center gap-4 text-center">
             <p
               data-cta-label
-              className="text-sm tracking-widest text-orange-400 font-semibold"
+              className="text-base md:text-xl font-semibold text-orange-400 tracking-wide"
             >
               From Concept to Code
             </p>

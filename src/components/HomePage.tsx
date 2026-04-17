@@ -176,7 +176,7 @@ export default function HomePage() {
             blobSize={700}
             speed={1.2}
             opacity={0.55}
-            colors={["#fde68a", "#fed7aa"]}
+            colors={["#fb923c", "#2563eb", "#fdba74"]}
           />
         </div>
         <div className="relative z-10 flex flex-col items-center text-center w-full gap-2">

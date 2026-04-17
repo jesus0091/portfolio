@@ -111,7 +111,7 @@ export const AuroraGlow: React.FC<AuroraGlowProps> = ({
   opacity = 0.9,
   blobSize = 560,
   speed = 1,
-  colors = ["#fde68a", "#fed7aa", "#d1d5db"], // ámbar, naranja claro, gris
+  colors = ["#fb923c", "#2563eb", "#fdba74"], // naranja, azul, naranja claro
   extraBlur = false,
   className,
   style,

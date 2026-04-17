@@ -6,6 +6,8 @@ import Cursor from "@/components/Cursor";
 import Footer from "@/components/Footer";
 import WorkDetail from "@/components/Works/WorkDetail";
 
+const CANONICAL = "https://jesushernandez.vercel.app";
+
 type Props = { params: Promise<{ id: string }> };
 
 export function generateStaticParams() {
@@ -16,9 +18,29 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const work = getWorkById(id);
   if (!work) return {};
+
+  const title = `${work.productName} — ${work.title}`;
+  const description = work.description.slice(0, 160);
+
   return {
-    title: `${work.productName} — ${work.title}`,
-    description: work.description.slice(0, 160),
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: `${CANONICAL}/works/${work.id}`,
+      images: [{ url: work.cover, width: 1200, height: 630, alt: title }],
+      type: "article",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [work.cover],
+    },
+    alternates: {
+      canonical: `${CANONICAL}/works/${work.id}`,
+    },
   };
 }
 

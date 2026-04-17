@@ -7,7 +7,18 @@ import WorksList from "@/components/Works/WorksList";
 
 export const metadata: Metadata = {
   title: "Works",
-  description: "All projects by Jesús Hernández — frontend development, UX/UI design, and full-stack digital products.",
+  description:
+    "All projects by Jesús Hernández — frontend development, UX/UI design, and full-stack digital products.",
+  openGraph: {
+    title: "Works | Jesus Hernandez",
+    description:
+      "All projects by Jesús Hernández — frontend development, UX/UI design, and full-stack digital products.",
+    url: "https://jesushernandez.vercel.app/works",
+    type: "website",
+  },
+  alternates: {
+    canonical: "https://jesushernandez.vercel.app/works",
+  },
 };
 
 export default function WorksPage() {

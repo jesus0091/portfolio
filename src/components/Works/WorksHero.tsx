@@ -5,7 +5,7 @@ export default function WorksHero() {
 
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
           <div className="flex flex-col gap-3">
-            <p className="text-xl font-semibold text-[var(--orange)] tracking-wide">
+            <p className="text-base md:text-xl font-semibold text-[var(--orange)] tracking-wide">
               My Works
             </p>
             <h1
@@ -16,7 +16,7 @@ export default function WorksHero() {
             </h1>
           </div>
 
-          <p className="text-base md:text-lg text-[var(--muted)] max-w-xs md:text-right pb-2 leading-relaxed">
+          <p className="text-base md:text-xl font-medium text-[var(--muted)] max-w-xs md:text-right pb-2 leading-relaxed">
             Real projects where design meets code, craft meets delivery.
           </p>
         </div>
