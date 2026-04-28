@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
-import Cursor from "@/components/Cursor";
 import Footer from "@/components/Footer";
 import WorksHero from "@/components/Works/WorksHero";
 import WorksList from "@/components/Works/WorksList";
@@ -24,7 +23,6 @@ export const metadata: Metadata = {
 export default function WorksPage() {
   return (
     <>
-      <Cursor />
       <Navbar />
       <main>
         <WorksHero />

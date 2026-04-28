@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { WORKS, getWorkById } from "@/data/works";
 import Navbar from "@/components/Navbar";
-import Cursor from "@/components/Cursor";
 import Footer from "@/components/Footer";
 import WorkDetail from "@/components/Works/WorkDetail";
 
@@ -51,7 +50,6 @@ export default async function WorkDetailPage({ params }: Props) {
 
   return (
     <>
-      <Cursor />
       <Navbar />
       <main>
         <WorkDetail work={work} />
