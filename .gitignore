@@ -38,6 +38,7 @@ npm-cache/
 .agents/
 .claude/
 .kiro/
+.playwright-mcp/
 
 # debug
 npm-debug.log*
