@@ -11,6 +11,7 @@ import React, { useLayoutEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import SectionLabel from "../SectionLabel";
 import gsap from "gsap";
 
 type AboutTextProps = {
@@ -143,10 +144,8 @@ const AboutText: React.FC<AboutTextProps> = ({
 
         <div ref={rightColRef} className="relative flex-1 flex flex-col gap-6 py-4">
 
-          <div className="flex flex-col">
-            <p className="text-base md:text-xl font-semibold text-[var(--orange)] tracking-wide mb-2">
-              About Me
-            </p>
+          <div className="flex flex-col gap-3">
+            <SectionLabel>About Me</SectionLabel>
             <h2
               ref={titleRef}
               className="select-none text-3xl md:text-6xl leading-tighter font-semibold text-[var(--black)]"
@@ -156,7 +155,7 @@ const AboutText: React.FC<AboutTextProps> = ({
           </div>
           <p
             ref={paraRef}
-            className="flex flex-wrap gap-y-1 gap-x-1.5 md:gap-1.5 text-base md:text-xl font-medium"
+            className="flex flex-wrap gap-y-1 gap-x-1.5 md:gap-1.5 text-sm md:text-lg font-medium text-[var(--muted)]"
           >
             {segments.map((seg, si) =>
               seg.text.trim().split(" ").map((w, wi) => (

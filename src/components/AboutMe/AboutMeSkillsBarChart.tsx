@@ -4,6 +4,7 @@ import React, { useEffect, useLayoutEffect, useRef } from "react";
 
 import { IconSparkles } from "@tabler/icons-react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import SectionLabel from "../SectionLabel";
 import gsap from "gsap";
 
 const CATEGORIES = [
@@ -207,7 +208,7 @@ const LearningPhrase: React.FC = () => (
 /* ─── Main section ─── */
 const AboutMeSkills: React.FC = () => {
   const sectionRef  = useRef<HTMLElement | null>(null);
-  const labelRef    = useRef<HTMLParagraphElement | null>(null);
+  const labelRef    = useRef<HTMLDivElement | null>(null);
   const titleRef    = useRef<HTMLHeadingElement | null>(null);
   const dividerRef  = useRef<HTMLDivElement | null>(null);
   const rowsRef     = useRef<HTMLDivElement | null>(null);
@@ -312,10 +313,8 @@ const AboutMeSkills: React.FC = () => {
         ref={contentRef}
         className="relative z-10 flex flex-col py-20 md:py-28 px-6 md:px-8 max-w-[1280px] mx-auto w-full"
       >
-        <div className="mb-10">
-          <p ref={labelRef} className="text-base md:text-xl font-semibold text-[var(--orange)] tracking-wide mb-2">
-            Skills
-          </p>
+        <div className="mb-10 flex flex-col gap-3">
+          <SectionLabel ref={labelRef}>Skills</SectionLabel>
           <h2 ref={titleRef} className="text-3xl md:text-6xl font-semibold text-[var(--black)] leading-tighter tracking-tight">
             What I bring to the table.
           </h2>

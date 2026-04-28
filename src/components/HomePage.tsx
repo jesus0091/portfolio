@@ -249,7 +249,7 @@ export default function HomePage() {
           />
         </div>
         <div className="relative z-10 flex flex-col items-center text-center w-full gap-2">
-          <p ref={greetRef} className="text-lg md:text-2xl font-medium">
+          <p ref={greetRef} className="text-base md:text-lg font-medium">
             👋, My name is Jesús Hernández
           </p>
 
@@ -367,7 +367,7 @@ export default function HomePage() {
 
           <div
             ref={subtitleRef}
-            className="text-lg flex justify-center md:text-2xl font-medium mt-3 md:mt-4"
+            className="text-base flex justify-center md:text-lg font-medium mt-3 md:mt-4 text-[var(--muted)]"
           >
             <p>Based in Argentina</p>
           </div>

@@ -7,6 +7,7 @@ import useEmblaCarousel from "embla-carousel-react";
 import Link from "next/link";
 import ProjectCard from "./ProjectCard";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import SectionLabel from "../SectionLabel";
 import gsap from "gsap";
 import { useIsMobile } from "@/app/utils/useIsMobile";
 
@@ -203,7 +204,7 @@ export default function LatestProjects() {
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
-      const label = headerRef.current?.querySelector<HTMLElement>("p");
+      const label = headerRef.current?.querySelector<HTMLElement>("[data-section-label]");
       const title = headerRef.current?.querySelector<HTMLElement>("h2");
       const subtitle = headerRef.current?.querySelector<HTMLElement>("p:last-child");
 
@@ -236,15 +237,15 @@ export default function LatestProjects() {
           <div className="flex flex-col gap-2">
             {/* Anchor to measure left offset for full-bleed carousel */}
             <div ref={anchorRef} className="absolute" aria-hidden />
-            <p className="text-base md:text-xl font-semibold text-[var(--orange)] tracking-wide">
-              Latest Projects
-            </p>
-            <Link href="/works" className="block max-w-xl">
-              <h2 className="text-3xl md:text-6xl text-[var(--black)] font-semibold tracking-tight transition hover:text-[var(--orange)]">
-                Building Digital Products & Experience
+            <SectionLabel className="mb-1">Latest Projects</SectionLabel>
+            <Link href="/works" className="block max-w-3xl">
+              <h2 className="text-3xl md:text-6xl text-[var(--black)] font-semibold tracking-tight">
+                Building Digital
+                <br />
+                Products & Experience
               </h2>
             </Link>
-            <p className="text-base md:text-xl font-medium max-w-lg">
+            <p className="text-sm md:text-lg font-medium text-[var(--muted)] max-w-lg mt-1">
               Highlights of collaborative and solo projects that shaped my expertise.
             </p>
           </div>
@@ -276,7 +277,7 @@ export default function LatestProjects() {
 
       {/* Footer — texto + CTA */}
       <div className="mx-auto max-w-[1280px] w-full px-6 md:px-8 mt-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <p className="text-base md:text-xl font-medium text-[var(--muted)] max-w-md">
+        <p className="text-sm md:text-lg font-medium text-[var(--muted)] max-w-md">
           Each project is a story, from brief to launch, design to code.{" "}
           <span className="text-[var(--black)]">See the full picture.</span>
         </p>

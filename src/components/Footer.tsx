@@ -13,6 +13,7 @@ import AuroraGlow from "./AuroraGlow";
 import Image from "next/image";
 import Link from "next/link";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import SectionLabel from "./SectionLabel";
 import gsap from "gsap";
 import { useIsMobile } from "@/app/utils/useIsMobile";
 
@@ -233,12 +234,9 @@ export default function Footer({
           <div className="absolute -top-1/3 -right-1/4 w-[600px] h-[600px] rounded-full z-[2] pointer-events-none" style={{ background: "radial-gradient(circle, #f9731640 0%, transparent 70%)" }} />
           <div className="absolute -bottom-1/3 -left-1/4 w-[500px] h-[500px] rounded-full z-[2] pointer-events-none" style={{ background: "radial-gradient(circle, #2563eb30 0%, transparent 70%)" }} />
           <div className="relative z-10 py-20 flex flex-col items-center gap-4 text-center">
-            <p
-              data-cta-label
-              className="text-base md:text-xl font-semibold text-orange-400 tracking-wide"
-            >
-              From Concept to Code
-            </p>
+            <div data-cta-label>
+              <SectionLabel align="center">From Concept to Code</SectionLabel>
+            </div>
             <h3
               data-cta-title
               className="text-3xl sm:text-4xl md:text-7xl font-semibold tracking-tight text-white"
