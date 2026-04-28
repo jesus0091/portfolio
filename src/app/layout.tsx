@@ -2,20 +2,11 @@ import "./globals.css";
 
 import type { Metadata, Viewport } from "next";
 
-import { Geist, Instrument_Serif, JetBrains_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 
-const geist = Geist({
+const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-geist",
-  display: "swap",
-  preload: true,
-});
-
-const instrumentSerif = Instrument_Serif({
-  subsets: ["latin"],
-  weight: "400",
-  style: ["normal", "italic"],
-  variable: "--font-instrument-serif",
+  variable: "--font-inter",
   display: "swap",
   preload: true,
 });
@@ -128,7 +119,7 @@ export default function RootLayout({
     <html
       lang="en"
       data-color-scheme="light"
-      className={`${geist.variable} ${instrumentSerif.variable} ${jetbrainsMono.variable} scrollbar-hide`}
+      className={`${inter.variable} ${jetbrainsMono.variable} scrollbar-hide`}
     >
       <head>
         <meta id="theme-color" name="theme-color" content="#f4f1ea" />
