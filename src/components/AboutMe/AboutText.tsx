@@ -106,7 +106,7 @@ const AboutText: React.FC<AboutTextProps> = ({
             className="relative rounded-2xl w-full overflow-hidden min-h-[360px] md:min-h-full"
           >
             <Image
-              src="/images/about_me.png"
+              src="/images/about_me.webp"
               alt="Jesús Hernández"
               fill
               className="object-cover object-top"

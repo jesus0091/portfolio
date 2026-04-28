@@ -31,7 +31,7 @@ export const WORKS: Work[] = [
     year: "2023",
     description:
       "Development of a SaaS platform focused on employee engagement. Built and maintained complex feature workflows, reusable component library, and contributed to the platform's design system implementation in code. Worked in a collaborative Agile team shipping production features weekly.",
-    cover: "/images/mtc-dev.png",
+    cover: "/images/mtc-dev.webp",
     technologies: ["ReactJS", "NextJS", "TypeScript", "TailwindCSS", "StyledComponents"],
     integrations: ["REST API", "Auth0", "Intercom", "Mixpanel"],
     tools: ["Figma", "Git", "Jira", "Vercel"],
@@ -47,7 +47,7 @@ export const WORKS: Work[] = [
     year: "2023",
     description:
       "End-to-end UX/UI design for a SaaS platform that enhances employee engagement. Led design for onboarding flows, dashboard redesign, and the full component design system. Delivered wireframes, interactive prototypes, and production-ready specs.",
-    cover: "/images/mtc-design.png",
+    cover: "/images/mtc-design.webp",
     technologies: ["Figma", "Design System", "Prototyping", "UX Research"],
     integrations: [],
     tools: ["Figma", "FigJam", "Notion", "Loom"],
@@ -63,7 +63,7 @@ export const WORKS: Work[] = [
     year: "2024",
     description:
       "Full ownership of Ristario's digital presence from concept to production. Designed the brand identity, UI system, and all visual assets, then implemented the full website in Next.js. Shipped as a single handoff-free project.",
-    cover: "/images/linkedin.png",
+    cover: "/images/linkedin.webp",
     technologies: ["NextJS", "TypeScript", "TailwindCSS", "ReactJS"],
     integrations: ["Vercel", "Google Analytics"],
     tools: ["Figma", "Git", "Vercel", "Photoshop"],
@@ -82,7 +82,7 @@ export const WORKS: Work[] = [
     year: "2023",
     description:
       "Complete UX/UI design for Fundación Pataro's website. Conducted user research, accessibility audits, and built a visual identity that balances emotion with trustworthiness.",
-    cover: "/images/Banner-10.png",
+    cover: "/images/Banner-10.webp",
     technologies: ["Figma", "UI Design", "Accessibility", "Branding"],
     integrations: [],
     tools: ["Figma", "FigJam", "Notion"],
@@ -98,7 +98,7 @@ export const WORKS: Work[] = [
     year: "2022",
     description:
       "Redesign of IACON's corporate landing page with modern aesthetics and stronger brand positioning. Created new visual assets, a refreshed type system, and a component-based layout system in Figma.",
-    cover: "/images/iacon.png",
+    cover: "/images/iacon.webp",
     technologies: ["Figma", "Design System", "Branding"],
     integrations: [],
     tools: ["Figma", "FigJam", "Illustrator"],
@@ -114,7 +114,7 @@ export const WORKS: Work[] = [
     year: "2022",
     description:
       "Full Design Thinking process applied to an iOS application for psychologists. From discovery interviews and empathy maps to wireframes, high-fidelity prototypes, and usability testing.",
-    cover: "/images/therapia.png",
+    cover: "/images/therapia.webp",
     technologies: ["Figma", "iOS Design", "Design System", "Prototyping"],
     integrations: [],
     tools: ["Figma", "FigJam", "Maze"],
@@ -130,7 +130,7 @@ export const WORKS: Work[] = [
     year: "2022",
     description:
       "Data-first dashboard design for factory floor operators to monitor production machinery in real time. Designed for high-density information display with a focus on clarity under stress conditions.",
-    cover: "/images/smart-f.png",
+    cover: "/images/smart-f.webp",
     technologies: ["Figma", "Dashboard Design", "Data Viz", "Design System"],
     integrations: [],
     tools: ["Figma", "FigJam"],
@@ -146,7 +146,7 @@ export const WORKS: Work[] = [
     year: "2022",
     description:
       "Task management web app for call center teams. Designed end-to-end flows for scheduling, tracking, and managing client calls, validated with real call center agents before handoff.",
-    cover: "/images/omnipad.png",
+    cover: "/images/omnipad.webp",
     technologies: ["Figma", "UI Design", "Prototyping", "UX Research"],
     integrations: [],
     tools: ["Figma", "FigJam", "Maze", "Notion"],

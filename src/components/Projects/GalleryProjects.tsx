@@ -120,13 +120,13 @@ export default function GalleryProjects() {
   }, []);
 
   const gallery = [
-    { id: 1, urlImage: "/images/gallery-2.png" },
-    { id: 2, urlImage: "/images/gallery-3.png" },
-    { id: 3, urlImage: "/images/gallery-1.png" },
-    { id: 4, urlImage: "/images/gallery-4.png" },
-    { id: 5, urlImage: "/images/gallery-2.png" },
-    { id: 6, urlImage: "/images/gallery-6.png" },
-    { id: 7, urlImage: "/images/gallery-4.png" },
+    { id: 1, urlImage: "/images/gallery-2.webp" },
+    { id: 2, urlImage: "/images/gallery-3.webp" },
+    { id: 3, urlImage: "/images/gallery-1.webp" },
+    { id: 4, urlImage: "/images/gallery-4.webp" },
+    { id: 5, urlImage: "/images/gallery-2.webp" },
+    { id: 6, urlImage: "/images/gallery-6.webp" },
+    { id: 7, urlImage: "/images/gallery-4.webp" },
   ];
 
   return (

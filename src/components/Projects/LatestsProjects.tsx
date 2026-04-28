@@ -41,7 +41,7 @@ const PROJECTS: Project[] = [
     summary:
       "Development of a SaaS platform focused on employee engagement. Contributed to building workflows, new features, integrations and reusable components.",
     stack: ["ReactJS", "NextJS", "TypeScript", "TailwindCSS", "StyledComponents"],
-    cover: "/images/mtc-dev.png",
+    cover: "/images/mtc-dev.webp",
     category: "frontend",
     mode: "collab",
     links: [{ type: "github", href: "#", icon: <IconBrandGithub /> }],
@@ -54,7 +54,7 @@ const PROJECTS: Project[] = [
     summary:
       "UX/UI design for a SaaS platform that enhances employee engagement. Involved in workflows, wireframes, prototypes and design system.",
     stack: ["Figma", "Figma Design", "UX Research", "Design System", "Prototyping", "UI Design"],
-    cover: "/images/mtc-design.png",
+    cover: "/images/mtc-design.webp",
     category: "design",
     mode: "collab",
     links: [{ type: "behance", href: "https://www.behance.net/devjesushernandez", icon: <IconBrandBehance /> }],
@@ -67,7 +67,7 @@ const PROJECTS: Project[] = [
     summary:
       "Complete design and development of Ristario website. From concept to production, including UX/UI design, branding, and full-stack implementation.",
     stack: ["Figma", "ReactJS", "NextJS", "TypeScript", "TailwindCSS", "Design System", "Branding"],
-    cover: "/images/linkedin.png",
+    cover: "/images/linkedin.webp",
     category: "frontend",
     mode: "solo",
     links: [
@@ -83,7 +83,7 @@ const PROJECTS: Project[] = [
     summary:
       "Complete UX/UI design for Fundación Pataro website. Focused on accessibility, user experience and visual identity to communicate the foundation's mission effectively.",
     stack: ["Figma", "Figma Design", "UX Research", "Accessibility", "Prototyping", "Branding"],
-    cover: "/images/Banner-10.png",
+    cover: "/images/Banner-10.webp",
     category: "design",
     mode: "solo",
     links: [{ type: "behance", href: "https://www.behance.net/devjesushernandez", icon: <IconBrandBehance /> }],
@@ -96,7 +96,7 @@ const PROJECTS: Project[] = [
     summary:
       "Redesign of IACON's corporate landing page in Figma, along with new visual assets and branding elements to strengthen the company's digital identity.",
     stack: ["Figma", "Figma Design", "FigJam", "Design System", "Branding"],
-    cover: "/images/iacon.png",
+    cover: "/images/iacon.webp",
     category: "design",
     mode: "solo",
     links: [{ type: "behance", href: "https://www.behance.net/devjesushernandez", icon: <IconBrandBehance /> }],
@@ -109,7 +109,7 @@ const PROJECTS: Project[] = [
     summary:
       "Integrative UX/UI project for an iOS app designed for psychologists. Developed from scratch with the full Design Thinking process, research and testing.",
     stack: ["Figma", "Figma Design", "Design System", "iOS", "Prototyping", "UX Research", "Design Thinking"],
-    cover: "/images/therapia.png",
+    cover: "/images/therapia.webp",
     category: "design",
     mode: "solo",
     links: [{ type: "behance", href: "https://www.behance.net/devjesushernandez", icon: <IconBrandBehance /> }],
@@ -122,7 +122,7 @@ const PROJECTS: Project[] = [
     summary:
       "Design of an industrial dashboard used by factory operators to monitor and control production machinery. Project created from scratch with data-first UI.",
     stack: ["Figma", "UX Design", "Prototyping", "Design System", "Branding"],
-    cover: "/images/smart-f.png",
+    cover: "/images/smart-f.webp",
     category: "design",
     mode: "solo",
     links: [{ type: "behance", href: "https://www.behance.net/devjesushernandez", icon: <IconBrandBehance /> }],
@@ -135,7 +135,7 @@ const PROJECTS: Project[] = [
     summary:
       "Task management web application for call centers. Users can schedule, manage and track client calls. Flows, wireframes and visual prototype.",
     stack: ["Figma", "Figma Design", "Design System", "Prototyping", "UX Research", "UI Design"],
-    cover: "/images/omnipad.png",
+    cover: "/images/omnipad.webp",
     category: "design",
     mode: "solo",
     links: [{ type: "behance", href: "https://www.behance.net/devjesushernandez", icon: <IconBrandBehance /> }],
