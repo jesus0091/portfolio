@@ -1,151 +1,88 @@
 "use client";
 
-import styled, { keyframes } from "styled-components";
-
 import React from "react";
 
 type AuroraGlowProps = {
-  /** Opacidad global del efecto (0–1) */
   opacity?: number;
-  /** Tamaño base de cada “blob” (px) */
   blobSize?: number;
-  /** Velocidad relativa (1 = normal, >1 más rápido) */
   speed?: number;
-  /** Colores de los blobs (3 a 5 funciona muy bien) */
   colors?: string[];
-  /** Si true, aplica un leve desenfoque extra para un look más etéreo */
   extraBlur?: boolean;
   className?: string;
   style?: React.CSSProperties;
 };
 
-const float1 = keyframes`
-  0%   { transform: translate(-20%, -20%) scale(1); }
-  50%  { transform: translate(15%, 10%) scale(1.15); }
-  100% { transform: translate(-20%, -20%) scale(1); }
-`;
-
-const float2 = keyframes`
-  0%   { transform: translate(20%, -10%) scale(1.05); }
-  50%  { transform: translate(-10%, 15%) scale(0.9); }
-  100% { transform: translate(20%, -10%) scale(1.05); }
-`;
-
-const float3 = keyframes`
-  0%   { transform: translate(-5%, 15%) scale(0.95) rotate(0deg); }
-  50%  { transform: translate(10%, -10%) scale(1.1) rotate(10deg); }
-  100% { transform: translate(-5%, 15%) scale(0.95) rotate(0deg); }
-`;
-
-const Wrapper = styled.div<{
-  $opacity: number;
-  $extraBlur: boolean;
-}>`
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  /* Fondo completamente transparente */
-  background: transparent;
-
-  /* Suaviza bordes si lo pones dentro de contenedores redondeados */
-  will-change: transform, opacity, filter;
-
-  /* Opcional: un velo casi imperceptible (comenta si no lo querés) */
-  /* backdrop-filter: saturate(110%); */
-
-  /* Opacidad global controlable */
-  opacity: ${({ $opacity }) => $opacity};
-  filter: ${({ $extraBlur }) => ($extraBlur ? "blur(0.2px)" : "none")};
-`;
-
-const Blob = styled.span<{
-  $size: number;
-  $color: string;
-  $duration: number;
-  $delay: number;
-  $anim: "f1" | "f2" | "f3";
-}>`
-  position: absolute;
-  inset: 0;
-  margin: auto;
-  width: ${({ $size }) => $size}px;
-  height: ${({ $size }) => $size}px;
-  border-radius: 50%;
-  pointer-events: none;
-
-  /* Gradiente radial suave */
-  background: radial-gradient(
-    circle at 30% 30%,
-    ${({ $color }) => $color} 0%,
-    transparent 60%
-  );
-
-  filter: blur(60px);
-
-  animation: ${({ $anim }) =>
-      $anim === "f1" ? float1 : $anim === "f2" ? float2 : float3}
-    ${({ $duration }) => $duration}s ease-in-out infinite;
-  animation-delay: ${({ $delay }) => $delay}s;
-  transform-origin: center;
-
-  /* Posiciones iniciales diferentes para que no se solapen */
-  &:nth-child(1) {
-    transform: translate(-25%, -20%);
-  }
-  &:nth-child(2) {
-    transform: translate(20%, -10%);
-  }
-  &:nth-child(3) {
-    transform: translate(-10%, 15%);
-  }
-  &:nth-child(4) {
-    transform: translate(10%, 5%);
-  }
-  &:nth-child(5) {
-    transform: translate(-5%, -5%);
-  }
-`;
+const ANIMS = ["aurora-f1", "aurora-f2", "aurora-f3", "aurora-f2", "aurora-f1"] as const;
+const TRANSLATES = [
+  "translate(-25%, -20%)",
+  "translate(20%, -10%)",
+  "translate(-10%, 15%)",
+  "translate(10%, 5%)",
+  "translate(-5%, -5%)",
+];
 
 export const AuroraGlow: React.FC<AuroraGlowProps> = ({
   opacity = 0.9,
   blobSize = 560,
   speed = 1,
-  colors = ["#fb923c", "#2563eb", "#fdba74"], // naranja, azul, naranja claro
+  colors = ["#fb923c", "#2563eb", "#fdba74"],
   extraBlur = false,
   className,
   style,
 }) => {
-  // Construimos hasta 5 blobs como máximo
   const palette = colors.slice(0, 5);
-  const durations = [
-    22 / speed,
-    28 / speed,
-    26 / speed,
-    32 / speed,
-    24 / speed,
-  ];
+  const durations = [22, 28, 26, 32, 24].map((d) => d / speed);
   const delays = [-2, -6, -4, -8, -10];
-  const anims: Array<"f1" | "f2" | "f3"> = ["f1", "f2", "f3", "f2", "f1"];
 
   return (
-    <Wrapper
-      className={className}
-      style={style}
-      $opacity={opacity}
-      $extraBlur={extraBlur}
-    >
-      {palette.map((c, i) => (
-        <Blob
-          key={i}
-          $size={blobSize}
-          $color={c}
-          $duration={durations[i % durations.length]}
-          $delay={delays[i % delays.length]}
-          $anim={anims[i % anims.length]}
-        />
-      ))}
-    </Wrapper>
+    <>
+      <style>{`
+        @keyframes aurora-f1 {
+          0%   { transform: translate(-20%, -20%) scale(1); }
+          50%  { transform: translate(15%, 10%) scale(1.15); }
+          100% { transform: translate(-20%, -20%) scale(1); }
+        }
+        @keyframes aurora-f2 {
+          0%   { transform: translate(20%, -10%) scale(1.05); }
+          50%  { transform: translate(-10%, 15%) scale(0.9); }
+          100% { transform: translate(20%, -10%) scale(1.05); }
+        }
+        @keyframes aurora-f3 {
+          0%   { transform: translate(-5%, 15%) scale(0.95) rotate(0deg); }
+          50%  { transform: translate(10%, -10%) scale(1.1) rotate(10deg); }
+          100% { transform: translate(-5%, 15%) scale(0.95) rotate(0deg); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .aurora-blob { animation: none !important; }
+        }
+      `}</style>
+      <div
+        className={`relative w-full h-full overflow-hidden bg-transparent ${className ?? ""}`}
+        style={{
+          opacity,
+          filter: extraBlur ? "blur(0.2px)" : "none",
+          willChange: "transform, opacity, filter",
+          ...style,
+        }}
+      >
+        {palette.map((color, i) => (
+          <span
+            key={i}
+            className="aurora-blob absolute inset-0 m-auto rounded-full pointer-events-none"
+            style={{
+              width: blobSize,
+              height: blobSize,
+              background: `radial-gradient(circle at 30% 30%, ${color} 0%, transparent 60%)`,
+              filter: "blur(60px)",
+              animation: `${ANIMS[i % ANIMS.length]} ${durations[i % durations.length]}s ease-in-out infinite`,
+              animationDelay: `${delays[i % delays.length]}s`,
+              transform: TRANSLATES[i % TRANSLATES.length],
+              transformOrigin: "center",
+            }}
+          />
+        ))}
+      </div>
+    </>
   );
 };
 

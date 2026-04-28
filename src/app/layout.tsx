@@ -2,12 +2,29 @@ import "./globals.css";
 
 import type { Metadata, Viewport } from "next";
 
-import { Inter } from "next/font/google";
+import { Geist, Instrument_Serif, JetBrains_Mono } from "next/font/google";
 
-const inter = Inter({
+const geist = Geist({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-geist",
   display: "swap",
+  preload: true,
+});
+
+const instrumentSerif = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
+  variable: "--font-instrument-serif",
+  display: "swap",
+  preload: true,
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-jetbrains-mono",
+  display: "swap",
+  preload: false,
 });
 
 const CANONICAL = "https://jesushernandez.vercel.app";
@@ -111,10 +128,10 @@ export default function RootLayout({
     <html
       lang="en"
       data-color-scheme="light"
-      className={`${inter.variable} font-sans scrollbar-hide bg-background text-foreground`}
+      className={`${geist.variable} ${instrumentSerif.variable} ${jetbrainsMono.variable} scrollbar-hide`}
     >
       <head>
-        <meta id="theme-color" name="theme-color" content="#e4e4e4" />
+        <meta id="theme-color" name="theme-color" content="#f4f1ea" />
 
         <meta httpEquiv="X-Content-Type-Options" content="nosniff" />
         <meta httpEquiv="X-Frame-Options" content="DENY" />
@@ -127,11 +144,13 @@ export default function RootLayout({
           content="camera=(), microphone=(), geolocation=()"
         />
         <meta httpEquiv="Cross-Origin-Opener-Policy" content="same-origin" />
-        <meta httpEquiv="Cross-Origin-Resource-Policy" content="same-origin" />
-        <meta httpEquiv="Cross-Origin-Embedder-Policy" content="require-corp" />
       </head>
 
-      <body className="antialiased w-full bg-background text-foreground">
+      <body className="antialiased w-full">
+        <a href="#main-content" className="skip-link">
+          Skip to content
+        </a>
+
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}

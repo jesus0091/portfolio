@@ -1,34 +1,94 @@
 @import "tailwindcss";
 
+@theme {
+  /* ---------------- Surfaces & ink (editorial restraint) ---------------- */
+  --color-bg: #f4f1ea;
+  --color-bg-elevated: #ffffff;
+  --color-surface-card: #ffffff;
+  --color-surface-overlay: rgba(255, 255, 255, 0.6);
+
+  --color-ink-1: #0a0a0a;
+  --color-ink-2: #1a1a1a;
+  --color-ink-3: #4a4a4a;
+  --color-ink-4: #7a7a7a;
+
+  /* Single accent — kill the secondary blue */
+  --color-accent: #ff6600;
+  --color-accent-soft: #fff3eb;
+
+  --color-line-1: #e5e1d8;
+  --color-line-2: #d4cfc4;
+
+  /* ---------------- Radii ---------------- */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+
+  /* ---------------- Shadows ---------------- */
+  --shadow-1: 0 1px 2px rgba(10, 10, 10, 0.04), 0 0 1px rgba(10, 10, 10, 0.06);
+  --shadow-2: 0 8px 24px rgba(10, 10, 10, 0.06), 0 1px 2px rgba(10, 10, 10, 0.04);
+  --shadow-glow: 0 12px 48px rgba(255, 102, 0, 0.18);
+
+  /* ---------------- Motion tokens ---------------- */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 120ms;
+  --dur-base: 240ms;
+  --dur-slow: 420ms;
+
+  /* ---------------- Fluid type scale ---------------- */
+  --text-xs: clamp(0.75rem, 0.7rem + 0.2vw, 0.8125rem);
+  --text-sm: clamp(0.875rem, 0.82rem + 0.25vw, 0.9375rem);
+  --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.0625rem);
+  --text-lg: clamp(1.125rem, 1.05rem + 0.4vw, 1.25rem);
+  --text-xl: clamp(1.375rem, 1.25rem + 0.6vw, 1.625rem);
+  --text-2xl: clamp(1.75rem, 1.55rem + 1vw, 2.25rem);
+  --text-3xl: clamp(2.25rem, 1.95rem + 1.5vw, 3rem);
+  --text-4xl: clamp(3rem, 2.5rem + 2.5vw, 4.5rem);
+  --text-5xl: clamp(4rem, 3.2rem + 4vw, 6.5rem);
+  --text-display: clamp(5rem, 4rem + 6vw, 9rem);
+
+  /* ---------------- Font families ---------------- */
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-instrument-serif), ui-serif, Georgia, "Times New Roman", serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+/* ---------------- Backwards-compat aliases (so existing classes keep working) ---------------- */
 :root {
-  --background: #e4e4e4;
-  --foreground: #4f4f4f;
-  --card: #ffffff;
-  --black: #000000;
+  --background: var(--color-bg);
+  --foreground: var(--color-ink-2);
+  --card: var(--color-surface-card);
+  --black: var(--color-ink-1);
   --white: #ffffff;
   --layout: #ffffff;
-  --content: #ffffff80;
-  --orange: #ff6600;
-  --muted: #595959;
-  --border: #e5e5e5;
-  --primary: #2563eb;
-  --secondary: #1e293b;
-  --gray: #b9c1d2;
-  --grid-rgba: rgba(65, 34, 0, 0.09);
-  --button: #00000060;
+  --content: var(--color-surface-overlay);
+  --orange: var(--color-accent);
+  --muted: var(--color-ink-3);
+  --border: var(--color-line-1);
+  --primary: var(--color-accent);
+  --secondary: var(--color-ink-1);
+  --gray: var(--color-ink-4);
+  --grid-rgba: rgba(10, 10, 10, 0.06);
+  --button: rgba(10, 10, 10, 0.4);
 }
 
 html {
   scroll-behavior: smooth;
   color-scheme: light;
-  background: var(--background);
+  background: var(--color-bg);
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--color-bg);
+  color: var(--color-ink-2);
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01", "cv11";
+  -webkit-font-smoothing: antialiased;
 }
 
 body::-webkit-scrollbar {
@@ -36,18 +96,19 @@ body::-webkit-scrollbar {
 }
 
 ::selection {
-  background: rgba(59, 130, 246, 0.3);
+  background: var(--color-accent);
+  color: #ffffff;
 }
 
 :where(a, button, input, textarea, select):focus-visible {
-  outline: 2px solid var(--primary);
+  outline: 2px solid var(--color-accent);
   outline-offset: 2px;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
 }
 
 hr,
 .border-base {
-  border-color: var(--border);
+  border-color: var(--color-line-1);
 }
 
 .container {
@@ -55,15 +116,15 @@ hr,
 }
 
 .text-fill {
-  color: black;
+  color: var(--color-ink-1);
   -webkit-text-stroke: 0;
-  transition: all 0.3s ease-in-out;
+  transition: all var(--dur-base) var(--ease-out);
 }
 
 .text-outline {
   color: transparent;
-  -webkit-text-stroke: 2px black;
-  transition: all 0.3s ease-in-out;
+  -webkit-text-stroke: 2px var(--color-ink-1);
+  transition: all var(--dur-base) var(--ease-out);
 }
 
 .scrollbar-hide {
@@ -74,3 +135,20 @@ hr,
   display: none;
 }
 
+/* ---------------- Skip link for keyboard users ---------------- */
+.skip-link {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 12px 16px;
+  background: var(--color-ink-1);
+  color: #ffffff;
+  font: 500 14px var(--font-sans);
+  border-radius: 0 0 var(--radius-md) 0;
+  transform: translateY(-100%);
+  transition: transform var(--dur-base) var(--ease-out);
+  z-index: 100;
+}
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
